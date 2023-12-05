@@ -156,9 +156,9 @@ def reload_game():
 #     check_money(_money)
 
 
-def has_enough_money(need_money: int) -> bool:
-    global _money
-    return _money >= need_money
+# def has_enough_money(need_money: int) -> bool:
+#     global _money
+#     return _money >= need_money
 
 
 def get_unused_color(uc_type: UserCardType):
@@ -282,6 +282,9 @@ class Global:
         self.current_rooms_counter += 1
         self.available_developers_count += 1
         self.check_money(self._money)
+    
+    def has_enough_money(self, need_money):
+        return self._money >= need_money
 
 if __name__ == "__main__":
     # print(get_unused_color(UserCardType(2)))
