@@ -108,22 +108,25 @@ class ProductOwnerGame:
                 card.hours = card.base_hours + full_tech_debt_debuff
 
 
-def _update_loyalty():
-    if Global.is_new_game:
-        return
-    for i in Global.current_bugs.keys():
-        bug: BugUserStoryInfo = Global.current_bugs[i]
-        Global.set_loyalty(Global.get_loyalty() + bug.loyalty_debuff)
-        bug.loyalty_debuff += bug.loyalty_increment
-        Global.customers += bug.customers_debuff
-        bug.customers_debuff += bug.customers_increment
-    if Global.blank_sprint_counter >= Global.min_key_blank_sprint_loyalty:
-        delta_loyalty = Global.interpolate(Global.blank_sprint_counter,
-                                           Global.BLANK_SPRINT_LOYALTY_DECREMENT)
-        Global.set_loyalty(Global.get_loyalty() + delta_loyalty)
-        delta_customers = Global.interpolate(Global.blank_sprint_counter,
-                                             Global.BLANK_SPRINT_CUSTOMERS_DECREMENT)
-        Global.customers += delta_customers
+    def _update_loyalty(self):
+        if self.context.is_new_game:
+            return
+        for bug in self.context.current_bugs.values():
+            current_loyalty = self.context.get_loyalty()
+            loyalty_to_set = current_loyalty + bug.loyalty_debuff
+            self.context.set_loyalty(loyalty_to_set)
+            bug.loyalty_debuff += bug.loyalty_increment
+            self.context.customers += bug.customers_debuff
+            bug.customers_debuff += bug.customers_increment
+        
+        blank_sprint_counter = self.context.blank_sprint_counter
+        if blank_sprint_counter >= Global.min_key_blank_sprint_loyalty:
+            delta_loyalty = Global.interpolate(blank_sprint_counter,
+                                            Global.BLANK_SPRINT_LOYALTY_DECREMENT)
+            self.context.set_loyalty(self.context.get_loyalty() + delta_loyalty)
+            delta_customers = Global.interpolate(blank_sprint_counter,
+                                                Global.BLANK_SPRINT_CUSTOMERS_DECREMENT)
+            self.context.customers += delta_customers
 
 
 def _get_credit_payment() -> int:

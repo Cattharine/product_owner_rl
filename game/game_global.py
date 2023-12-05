@@ -3,6 +3,7 @@ from enum import Enum
 from copy import copy
 import random
 
+from game.userstory_card.bug_user_story_info import BugUserStoryInfo
 from game.userstory_card.tech_debt_user_story_info import TechDebtInfo
 from game.userstory_card.userstory_card_info import UserStoryCardInfo
 
@@ -34,14 +35,14 @@ available_developers_count = 2
 worker_cost = 10000
 # _money = 200000
 credit = 300000
-_loyalty = 0
-customers = 0
+# _loyalty = 0
+# customers = 0
 # current_sprint = 1
 # current_sprint_hours = 0
 current_rooms_counter = 1
 # available_stories = {}
 # current_stories = {}
-current_bugs = {}
+# current_bugs = {}
 # current_tech_debt = {}
 is_first_bug = True  # не перезадается в годоте в reload_game, но это не так критично
 is_first_tech_debt = True  # не перезадается в годоте в reload_game, но это не так критично
@@ -52,7 +53,7 @@ used_colors = {UserCardType.S: [], UserCardType.M: [], UserCardType.L: [],
 MONEY_GOAL = 1000000
 AMOUNT_CREDIT_PAYMENT = 9000
 
-blank_sprint_counter = 0  # не перезадается в годоте в reload_game, но это не так критично
+# blank_sprint_counter = 0  # не перезадается в годоте в reload_game, но это не так критично
 
 BLANK_SPRINT_LOYALTY_DECREMENT = {
     6: -0.05,
@@ -85,7 +86,7 @@ current_room_multiplier = 1
 BUG_SPAM_PROBABILITY = 0.25
 TECH_DEBT_SPAWN_PROBABILITY = 0.5
 
-is_new_game = True
+# is_new_game = True
 # use_new_year_theme
 # done = False
 
@@ -95,8 +96,8 @@ def reload_game():
         current_rooms_counter, current_room_multiplier, current_sprint_hours, available_stories, \
         current_stories, current_bugs, current_tech_debt, is_first_bug, is_first_tech_debt, \
         is_new_game, used_colors, blank_sprint_counter, done
-    _loyalty = 0
-    customers = 0
+    # _loyalty = 0
+    # customers = 0
     available_developers_count = 2
     # _money = 200000
     credit = 300000
@@ -106,12 +107,12 @@ def reload_game():
     # current_sprint_hours = 0
     # available_stories = {}
     # current_stories = {}
-    current_bugs = {}
+    # current_bugs = {}
     # current_tech_debt = {}
     is_first_bug = True
     is_first_tech_debt = True
-    blank_sprint_counter = 0
-    is_new_game = True
+    # blank_sprint_counter = 0
+    # is_new_game = True
     # done = False
     for i in used_colors.keys():
         used_colors[i] = []
@@ -129,13 +130,13 @@ def reload_game():
 #     return _money
 
 
-def set_loyalty(value):
-    global _loyalty
-    _loyalty = clamp(value, 0.8, 5)
+# def set_loyalty(value):
+#     global _loyalty
+#     _loyalty = clamp(value, 0.8, 5)
 
 
-def get_loyalty():
-    return _loyalty
+# def get_loyalty():
+#     return _loyalty
 
 
 def buy_robot():
@@ -230,6 +231,11 @@ class Global:
         self.current_sprint_hours = 0
         self.current_tech_debt: dict[Any, TechDebtInfo] = {}
         self.available_stories: dict[int, UserStoryCardInfo] = {}
+        self.is_new_game = True
+        self.current_bugs: dict[Any, BugUserStoryInfo] = {}
+        self._loyalty = 0
+        self.customers = 0
+        self.blank_sprint_counter = 0
     
     def get_money(self):
         return self._money
@@ -251,6 +257,12 @@ class Global:
             save_to_leaderboard()
         else:
             print("loose")
+    
+    def get_loyalty(self):
+        return self._loyalty
+    
+    def set_loyalty(self, value):
+        self._loyalty = clamp(value, 0.8, 5)
 
 if __name__ == "__main__":
     # print(get_unused_color(UserCardType(2)))
