@@ -3,6 +3,7 @@ from game.userstories.userstories import UserStories
 from game.hud.hud import HUD
 from game.office.office import Offices
 from game import game_global as Global
+from game.game_global import Global as GlobalData
 from game.userstory_card.userstory_card_info import UserStoryCardInfo
 from game.backlog_card.card_info import CardInfo
 from game.userstory_card.bug_user_story_info import BugUserStoryInfo
@@ -23,6 +24,7 @@ force_td_spawn = False
 
 class ProductOwnerGame:
     def __init__(self):
+        self.context = GlobalData()
         self.backlog = Backlog()
         self.userstories = UserStories()
         self.hud = HUD()
@@ -36,73 +38,50 @@ class ProductOwnerGame:
     
     def _on_backlog_start_sprint(self, cards_info):
         self.cards_in_sprint = cards_info
-        self.hud.increase_progress(cards_in_sprint)
+        self.hud.increase_progress(self.cards_in_sprint)
         self._next_sprint()
 
 
-def load_game():  # !
-    global backlog, userstories, hud, office, sprint_cost, \
-        completed_us, cards_in_sprint, is_first_release, force_td_spawn
-    Global.project_name = "MLTest"
-    sprint_cost = 0
-    completed_us = []
-    cards_in_sprint = []
-    is_first_release = True
-    force_td_spawn = False
-    Global.reload_game()
-
-    backlog = Backlog()
-    userstories = UserStories()
-    hud = HUD()
-    office = Offices()
+    def backlog_start_sprint(self):
+        if self.backlog.can_start_sprint():
+            cards = self.backlog.on_start_sprint_pressed()
+            if cards:
+                self.backlog.clear_sprint()
+                self._on_backlog_start_sprint(cards)
 
 
-def _on_backlog_start_sprint(cards_info):
-    global cards_in_sprint
-    cards_in_sprint = cards_info
-    hud.increase_progress(cards_in_sprint)
-    _next_sprint()
+    def _on_userstories_start_release(self, cards_info):
+        for i in cards_info:
+            us: UserStoryCardInfo = i
+            us.is_decomposed = True
+        self.backlog.generate_cards()
 
 
-def backlog_start_sprint():  # !
-    if backlog.can_start_sprint():
-        cards = backlog.on_start_sprint_pressed()
-        if cards:
-            backlog.clear_sprint()
-            _on_backlog_start_sprint(cards)
+    def userstories_start_release(self):  # !
+        # todo добавить проверку на превышение доступного количества часов
+        if self.userstories.release_available:
+            cards = self.userstories.on_start_release_pressed()
+            self.userstories.clear_release()
+            self._on_userstories_start_release(cards)
 
 
-def _on_userstories_start_release(cards_info):
-    for i in cards_info:
-        us: UserStoryCardInfo = i
-        us.is_decomposed = True
-    backlog.generate_cards()
-
-
-def userstories_start_release():  # !
-    # todo добавить проверку на превышение доступного количества часов
-    if userstories.release_available:
-        cards = userstories.on_start_release_pressed()
-        userstories.clear_release()
-        _on_userstories_start_release(cards)
-
-
-def _next_sprint():
-    global cards_in_sprint
-    Global.current_sprint += 1
-    _update_tech_debt_impact()
-    for i in cards_in_sprint:
-        card: CardInfo = i
-        us: UserStoryCardInfo = Global.current_stories[card.us_id]
-        us.related_cards.remove(card)
-        if len(us.related_cards) == 0:
-            us.completed = True
-            us.completed_part = 1
-            completed_us.append(us)
-    cards_in_sprint = []
-    Global.set_money(Global.get_money() + _get_sprint_money())
-    Global.current_sprint_hours = 0
-    backlog.generate_cards()
+    def _next_sprint(self):
+        self.context.current_sprint += 1
+        self._update_tech_debt_impact()
+        for i in self.cards_in_sprint:
+            card: CardInfo = i
+            us: UserStoryCardInfo = self.context.current_stories[card.us_id]
+            us.related_cards.remove(card)
+            if len(us.related_cards) == 0:
+                us.completed = True
+                us.completed_part = 1
+                completed_us.append(us)
+        self.cards_in_sprint = []
+        current_money = self.context.get_money()
+        money_to_set = current_money + self._get_sprint_money()
+        self.context.set_money(money_to_set)
+        self.context.current_sprint_hours = 0
+        self.backlog.generate_cards()
 
 
 def _update_tech_debt_impact():

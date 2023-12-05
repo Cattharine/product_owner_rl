@@ -28,15 +28,15 @@ project_name = ""
 developer_hours = 10
 available_developers_count = 2
 worker_cost = 10000
-_money = 200000
+# _money = 200000
 credit = 300000
 _loyalty = 0
 customers = 0
-current_sprint = 1
-current_sprint_hours = 0
+# current_sprint = 1
+# current_sprint_hours = 0
 current_rooms_counter = 1
 available_stories = {}
-current_stories = {}
+# current_stories = {}
 current_bugs = {}
 current_tech_debt = {}  # todo (не перезадается в годоте в reload_game)
 is_first_bug = True  # не перезадается в годоте в reload_game, но это не так критично
@@ -83,7 +83,7 @@ TECH_DEBT_SPAWN_PROBABILITY = 0.5
 
 is_new_game = True
 # use_new_year_theme
-done = False
+# done = False
 
 
 def reload_game():
@@ -94,35 +94,35 @@ def reload_game():
     _loyalty = 0
     customers = 0
     available_developers_count = 2
-    _money = 200000
+    # _money = 200000
     credit = 300000
-    current_sprint = 1
+    # current_sprint = 1
     current_rooms_counter = 1
     current_room_multiplier = 1
-    current_sprint_hours = 0
+    # current_sprint_hours = 0
     available_stories = {}
-    current_stories = {}
+    # current_stories = {}
     current_bugs = {}
     current_tech_debt = {}
     is_first_bug = True
     is_first_tech_debt = True
     blank_sprint_counter = 0
     is_new_game = True
-    done = False
+    # done = False
     for i in used_colors.keys():
         used_colors[i] = []
 
 
-def set_money(count):
-    global _money
-    _money = count
+# def set_money(count):
+#     global _money
+#     _money = count
 
-    # проверка на то, что деньги не ушли в минус/не была достигнута цель игры
-    check_money(_money)
+#     # проверка на то, что деньги не ушли в минус/не была достигнута цель игры
+#     check_money(_money)
 
 
-def get_money():
-    return _money
+# def get_money():
+#     return _money
 
 
 def set_loyalty(value):
@@ -176,21 +176,21 @@ def release_color(us_type: UserCardType, color: UserCardColor):
     used_colors[us_type].remove(color)
 
 
-def check_money(money_val):
-    if money_val < 0:
-        game_over(False)
-    elif money_val >= MONEY_GOAL:
-        game_over(True)
+# def check_money(money_val):
+#     if money_val < 0:
+#         game_over(False)
+#     elif money_val >= MONEY_GOAL:
+#         game_over(True)
 
 
-def game_over(win: bool):
-    global done
-    done = True
-    if win:
-        print("win")
-        save_to_leaderboard()
-    else:
-        print("loose")
+# def game_over(win: bool):
+#     global done
+#     done = True
+#     if win:
+#         print("win")
+#         save_to_leaderboard()
+#     else:
+#         print("loose")
 
 
 def save_to_leaderboard():
@@ -217,6 +217,34 @@ def interpolate(value, table: dict):
 
     return None
 
+class Global:
+    def __init__(self) -> None:
+        self.current_sprint = 1
+        self.current_stories = {}
+        self._money = 200000
+        self.done = False
+        self.current_sprint_hours = 0
+    
+    def get_money(self):
+        return self._money
+    
+    def set_money(self, money):
+        self._money = money
+        self.check_money()
+    
+    def check_money(self):
+        if self._money < 0:
+            self.game_over(False)
+        elif self._money >= MONEY_GOAL:
+            self.game_over(True)
+    
+    def game_over(self, is_win):
+        self.done = True
+        if is_win:
+            print("win")
+            save_to_leaderboard()
+        else:
+            print("loose")
 
 if __name__ == "__main__":
     # print(get_unused_color(UserCardType(2)))
