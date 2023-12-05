@@ -1,6 +1,10 @@
+from typing import Any
 from enum import Enum
 from copy import copy
 import random
+
+from game.userstory_card.tech_debt_user_story_info import TechDebtInfo
+from game.userstory_card.userstory_card_info import UserStoryCardInfo
 
 
 def clamp(x, minimum, maximum):
@@ -35,10 +39,10 @@ customers = 0
 # current_sprint = 1
 # current_sprint_hours = 0
 current_rooms_counter = 1
-available_stories = {}
+# available_stories = {}
 # current_stories = {}
 current_bugs = {}
-current_tech_debt = {}  # todo (не перезадается в годоте в reload_game)
+# current_tech_debt = {}
 is_first_bug = True  # не перезадается в годоте в reload_game, но это не так критично
 is_first_tech_debt = True  # не перезадается в годоте в reload_game, но это не так критично
 
@@ -100,10 +104,10 @@ def reload_game():
     current_rooms_counter = 1
     current_room_multiplier = 1
     # current_sprint_hours = 0
-    available_stories = {}
+    # available_stories = {}
     # current_stories = {}
     current_bugs = {}
-    current_tech_debt = {}
+    # current_tech_debt = {}
     is_first_bug = True
     is_first_tech_debt = True
     blank_sprint_counter = 0
@@ -220,10 +224,12 @@ def interpolate(value, table: dict):
 class Global:
     def __init__(self) -> None:
         self.current_sprint = 1
-        self.current_stories = {}
+        self.current_stories: dict[int, UserStoryCardInfo] = {}
         self._money = 200000
         self.done = False
         self.current_sprint_hours = 0
+        self.current_tech_debt: dict[Any, TechDebtInfo] = {}
+        self.available_stories: dict[int, UserStoryCardInfo] = {}
     
     def get_money(self):
         return self._money

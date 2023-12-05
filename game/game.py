@@ -8,6 +8,7 @@ from game.userstory_card.userstory_card_info import UserStoryCardInfo
 from game.backlog_card.card_info import CardInfo
 from game.userstory_card.bug_user_story_info import BugUserStoryInfo
 from game.userstory_card.tech_debt_user_story_info import TechDebtInfo
+from typing import Any
 import random
 
 
@@ -32,7 +33,7 @@ class ProductOwnerGame:
 
         self.sprint_cost = 0
         self.completed_us = []
-        self.cards_in_sprint = []
+        self.cards_in_sprint: list[CardInfo] = []
         self.is_first_release = True
         self.force_td_spawn = False
     
@@ -68,8 +69,7 @@ class ProductOwnerGame:
     def _next_sprint(self):
         self.context.current_sprint += 1
         self._update_tech_debt_impact()
-        for i in self.cards_in_sprint:
-            card: CardInfo = i
+        for card in self.cards_in_sprint:
             us: UserStoryCardInfo = self.context.current_stories[card.us_id]
             us.related_cards.remove(card)
             if len(us.related_cards) == 0:
@@ -84,29 +84,28 @@ class ProductOwnerGame:
         self.backlog.generate_cards()
 
 
-def _update_tech_debt_impact():
-    impact_count = 0
-    for card in cards_in_sprint:
-        if card.card_type != Global.UserCardType.TECH_DEBT:
-            impact_count += 1
-    full_tech_debt_debuff = 0
-    current_tech_debt = Global.current_tech_debt
-    for key in current_tech_debt.keys():
-        tech_debt_debuff = impact_count * current_tech_debt[key].hours_debuff_increment
-        current_tech_debt[key].full_hours_debuff += tech_debt_debuff
-        full_tech_debt_debuff += current_tech_debt[key].full_hours_debuff
+    def _update_tech_debt_impact(self):
+        impact_count = 0
+        for card in self.cards_in_sprint:
+            if card.card_type != Global.UserCardType.TECH_DEBT:
+                impact_count += 1
+        full_tech_debt_debuff = 0
+        current_tech_debt = self.context.current_tech_debt
+        for item in current_tech_debt.values():
+            tech_debt_debuff = impact_count * item.hours_debuff_increment
+            item.full_hours_debuff += tech_debt_debuff
+            full_tech_debt_debuff += item.full_hours_debuff
 
-    _update_tech_debt_impact_stories(Global.current_stories, full_tech_debt_debuff)
-    _update_tech_debt_impact_stories(Global.available_stories, full_tech_debt_debuff)
+        self._update_tech_debt_impact_stories(self.context.current_stories, full_tech_debt_debuff)
+        self._update_tech_debt_impact_stories(self.context.available_stories, full_tech_debt_debuff)
 
 
-def _update_tech_debt_impact_stories(stories, full_tech_debt_debuff: int):
-    for i in stories.values():
-        us: UserStoryCardInfo = i
-        if us.card_type == Global.UserCardType.TECH_DEBT:
-            continue
-        for card in us.related_cards:
-            card.hours = card.base_hours + full_tech_debt_debuff
+    def _update_tech_debt_impact_stories(self, stories: dict[int, UserStoryCardInfo], full_tech_debt_debuff: int):
+        for us in stories.values():
+            if us.card_type == Global.UserCardType.TECH_DEBT:
+                continue
+            for card in us.related_cards:
+                card.hours = card.base_hours + full_tech_debt_debuff
 
 
 def _update_loyalty():
