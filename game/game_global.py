@@ -31,21 +31,21 @@ colors_for_use = [UserCardColor.BLUE, UserCardColor.GREEN, UserCardColor.ORANGE,
 project_name = ""
 
 developer_hours = 10
-available_developers_count = 2
-worker_cost = 10000
+# available_developers_count = 2
+# worker_cost = 10000
 # _money = 200000
-credit = 300000
+# credit = 300000
 # _loyalty = 0
 # customers = 0
 # current_sprint = 1
 # current_sprint_hours = 0
-current_rooms_counter = 1
+# current_rooms_counter = 1
 # available_stories = {}
 # current_stories = {}
 # current_bugs = {}
 # current_tech_debt = {}
-is_first_bug = True  # не перезадается в годоте в reload_game, но это не так критично
-is_first_tech_debt = True  # не перезадается в годоте в reload_game, но это не так критично
+# is_first_bug = True  # не перезадается в годоте в reload_game, но это не так критично
+# is_first_tech_debt = True  # не перезадается в годоте в reload_game, но это не так критично
 
 used_colors = {UserCardType.S: [], UserCardType.M: [], UserCardType.L: [],
                UserCardType.XL: [], UserCardType.BUG: [], UserCardType.TECH_DEBT: []}
@@ -81,7 +81,7 @@ MAX_WORKER_COUNT = 4
 NEW_WORKER_COST = 50000
 NEW_ROOM_COST = 200000
 NEW_ROOM_MULTIPLIER = 1.5
-current_room_multiplier = 1
+# current_room_multiplier = 1
 
 BUG_SPAM_PROBABILITY = 0.25
 TECH_DEBT_SPAWN_PROBABILITY = 0.5
@@ -98,19 +98,19 @@ def reload_game():
         is_new_game, used_colors, blank_sprint_counter, done
     # _loyalty = 0
     # customers = 0
-    available_developers_count = 2
+    # available_developers_count = 2
     # _money = 200000
-    credit = 300000
+    # credit = 300000
     # current_sprint = 1
-    current_rooms_counter = 1
-    current_room_multiplier = 1
+    # current_rooms_counter = 1
+    # current_room_multiplier = 1
     # current_sprint_hours = 0
     # available_stories = {}
     # current_stories = {}
     # current_bugs = {}
     # current_tech_debt = {}
-    is_first_bug = True
-    is_first_tech_debt = True
+    # is_first_bug = True
+    # is_first_tech_debt = True
     # blank_sprint_counter = 0
     # is_new_game = True
     # done = False
@@ -139,21 +139,21 @@ def reload_game():
 #     return _loyalty
 
 
-def buy_robot():
-    global _money, available_developers_count
-    _money -= NEW_WORKER_COST
-    available_developers_count += 1
-    check_money(_money)
+# def buy_robot():
+#     global _money, available_developers_count
+#     _money -= NEW_WORKER_COST
+#     available_developers_count += 1
+#     check_money(_money)
 
 
-def buy_room():
-    global _money, current_room_multiplier, NEW_ROOM_COST, NEW_ROOM_MULTIPLIER, \
-        current_rooms_counter, available_developers_count
-    _money -= NEW_ROOM_COST * current_room_multiplier
-    current_room_multiplier *= NEW_ROOM_MULTIPLIER
-    current_rooms_counter += 1
-    available_developers_count += 1
-    check_money(_money)
+# def buy_room():
+#     global _money, current_room_multiplier, NEW_ROOM_COST, NEW_ROOM_MULTIPLIER, \
+#         current_rooms_counter, available_developers_count
+#     _money -= NEW_ROOM_COST * current_room_multiplier
+#     current_room_multiplier *= NEW_ROOM_MULTIPLIER
+#     current_rooms_counter += 1
+#     available_developers_count += 1
+#     check_money(_money)
 
 
 def has_enough_money(need_money: int) -> bool:
@@ -232,10 +232,17 @@ class Global:
         self.current_tech_debt: dict[Any, TechDebtInfo] = {}
         self.available_stories: dict[int, UserStoryCardInfo] = {}
         self.is_new_game = True
-        self.current_bugs: dict[Any, BugUserStoryInfo] = {}
+        self.current_bugs: dict[int, BugUserStoryInfo] = {}
         self._loyalty = 0
         self.customers = 0
         self.blank_sprint_counter = 0
+        self.credit = 300000
+        self.available_developers_count = 2
+        self.worker_cost = 10000
+        self.is_first_bug = True
+        self.is_first_tech_debt = True
+        self.current_room_multiplier = 1
+        self.current_rooms_counter = 1
     
     def get_money(self):
         return self._money
@@ -263,6 +270,18 @@ class Global:
     
     def set_loyalty(self, value):
         self._loyalty = clamp(value, 0.8, 5)
+    
+    def buy_robot(self):
+        self._money -= NEW_WORKER_COST
+        self.available_developers_count += 1
+        self.check_money(self._money)
+    
+    def buy_room(self):
+        self._money -= NEW_ROOM_COST * current_room_multiplier
+        self.current_room_multiplier *= NEW_ROOM_MULTIPLIER
+        self.current_rooms_counter += 1
+        self.available_developers_count += 1
+        self.check_money(self._money)
 
 if __name__ == "__main__":
     # print(get_unused_color(UserCardType(2)))
