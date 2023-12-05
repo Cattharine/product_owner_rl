@@ -16,7 +16,7 @@ class ProductOwnerGame:
         self.context = GlobalData()
         self.backlog = Backlog()
         self.userstories = UserStories(self.context)
-        self.hud = HUD()
+        self.hud = HUD(self.context)
         self.office = Offices(self.context)
 
         self.sprint_cost = 0
