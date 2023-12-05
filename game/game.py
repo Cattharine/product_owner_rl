@@ -15,7 +15,7 @@ class ProductOwnerGame:
     def __init__(self):
         self.context = GlobalData()
         self.backlog = Backlog()
-        self.userstories = UserStories()
+        self.userstories = UserStories(self.context)
         self.hud = HUD()
         self.office = Offices()
 

@@ -1,11 +1,14 @@
 from game.userstory_card.userstory_card import UserStoryCard
 from game import game_global as Global
+from game.game_global import Global as GlobalClass
 from game.userstories.userstories_generator import UserStoriesGenerator
 from game.userstory_card.userstory_card_info import UserStoryCardInfo
 
 
 class UserStories:
-    def __init__(self):
+    def __init__(self, context: GlobalClass):
+        self.context = context
+
         self.stories_list = []
         self.release = []
 
@@ -18,7 +21,7 @@ class UserStories:
         self.user_survey_card_generator = UserStoriesGenerator(1, 59, 30, 10)
 
     def generate_cards_with_generator(self, count: int, gen: UserStoriesGenerator):
-        cards = gen.generate_userstories(count)
+        cards = gen.generate_userstories(count, self.context.current_sprint)
         for card in cards:
             self.stories_list.append(card)
             Global.available_stories[id(card.info)] = card.info

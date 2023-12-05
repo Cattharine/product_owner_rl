@@ -4,7 +4,7 @@ from game.backlog_card.card_info import CardInfo
 
 
 class UserStoryCardInfo:
-    def __init__(self, label_val: str = ""):
+    def __init__(self, label_val: str, spawn_sprint: int):
         self.customers_to_bring = 0
         self.loyalty = 0
         self.time_to_complete = 0
@@ -12,7 +12,7 @@ class UserStoryCardInfo:
         self.completed = False
         self.is_decomposed = False
         self.completed_part = 0
-        self.spawn_sprint = Global.current_sprint
+        self.spawn_sprint = spawn_sprint
         self.card_type = Global.UserCardType.S
         self._set_card_type(label_val)
         if not (self.card_type == Global.UserCardType.BUG or self.card_type == Global.UserCardType.TECH_DEBT):
@@ -57,13 +57,3 @@ class UserStoryCardInfo:
                             label_val=self.label, card_type_val=self.card_type)
             self.related_cards.append(card)
             time += time_for_card
-
-
-if __name__ == "__main__":
-    uss = UserStoryCardInfo("S")
-    usm = UserStoryCardInfo("M")
-    usl = UserStoryCardInfo("L")
-    usxl = UserStoryCardInfo("XL")
-    usbug = UserStoryCardInfo("Bug")
-    ustd = UserStoryCardInfo("TechDebt")
-    print(12)
