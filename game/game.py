@@ -137,7 +137,7 @@ class ProductOwnerGame:
 
     def _on_hud_release_product(self):
         self._update_profit()
-        self.force_td_spawn = not Global.is_first_bug
+        self.force_td_spawn = not self.context.is_first_bug
         self._check_and_spawn_tech_debt()
         self._check_and_spawn_bug()
         self._update_tech_debt_impact()

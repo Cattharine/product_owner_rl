@@ -99,6 +99,7 @@ def release_color(us_type: UserCardType, color: UserCardColor):
 
 class GlobalConstants:
     developer_hours = 10
+    statistical_research_cost = 80000
 
 def save_to_leaderboard():
     # отличается от годота

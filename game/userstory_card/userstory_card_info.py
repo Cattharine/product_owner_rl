@@ -17,7 +17,7 @@ class UserStoryCardInfo:
         self._set_card_type(label_val)
         if not (self.card_type == Global.UserCardType.BUG or self.card_type == Global.UserCardType.TECH_DEBT):
             self._set_loyalty_and_customers_ordinary_us()
-        # self.color = Global.get_unused_color(self.card_type)
+        self.color = Global.get_unused_color(self.card_type)
         self.related_cards: list[CardInfo] = []
         self.generate_related_cards()
 
