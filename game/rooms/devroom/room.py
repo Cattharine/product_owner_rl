@@ -1,8 +1,10 @@
 from game import game_global as Global
+from game.game_global import Global as GlobalClass
 
 
 class OfficeRoom:
-    def __init__(self, worker_count=0):
+    def __init__(self, worker_count, context: GlobalClass):
+        self.context = context
         self._worker_count = worker_count
 
         if self._worker_count == 0:
@@ -13,7 +15,7 @@ class OfficeRoom:
             self.can_buy_robot = True
 
     def on_buy_robot_button_pressed(self):
-        if not Global.has_enough_money(Global.NEW_WORKER_COST) or not self.can_buy_robot:
+        if not self.context.has_enough_money(Global.NEW_WORKER_COST) or not self.can_buy_robot:
             return False
 
         self._worker_count += 1
@@ -24,8 +26,8 @@ class OfficeRoom:
         return True
 
     def on_buy_room_button_pressed(self):
-        current_room_cost = Global.NEW_ROOM_COST * Global.current_room_multiplier
-        if not Global.has_enough_money(current_room_cost) or not self.can_buy_room:
+        current_room_cost = Global.NEW_ROOM_COST * self.context.current_room_multiplier
+        if not self.context.has_enough_money(current_room_cost) or not self.can_buy_room:
             return False
 
         self._worker_count += 1

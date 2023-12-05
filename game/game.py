@@ -17,7 +17,7 @@ class ProductOwnerGame:
         self.backlog = Backlog()
         self.userstories = UserStories(self.context)
         self.hud = HUD()
-        self.office = Offices()
+        self.office = Offices(self.context)
 
         self.sprint_cost = 0
         self.completed_us: list[UserStoryCardInfo] = []
