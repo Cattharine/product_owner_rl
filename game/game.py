@@ -202,7 +202,7 @@ class ProductOwnerGame:
     def _check_and_spawn_tech_debt(self):
         if self._is_ready_to_spawn_tech_debt():
             self.force_td_spawn = False
-            tech_debt = TechDebtInfo()
+            tech_debt = TechDebtInfo(self.context.current_sprint)
             self.userstories.add_us(tech_debt)
             self.context.current_tech_debt[id(tech_debt)] = tech_debt
             self.context.is_first_tech_debt = False
