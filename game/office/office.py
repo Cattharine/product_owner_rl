@@ -1,9 +1,9 @@
 from game.rooms.devroom.room import OfficeRoom
-from game.game_global import Global
+from game.game_global import GlobalContext
 
 
 class Offices:
-    def __init__(self, context: Global):
+    def __init__(self, context: GlobalContext):
         self.context = context
         self.offices = []
         self.offices.append(OfficeRoom(self.context.available_developers_count, self.context))

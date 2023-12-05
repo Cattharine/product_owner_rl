@@ -1,10 +1,10 @@
-from game.game_global import Global
+from game.game_global import GlobalContext
 from game.userstory_card.userstory_card_info import UserStoryCardInfo
 from game.backlog_card.card_info import CardInfo
 
 
 class HUD:
-    def __init__(self, context: Global):
+    def __init__(self, context: GlobalContext):
         self.context = context
         self.release_available = False
 

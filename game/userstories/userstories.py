@@ -1,12 +1,12 @@
 from game.userstory_card.userstory_card import UserStoryCard
 from game import game_global as Global
-from game.game_global import Global as GlobalClass
+from game.game_global import GlobalContext as GlobalContext
 from game.userstories.userstories_generator import UserStoriesGenerator
 from game.userstory_card.userstory_card_info import UserStoryCardInfo
 
 
 class UserStories:
-    def __init__(self, context: GlobalClass):
+    def __init__(self, context: GlobalContext):
         self.context = context
 
         self.stories_list = []

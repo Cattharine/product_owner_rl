@@ -1,9 +1,9 @@
 from game import game_global as Global
-from game.game_global import Global as GlobalClass
+from game.game_global import GlobalContext as GlobalContext
 
 
 class OfficeRoom:
-    def __init__(self, worker_count, context: GlobalClass):
+    def __init__(self, worker_count, context: GlobalContext):
         self.context = context
         self._worker_count = worker_count
 

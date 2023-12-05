@@ -3,7 +3,7 @@ from game.userstories.userstories import UserStories
 from game.hud.hud import HUD
 from game.office.office import Offices
 from game import game_global as Global
-from game.game_global import Global as GlobalData
+from game.game_global import GlobalContext
 from game.userstory_card.userstory_card_info import UserStoryCardInfo
 from game.backlog_card.card_info import CardInfo
 from game.userstory_card.bug_user_story_info import BugUserStoryInfo
@@ -13,8 +13,8 @@ import random
 
 class ProductOwnerGame:
     def __init__(self):
-        self.context = GlobalData()
-        self.backlog = Backlog()
+        self.context = GlobalContext()
+        self.backlog = Backlog(self.context)
         self.userstories = UserStories(self.context)
         self.hud = HUD(self.context)
         self.office = Offices(self.context)

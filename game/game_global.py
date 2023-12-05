@@ -30,30 +30,11 @@ colors_for_use = [UserCardColor.BLUE, UserCardColor.GREEN, UserCardColor.ORANGE,
 
 project_name = ""
 
-developer_hours = 10
-# available_developers_count = 2
-# worker_cost = 10000
-# _money = 200000
-# credit = 300000
-# _loyalty = 0
-# customers = 0
-# current_sprint = 1
-# current_sprint_hours = 0
-# current_rooms_counter = 1
-# available_stories = {}
-# current_stories = {}
-# current_bugs = {}
-# current_tech_debt = {}
-# is_first_bug = True  # не перезадается в годоте в reload_game, но это не так критично
-# is_first_tech_debt = True  # не перезадается в годоте в reload_game, но это не так критично
-
 used_colors = {UserCardType.S: [], UserCardType.M: [], UserCardType.L: [],
                UserCardType.XL: [], UserCardType.BUG: [], UserCardType.TECH_DEBT: []}
 
 MONEY_GOAL = 1000000
 AMOUNT_CREDIT_PAYMENT = 9000
-
-# blank_sprint_counter = 0  # не перезадается в годоте в reload_game, но это не так критично
 
 BLANK_SPRINT_LOYALTY_DECREMENT = {
     6: -0.05,
@@ -81,14 +62,10 @@ MAX_WORKER_COUNT = 4
 NEW_WORKER_COST = 50000
 NEW_ROOM_COST = 200000
 NEW_ROOM_MULTIPLIER = 1.5
-# current_room_multiplier = 1
 
 BUG_SPAM_PROBABILITY = 0.25
 TECH_DEBT_SPAWN_PROBABILITY = 0.5
 
-# is_new_game = True
-# use_new_year_theme
-# done = False
 
 
 def reload_game():
@@ -96,69 +73,8 @@ def reload_game():
         current_rooms_counter, current_room_multiplier, current_sprint_hours, available_stories, \
         current_stories, current_bugs, current_tech_debt, is_first_bug, is_first_tech_debt, \
         is_new_game, used_colors, blank_sprint_counter, done
-    # _loyalty = 0
-    # customers = 0
-    # available_developers_count = 2
-    # _money = 200000
-    # credit = 300000
-    # current_sprint = 1
-    # current_rooms_counter = 1
-    # current_room_multiplier = 1
-    # current_sprint_hours = 0
-    # available_stories = {}
-    # current_stories = {}
-    # current_bugs = {}
-    # current_tech_debt = {}
-    # is_first_bug = True
-    # is_first_tech_debt = True
-    # blank_sprint_counter = 0
-    # is_new_game = True
-    # done = False
     for i in used_colors.keys():
         used_colors[i] = []
-
-
-# def set_money(count):
-#     global _money
-#     _money = count
-
-#     # проверка на то, что деньги не ушли в минус/не была достигнута цель игры
-#     check_money(_money)
-
-
-# def get_money():
-#     return _money
-
-
-# def set_loyalty(value):
-#     global _loyalty
-#     _loyalty = clamp(value, 0.8, 5)
-
-
-# def get_loyalty():
-#     return _loyalty
-
-
-# def buy_robot():
-#     global _money, available_developers_count
-#     _money -= NEW_WORKER_COST
-#     available_developers_count += 1
-#     check_money(_money)
-
-
-# def buy_room():
-#     global _money, current_room_multiplier, NEW_ROOM_COST, NEW_ROOM_MULTIPLIER, \
-#         current_rooms_counter, available_developers_count
-#     _money -= NEW_ROOM_COST * current_room_multiplier
-#     current_room_multiplier *= NEW_ROOM_MULTIPLIER
-#     current_rooms_counter += 1
-#     available_developers_count += 1
-#     check_money(_money)
-
-
-# def has_enough_money(need_money: int) -> bool:
-#     global _money
-#     return _money >= need_money
 
 
 def get_unused_color(uc_type: UserCardType):
@@ -181,22 +97,8 @@ def release_color(us_type: UserCardType, color: UserCardColor):
     used_colors[us_type].remove(color)
 
 
-# def check_money(money_val):
-#     if money_val < 0:
-#         game_over(False)
-#     elif money_val >= MONEY_GOAL:
-#         game_over(True)
-
-
-# def game_over(win: bool):
-#     global done
-#     done = True
-#     if win:
-#         print("win")
-#         save_to_leaderboard()
-#     else:
-#         print("loose")
-
+class GlobalConstants:
+    developer_hours = 10
 
 def save_to_leaderboard():
     # отличается от годота
@@ -222,7 +124,7 @@ def interpolate(value, table: dict):
 
     return None
 
-class Global:
+class GlobalContext:
     def __init__(self) -> None:
         self.current_sprint = 1
         self.current_stories: dict[int, UserStoryCardInfo] = {}
