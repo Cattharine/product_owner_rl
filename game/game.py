@@ -185,7 +185,7 @@ class ProductOwnerGame:
 
     def _check_and_spawn_bug(self):
         if self._is_ready_to_spawn_bug():
-            bug_us = BugUserStoryInfo()
+            bug_us = BugUserStoryInfo(self.context.current_sprint)
             self.userstories.add_us(bug_us)
             self.context.current_bugs[id(bug_us)] = bug_us
             self.context.is_first_bug = False
