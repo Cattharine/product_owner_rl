@@ -3,22 +3,6 @@ from enum import Enum
 from copy import copy
 import random
 
-from game.userstory_card.bug_user_story_info import BugUserStoryInfo
-from game.userstory_card.tech_debt_user_story_info import TechDebtInfo
-from game.userstory_card.userstory_card_info import UserStoryCardInfo
-
-
-def clamp(x, minimum, maximum):
-    if x < minimum:
-        return minimum
-    elif x > maximum:
-        return maximum
-    return x
-
-
-def stepify(s, step):
-    return (s // step) * step
-
 
 UserCardType = Enum("UserCardType", ["S", "M", "L", "XL", "BUG", "TECH_DEBT"])
 UserCardColor = Enum("UserCardColor",
@@ -33,7 +17,6 @@ project_name = ""
 used_colors = {UserCardType.S: [], UserCardType.M: [], UserCardType.L: [],
                UserCardType.XL: [], UserCardType.BUG: [], UserCardType.TECH_DEBT: []}
 
-MONEY_GOAL = 1000000
 AMOUNT_CREDIT_PAYMENT = 9000
 
 BLANK_SPRINT_LOYALTY_DECREMENT = {
@@ -97,15 +80,6 @@ def release_color(us_type: UserCardType, color: UserCardColor):
     used_colors[us_type].remove(color)
 
 
-class GlobalConstants:
-    developer_hours = 10
-    statistical_research_cost = 80000
-
-def save_to_leaderboard():
-    # отличается от годота
-    print(f"score: {1000000 - current_sprint}")
-
-
 def interpolate(value, table: dict):
     keys = sorted(table.keys())
     first_key = keys[0]
@@ -125,69 +99,6 @@ def interpolate(value, table: dict):
 
     return None
 
-class GlobalContext:
-    def __init__(self) -> None:
-        self.current_sprint = 1
-        self.current_stories: dict[int, UserStoryCardInfo] = {}
-        self._money = 200000
-        self.done = False
-        self.current_sprint_hours = 0
-        self.current_tech_debt: dict[Any, TechDebtInfo] = {}
-        self.available_stories: dict[int, UserStoryCardInfo] = {}
-        self.is_new_game = True
-        self.current_bugs: dict[int, BugUserStoryInfo] = {}
-        self._loyalty = 0
-        self.customers = 0
-        self.blank_sprint_counter = 0
-        self.credit = 300000
-        self.available_developers_count = 2
-        self.worker_cost = 10000
-        self.is_first_bug = True
-        self.is_first_tech_debt = True
-        self.current_room_multiplier = 1
-        self.current_rooms_counter = 1
-    
-    def get_money(self):
-        return self._money
-    
-    def set_money(self, money):
-        self._money = money
-        self.check_money()
-    
-    def check_money(self):
-        if self._money < 0:
-            self.game_over(False)
-        elif self._money >= MONEY_GOAL:
-            self.game_over(True)
-    
-    def game_over(self, is_win):
-        self.done = True
-        if is_win:
-            print("win")
-            save_to_leaderboard()
-        else:
-            print("loose")
-    
-    def get_loyalty(self):
-        return self._loyalty
-    
-    def set_loyalty(self, value):
-        self._loyalty = clamp(value, 0.8, 5)
-    
-    def buy_robot(self):
-        self._money -= NEW_WORKER_COST
-        self.available_developers_count += 1
-        self.check_money(self._money)
-    
-    def buy_room(self):
-        self._money -= NEW_ROOM_COST * current_room_multiplier
-        self.current_room_multiplier *= NEW_ROOM_MULTIPLIER
-        self.current_rooms_counter += 1
-        self.available_developers_count += 1
-        self.check_money(self._money)
-    
-    def has_enough_money(self, need_money):
-        return self._money >= need_money
 
 if __name__ == "__main__":
     # print(get_unused_color(UserCardType(2)))
