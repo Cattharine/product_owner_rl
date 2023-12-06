@@ -4,7 +4,7 @@ sys.path.insert(0, '..')
 
 import unittest
 from game.game import ProductOwnerGame
-from game.game_global import GlobalConstants
+from game.game_constants import GlobalConstants
 
 
 class TestGameFunctions(unittest.TestCase):
