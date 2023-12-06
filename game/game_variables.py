@@ -56,13 +56,13 @@ class GlobalContext:
         self._loyalty = clamp(value, 0.8, 5)
     
     def buy_robot(self):
-        self._money -= NEW_WORKER_COST
+        self._money -= GlobalConstants.NEW_WORKER_COST
         self.available_developers_count += 1
         self.check_money(self._money)
     
     def buy_room(self):
-        self._money -= NEW_ROOM_COST * current_room_multiplier
-        self.current_room_multiplier *= NEW_ROOM_MULTIPLIER
+        self._money -= GlobalConstants.NEW_ROOM_COST * self.current_room_multiplier
+        self.current_room_multiplier *= GlobalConstants.NEW_ROOM_MULTIPLIER
         self.current_rooms_counter += 1
         self.available_developers_count += 1
         self.check_money(self._money)

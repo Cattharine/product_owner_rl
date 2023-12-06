@@ -32,18 +32,10 @@ BLANK_SPRINT_CUSTOMERS_DECREMENT = {
     12: -1.5
 }
 
-USERSTORY_LOYALTY = {UserCardType.S: [0.025, 0.08], UserCardType.M: [0.075, 0.175],
-                     UserCardType.L: [0.125, 0.35], UserCardType.XL: [0.25, 0.5]}
-USERSTORY_CUSTOMER = {UserCardType.S: [1, 3.5], UserCardType.M: [2.5, 7],
-                      UserCardType.L: [5, 14], UserCardType.XL: [10, 28]}
 USERSTORY_FLOATING_PROFIT = {3: [1, 1.3], 6: [0.7, 0.9], 9: [0.2, 0.6], 12: [-0.2, 0.1]}
 sorted_keys_userstory_floating_profit = sorted(USERSTORY_FLOATING_PROFIT.keys())
 
 statistical_research_cost = 80000
-user_survey_cost = 160000
-MAX_WORKER_COUNT = 4
-NEW_WORKER_COST = 50000
-NEW_ROOM_MULTIPLIER = 1.5
 
 BUG_SPAM_PROBABILITY = 0.25
 TECH_DEBT_SPAWN_PROBABILITY = 0.5
@@ -51,10 +43,7 @@ TECH_DEBT_SPAWN_PROBABILITY = 0.5
 
 
 def reload_game():
-    global _loyalty, customers, available_developers_count, _money, credit, current_sprint,\
-        current_rooms_counter, current_room_multiplier, current_sprint_hours, available_stories, \
-        current_stories, current_bugs, current_tech_debt, is_first_bug, is_first_tech_debt, \
-        is_new_game, used_colors, blank_sprint_counter, done
+    global used_colors
     for i in used_colors.keys():
         used_colors[i] = []
 
@@ -97,31 +86,3 @@ def interpolate(value, table: dict):
             return u
 
     return None
-
-
-if __name__ == "__main__":
-    # print(get_unused_color(UserCardType(2)))
-    # print(get_unused_color(UserCardType(2)))
-    # print(get_unused_color(UserCardType(2)))
-    # print(get_unused_color(UserCardType(2)))
-    # print(get_unused_color(UserCardType(2)))
-    # print(get_unused_color(UserCardType(2)))
-    # print(get_unused_color(UserCardType(2)))
-    # # print(UserCardType["S"])
-    # print(release_color(UserCardType(2), used_colors[UserCardType(2)][0]))
-    # print(release_color(UserCardType(2), used_colors[UserCardType(2)][0]))
-    # print(release_color(UserCardType(2), used_colors[UserCardType(2)][0]))
-    # print(release_color(UserCardType(2), used_colors[UserCardType(2)][0]))
-    # print(release_color(UserCardType(2), used_colors[UserCardType(2)][0]))
-    # print(release_color(UserCardType(2), used_colors[UserCardType(2)][0]))
-    # print(release_color(UserCardType(2), used_colors[UserCardType(2)][0]))
-    print(12)
-
-    d = {"d": 5, "f": 12}
-    print("h" in d)
-    print("d" in d)
-    print(len(d))
-    d["l"] = 17
-    print(d["l"])
-
-    print(min(BLANK_SPRINT_LOYALTY_DECREMENT.keys()))
