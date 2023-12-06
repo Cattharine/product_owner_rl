@@ -5,6 +5,7 @@ sys.path.insert(0, '..')
 import unittest
 from game.game import ProductOwnerGame
 from game.game_constants import GlobalConstants
+from game.rooms.devroom.room import OfficeRoom
 
 
 class TestGameFunctions(unittest.TestCase):
@@ -48,6 +49,15 @@ class TestGameFunctions(unittest.TestCase):
             self.start_sprint()
 
         self.release_product()
+    
+    def test_buy_robot_dont_throw(self):
+        office = self.game.office
+        room: OfficeRoom = office.offices[0]
+        room.can_buy_robot = True
+        self.assertTrue(room.can_buy_robot)
+        self.assertEqual(room.get_workers_count(), 2)
+        self.game.buy_robot(0)
+        self.assertEqual(room.get_workers_count(), 3)
 
     def buy_statistical_research(self, current_money, us_count):
         self.game.press_statistical_research()

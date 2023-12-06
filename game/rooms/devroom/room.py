@@ -13,6 +13,9 @@ class OfficeRoom:
         else:
             self.can_buy_room = False
             self.can_buy_robot = True
+    
+    def get_workers_count(self):
+        return self._worker_count
 
     def on_buy_robot_button_pressed(self):
         if not self.context.has_enough_money(GlobalConstants.NEW_WORKER_COST) or not self.can_buy_robot:

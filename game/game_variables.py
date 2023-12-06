@@ -61,7 +61,7 @@ class GlobalContext:
     def buy_robot(self):
         self._money -= GlobalConstants.NEW_WORKER_COST
         self.available_developers_count += 1
-        self.check_money(self._money)
+        self.check_money()
 
     def buy_room(self):
         self._money -= GlobalConstants.NEW_ROOM_COST * self.current_room_multiplier

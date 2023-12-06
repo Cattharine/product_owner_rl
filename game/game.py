@@ -1,6 +1,7 @@
 from game.backlog.backlog import Backlog
 from game.userstories.userstories import UserStories
 from game.hud.hud import HUD
+from game.rooms.devroom.room import OfficeRoom
 from game.office.office import Offices
 from game.game_constants import UserCardType, GlobalConstants
 from game.game_variables import GlobalContext
@@ -210,7 +211,7 @@ class ProductOwnerGame:
     def buy_robot(self, room_num):  # !
         # todo снять привязку к номерам комнат. Добавлять робота в комнату, где ещё есть место
         # (в комнату с минимальным номером из тех, что удовлетворяют этому условию)
-        room = self.office.offices[clamp(
+        room: OfficeRoom = self.office.offices[clamp(
             room_num, 0, len(self.office.offices) - 1)]
         has_bought = room.on_buy_robot_button_pressed()
         if has_bought:
