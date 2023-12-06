@@ -9,6 +9,7 @@ def clamp(x, minimum, maximum):
 def stepify(s, step):
     return (s // step) * step
 
+
 def interpolate(value, table: dict):
     keys = sorted(table.keys())
     first_key = keys[0]
