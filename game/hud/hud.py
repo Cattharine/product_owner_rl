@@ -1,4 +1,4 @@
-from game.game_global import GlobalContext
+from game.game_variables import GlobalContext
 from game.userstory_card.userstory_card_info import UserStoryCardInfo
 from game.backlog_card.card_info import CardInfo
 

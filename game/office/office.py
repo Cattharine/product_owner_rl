@@ -1,5 +1,5 @@
 from game.rooms.devroom.room import OfficeRoom
-from game.game_global import GlobalContext
+from game.game_variables import GlobalContext
 
 
 class Offices:
