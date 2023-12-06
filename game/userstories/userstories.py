@@ -1,6 +1,6 @@
 from game.userstory_card.userstory_card import UserStoryCard
-from game import game_global as Global
-from game.game_global import GlobalContext as GlobalContext
+from game.game_variables import GlobalContext
+from game.game_constants import GlobalConstants
 from game.userstories.userstories_generator import UserStoriesGenerator
 from game.userstory_card.userstory_card_info import UserStoryCardInfo
 
@@ -17,11 +17,13 @@ class UserStories:
         self.release_available = False
         self.available = True
 
-        self.statistical_research_card_generator = UserStoriesGenerator(100, 0, 0, 0)
+        self.statistical_research_card_generator = UserStoriesGenerator(
+            100, 0, 0, 0)
         self.user_survey_card_generator = UserStoriesGenerator(1, 59, 30, 10)
 
     def generate_cards_with_generator(self, count: int, gen: UserStoriesGenerator):
-        cards = gen.generate_userstories(count, self.context.current_sprint)
+        cards = gen.generate_userstories(
+            count, self.context.current_sprint, self.context.color_storage)
         for card in cards:
             self.stories_list.append(card)
             self.context.available_stories[id(card.info)] = card.info
@@ -79,13 +81,14 @@ class UserStories:
         return need_hours_sum
 
     def on_user_survey_pressed(self):
-        self.generate_cards(self.user_survey_card_generator, Global.user_survey_cost, 1)
+        self.generate_cards(self.user_survey_card_generator,
+                            GlobalConstants.user_survey_cost, 1)
 
     def on_statistical_research_pressed(self):
         if self.context.is_new_game:
             self.statistical_research_available = False
         self.generate_cards(self.statistical_research_card_generator,
-                            Global.statistical_research_cost, 2)
+                            GlobalConstants.statistical_research_cost, 2)
 
     def on_stories_card_dropped(self, card: UserStoryCard):
         us_info: UserStoryCardInfo = card.info
