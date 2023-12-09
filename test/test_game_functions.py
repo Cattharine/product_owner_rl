@@ -1,7 +1,7 @@
 import sys
 import random
 
-sys.path.insert(0, '..')
+sys.path.insert(0, "..")
 
 import unittest
 from game.game import ProductOwnerGame
@@ -50,7 +50,7 @@ class TestGameFunctions(unittest.TestCase):
             self.start_sprint()
 
         self.release_product()
-    
+
     def test_buy_robot_add_workers_and_spend_money(self):
         office = self.game.office
         room: OfficeRoom = office.offices[0]
@@ -67,7 +67,7 @@ class TestGameFunctions(unittest.TestCase):
         money_after = self.game.context.get_money()
 
         self.assertLess(money_after, money_before)
-    
+
     def test_buy_room_changes_office(self):
         office = self.game.office
         room: OfficeRoom = office.offices[1]
@@ -78,24 +78,35 @@ class TestGameFunctions(unittest.TestCase):
         developer_count_before = self.game.context.available_developers_count
 
         self.assertEqual(room_count_before, 1)
-        self.assertEquals(developer_count_before, 2)
+        self.assertEqual(developer_count_before, 2)
 
         self.game.buy_room(1)
 
+        developer_count_after = self.game.context.available_developers_count
+
         self.assertGreater(self.game.context.current_rooms_counter, room_count_before)
-        self.assertGreater(self.game.context.available_developers_count, developer_count_before)
+        self.assertGreater(developer_count_after, developer_count_before)
         self.assertLess(self.game.context.get_money(), money_before)
-    
-    def test_spawn_bug_dont_throw(self):
+
+    def test_spawn_bug_add_bug(self):
         current_bugs = self.game.context.current_bugs
-        self.assertEquals(len(current_bugs), 0)
+        self.assertEqual(len(current_bugs), 0)
 
         self.game._is_ready_to_spawn_bug = lambda: True
 
         self.game._check_and_spawn_bug()
 
-        self.assertEquals(len(current_bugs), 1)
-        
+        self.assertEqual(len(current_bugs), 1)
+
+    def test_spawn_tech_debt_add_tech_debt(self):
+        current_tech_debt = self.game.context.current_tech_debt
+        self.game._is_ready_to_spawn_tech_debt = lambda: True
+
+        self.assertEqual(len(current_tech_debt), 0)
+
+        self.game._check_and_spawn_tech_debt()
+
+        self.assertEqual(len(current_tech_debt), 1)
 
     def buy_statistical_research(self, current_money, us_count):
         self.game.press_statistical_research()
