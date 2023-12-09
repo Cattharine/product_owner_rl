@@ -1,4 +1,5 @@
 import sys
+import random
 
 sys.path.insert(0, '..')
 
@@ -50,20 +51,51 @@ class TestGameFunctions(unittest.TestCase):
 
         self.release_product()
     
-    def test_buy_robot_dont_throw(self):
+    def test_buy_robot_add_workers_and_spend_money(self):
         office = self.game.office
         room: OfficeRoom = office.offices[0]
         room.can_buy_robot = True
         self.assertTrue(room.can_buy_robot)
         self.assertEqual(room.get_workers_count(), 2)
+
+        money_before = self.game.context.get_money()
+        self.assertEqual(money_before, 200000)
+
         self.game.buy_robot(0)
         self.assertEqual(room.get_workers_count(), 3)
+
+        money_after = self.game.context.get_money()
+
+        self.assertLess(money_after, money_before)
     
-    def test_buy_room_dunt_throw(self):
+    def test_buy_room_changes_office(self):
         office = self.game.office
         room: OfficeRoom = office.offices[1]
         room.can_buy_room = True
+
+        money_before = self.game.context.get_money()
+        room_count_before = self.game.context.current_rooms_counter
+        developer_count_before = self.game.context.available_developers_count
+
+        self.assertEqual(room_count_before, 1)
+        self.assertEquals(developer_count_before, 2)
+
         self.game.buy_room(1)
+
+        self.assertGreater(self.game.context.current_rooms_counter, room_count_before)
+        self.assertGreater(self.game.context.available_developers_count, developer_count_before)
+        self.assertLess(self.game.context.get_money(), money_before)
+    
+    def test_spawn_bug_dont_throw(self):
+        current_bugs = self.game.context.current_bugs
+        self.assertEquals(len(current_bugs), 0)
+
+        self.game._is_ready_to_spawn_bug = lambda: True
+
+        self.game._check_and_spawn_bug()
+
+        self.assertEquals(len(current_bugs), 1)
+        
 
     def buy_statistical_research(self, current_money, us_count):
         self.game.press_statistical_research()
