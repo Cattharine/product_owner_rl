@@ -44,13 +44,13 @@ class UserStoryCardInfo:
             self.card_type = UserCardType.TECH_DEBT
 
     def _set_loyalty_and_customers_ordinary_us(self):
-        user_stroy_loyalty = GlobalConstants.USERSTORY_LOYALTY
-        user_stroy_customers = GlobalConstants.USERSTORY_CUSTOMER
+        user_story_loyalty = GlobalConstants.USERSTORY_LOYALTY
+        user_story_customers = GlobalConstants.USERSTORY_CUSTOMER
         r_lty = random.uniform(
-            user_stroy_loyalty[self.card_type][0], user_stroy_loyalty[self.card_type][1])
+            user_story_loyalty[self.card_type][0], user_story_loyalty[self.card_type][1])
         self.loyalty = stepify(r_lty, 0.005)
         r_user = random.uniform(
-            user_stroy_customers[self.card_type][0], user_stroy_customers[self.card_type][1])
+            user_story_customers[self.card_type][0], user_story_customers[self.card_type][1])
         self.customers_to_bring = stepify(r_user, 0.5)
 
     def generate_related_cards(self):
