@@ -58,6 +58,12 @@ class TestGameFunctions(unittest.TestCase):
         self.assertEqual(room.get_workers_count(), 2)
         self.game.buy_robot(0)
         self.assertEqual(room.get_workers_count(), 3)
+    
+    def test_buy_room_dunt_throw(self):
+        office = self.game.office
+        room: OfficeRoom = office.offices[1]
+        room.can_buy_room = True
+        self.game.buy_room(1)
 
     def buy_statistical_research(self, current_money, us_count):
         self.game.press_statistical_research()

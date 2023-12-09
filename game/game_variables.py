@@ -68,7 +68,7 @@ class GlobalContext:
         self.current_room_multiplier *= GlobalConstants.NEW_ROOM_MULTIPLIER
         self.current_rooms_counter += 1
         self.available_developers_count += 1
-        self.check_money(self._money)
+        self.check_money()
 
     def has_enough_money(self, need_money):
         return self._money >= need_money
