@@ -4,6 +4,8 @@ from game.game_constants import GlobalConstants, UserCardType
 from game.game_colors import ColorStorage
 from game.backlog_card.card_info import CardInfo
 
+from typing import List
+
 
 class UserStoryCardInfo:
     def __init__(self, label_val: str, spawn_sprint: int, color_storage: ColorStorage):
@@ -20,7 +22,7 @@ class UserStoryCardInfo:
         if not (self.card_type == UserCardType.BUG or self.card_type == UserCardType.TECH_DEBT):
             self._set_loyalty_and_customers_ordinary_us()
         self.color = color_storage.get_unused_color(self.card_type)
-        self.related_cards: list[CardInfo] = []
+        self.related_cards: List[CardInfo] = []
         self.generate_related_cards()
 
     def _set_card_type(self, label_val: str):

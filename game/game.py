@@ -11,6 +11,7 @@ from game.userstory_card.tech_debt_user_story_info import TechDebtInfo
 from game.userstory_card.userstory_card_info import UserStoryCardInfo
 from game.common_methods import interpolate, stepify, clamp
 import random
+from typing import List, Dict
 
 
 class ProductOwnerGame:
@@ -22,8 +23,8 @@ class ProductOwnerGame:
         self.office = Offices(self.context)
 
         self.sprint_cost = 0
-        self.completed_us: list[UserStoryCardInfo] = []
-        self.cards_in_sprint: list[CardInfo] = []
+        self.completed_us: List[UserStoryCardInfo] = []
+        self.cards_in_sprint: List[CardInfo] = []
         self.is_first_release = True
         self.force_td_spawn = False
 
@@ -86,7 +87,7 @@ class ProductOwnerGame:
         self._update_tech_debt_impact_stories(
             self.context.available_stories, full_tech_debt_debuff)
 
-    def _update_tech_debt_impact_stories(self, stories: dict[int, UserStoryCardInfo], full_tech_debt_debuff: int):
+    def _update_tech_debt_impact_stories(self, stories: Dict[int, UserStoryCardInfo], full_tech_debt_debuff: int):
         for us in stories.values():
             if us.card_type == UserCardType.TECH_DEBT:
                 continue
