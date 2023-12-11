@@ -27,7 +27,7 @@ class BaseStudyDQN:
             if done:
                 break
         
-        return reward
+        return total_reward
     
     def study_agent(self, episode_n):
         for episode in range(episode_n):
@@ -54,6 +54,7 @@ class LoggingStudy(BaseStudyDQN):
         self.rewards_log.append(reward)
 
         print(f"episode: {self.episode}, total_reward: {reward}")
+        self.episode += 1
     
     def study_agent(self, episode_n):
         epoche_n = (episode_n + self.save_rate - 1) // self.save_rate
