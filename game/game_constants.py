@@ -39,7 +39,5 @@ class GlobalConstants:
     sorted_keys_userstory_floating_profit = sorted(
         USERSTORY_FLOATING_PROFIT.keys())
 
-    statistical_research_cost = 80000
-
     BUG_SPAM_PROBABILITY = 0.25
     TECH_DEBT_SPAWN_PROBABILITY = 0.5
