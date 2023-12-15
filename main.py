@@ -11,7 +11,7 @@ if __name__ == "__main__":
 
     agent = DQN(state_dim, action_n)
 
-    study = LoggingStudy(env, agent, 1_000, 1_000)
+    study = LoggingStudy(env, agent, 10_000, 1_000)
 
     study.study_agent(1_000)
 
