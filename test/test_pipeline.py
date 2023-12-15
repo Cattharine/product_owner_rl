@@ -1,12 +1,8 @@
-import sys
-
-sys.path.insert(0, '..')
-
+from pipeline.study_agent import BaseStudyDQN
+from algorithms.deep_q_networks import DQN
+from environment.environment import ProductOwnerEnv
 import unittest
 
-from environment.environment import ProductOwnerEnv
-from algorithms.deep_q_networks import DQN
-from pipeline.study_agent import BaseStudyDQN
 
 class TestPipeline(unittest.TestCase):
     def setUp(self):
@@ -17,6 +13,6 @@ class TestPipeline(unittest.TestCase):
         self.agent = DQN(state_dim, action_n)
 
         self.study = BaseStudyDQN(self.env, self.agent, 1_000)
-    
+
     def test_run_study_should_not_raise(self):
         self.study.study_agent(1)
