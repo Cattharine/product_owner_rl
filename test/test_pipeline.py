@@ -14,5 +14,5 @@ class TestPipeline(unittest.TestCase):
 
         self.study = BaseStudyDQN(self.env, self.agent, 1_000)
 
-    def test_run_study_should_not_raise(self):
+    def test_run_study_should_not_raise_error(self):
         self.study.study_agent(1)
