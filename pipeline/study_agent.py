@@ -2,12 +2,13 @@ import os
 import torch
 import datetime
 from algorithms.deep_q_networks import DQN
+from environment.environment import ProductOwnerEnv
 
 from typing import List
 
 
 class BaseStudyDQN:
-    def __init__(self, env, agent, trajecory_max_len) -> None:
+    def __init__(self, env: ProductOwnerEnv, agent, trajecory_max_len) -> None:
         self.env = env
         self.agent: DQN = agent
         self.trajectory_max_len = trajecory_max_len
@@ -50,10 +51,11 @@ class LoggingStudy(BaseStudyDQN):
             self.q_value_log.append(q_values.max())
         
         reward = super().play_trajectory(init_state)
+        sprint_n = self.env.game.context.current_sprint
 
         self.rewards_log.append(reward)
 
-        print(f"episode: {self.episode}, total_reward: {reward}")
+        print(f"episode: {self.episode}, total_reward: {reward:.2f}, sprint_n: {sprint_n}")
         self.episode += 1
     
     def study_agent(self, episode_n):
