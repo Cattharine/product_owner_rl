@@ -41,6 +41,7 @@ class LoggingStudy(BaseStudyDQN):
         self.episode = 0
         self.rewards_log: List[int] = []
         self.q_value_log: List[int] = []
+        self.sprints_log: List[int] = []
         self.time_log: List[datetime.datetime] = []
         self.save_rate = save_rate
     
@@ -54,6 +55,7 @@ class LoggingStudy(BaseStudyDQN):
         sprint_n = self.env.game.context.current_sprint
 
         self.rewards_log.append(reward)
+        self.sprints_log.append(sprint_n)
 
         print(f"episode: {self.episode}, total_reward: {reward:.2f}, sprint_n: {sprint_n}")
         self.episode += 1
@@ -68,6 +70,12 @@ class LoggingStudy(BaseStudyDQN):
             path = f'{agent_name}/model_{epoche}.pt'
             super().study_agent(self.save_rate)
             save_dqn_agent(self.agent, path=path)
+            with open(f'{agent_name}/rewards_{epoche}.txt', mode='w') as f:
+                f.write(repr(self.rewards_log))
+            with open(f'{agent_name}/estimates_{epoche}.txt', mode='w') as f:
+                f.write(repr(self.q_value_log))
+            with open(f'{agent_name}/sprints_{epoche}.txt', mode='w') as f:
+                f.write(repr(self.sprints_log))
 
 def save_dqn_agent(agent: DQN, path):
     torch.save(agent, path)

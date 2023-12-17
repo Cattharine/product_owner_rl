@@ -242,8 +242,8 @@ class ProductOwnerEnv:
         return self.current_state, reward, self.game.context.done, None
 
     def _get_reward(self):
-        sprint_penalty = +1
-        money_reward = self.game.context.get_money() / 10 ** 6
+        # sprint_penalty = +1
+        # money_reward = self.game.context.get_money() / 10 ** 6
         done = self.game.context.done
         if done:
             if self.game.context.get_money() > 1e6:
@@ -252,7 +252,7 @@ class ProductOwnerEnv:
                 reward_for_endgame = -500
         else:
             reward_for_endgame = 0
-        return sprint_penalty + money_reward + reward_for_endgame
+        return reward_for_endgame
 
     def _perform_start_sprint_action(self) -> int:
         self.game.backlog_start_sprint()
