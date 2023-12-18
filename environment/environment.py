@@ -261,6 +261,8 @@ class ProductOwnerEnv:
         return reward_for_endgame
 
     def _perform_start_sprint_action(self) -> int:
+        if not self.game.backlog.can_start_sprint():
+            return -10
         self.game.backlog_start_sprint()
         return 1
 
