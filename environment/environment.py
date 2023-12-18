@@ -40,7 +40,7 @@ class ProductOwnerEnv:
         self.sampled_userstories_bugs = None
         self.sampled_userstories_td = None
 
-        self.state_dim = 15 + \
+        self.state_dim = 16 + \
             self.count_common_cards * BACKLOG_COMMON_FEATURE_COUNT + \
             self.count_bug_cards * BACKLOG_BUG_FEATURE_COUNT + \
             self.count_td_cards * BACKLOG_TECH_DEBT_FEATURE_COUNT + \
@@ -72,6 +72,7 @@ class ProductOwnerEnv:
             context.available_developers_count,
             context.current_rooms_counter,
             context.current_sprint_hours,
+            self.game.backlog.can_start_sprint(),
             self.game.userstories.release_available,
             self.game.hud.release_available,
             self.game.userstories.statistical_research_available,
@@ -237,7 +238,7 @@ class ProductOwnerEnv:
         credit_before = self.game.context.credit
         reward_bit = self._perform_action(action)
         credit_after = self.game.context.credit
-        if credit_before > 0 and credit_before <= 0:
+        if credit_before > 0 and credit_after <= 0:
             print('Credit paid')
         reward = self._get_reward()
         if reward_bit is not None:
@@ -344,7 +345,7 @@ class ProductOwnerEnv:
         card_id = action - self.userstory_max_action_num
         return self._perform_action_backlog_card(card_id)
 
-    def _perform_action_backlog_card(self, action: int) -> 10:
+    def _perform_action_backlog_card(self, action: int) -> int:
         if action < self.count_common_cards:
             card = self._get_card(self.sampled_cards_common, action)
         elif action - self.count_common_cards < self.count_bug_cards:
