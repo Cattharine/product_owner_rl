@@ -3,12 +3,13 @@ from game.game_variables import GlobalContext
 from game.backlog_card.backlog_card import Card
 from game.userstory_card.userstory_card_info import UserStoryCardInfo
 
+from typing import List
 
 class Backlog:
     def __init__(self, context: GlobalContext):
         self.context = context
-        self.backlog = []
-        self.sprint = []
+        self.backlog: List[UserStoryCardInfo] = []
+        self.sprint: List[UserStoryCardInfo] = []
 
     def can_start_sprint(self):
         hours_to_sum = self.calculate_hours_sum()
