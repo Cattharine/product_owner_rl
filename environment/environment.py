@@ -71,13 +71,14 @@ class ProductOwnerEnv:
         
         self.current_state = self._get_state()
 
+        self.meta_action_dim = 7
         self.userstory_max_action_num = self.count_common_us + \
             self.count_bug_us + self.count_td_us
         self.backlog_max_action_num = self.count_common_cards + \
             self.count_bug_cards + self.count_td_cards
         self.sprint_max_action_num = self.sprint_commons_count + \
             self.sprint_bugs_count + self.sprint_tech_debt_count
-        self.action_n = 7 + \
+        self.action_n = self.meta_action_dim + \
             self.userstory_max_action_num + \
             self.backlog_max_action_num + \
             self.sprint_max_action_num

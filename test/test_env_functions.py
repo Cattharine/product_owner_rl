@@ -18,7 +18,7 @@ class TestEnvFunctions(unittest.TestCase):
             count_common_userstories=4, count_bug_userstories=2, count_td_userstories=1
         )
 
-    def _test_start_game(self):
+    def test_start_game(self):
         # тестируются действия, выполняемые с момента начала игры до первого релиза включительно
         state = self.env.reset()
         if not IS_SILENT:
@@ -104,7 +104,7 @@ class TestEnvFunctions(unittest.TestCase):
         for i in range(0, len(state), 3):
             card_hours = state[i]
             if card_hours + current_hours <= hours_boundary:
-                return int(i / 3) + 14
+                return int(i / 3) + self.env.meta_action_dim + self.env.userstory_max_action_num
 
     def can_move_any_backlog_card(self):
         game_sim = self.env.game
