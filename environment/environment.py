@@ -235,14 +235,15 @@ class ProductOwnerEnv:
 
     def step(self, action: int):
         # new_state, reward, done, info
+        reward = 0
         credit_before = self.game.context.credit
         reward_bit = self._perform_action(action)
         credit_after = self.game.context.credit
         if credit_before > 0 and credit_after <= 0:
             print('Credit paid')
-        reward = self._get_reward()
-        if reward_bit is not None:
-            reward += reward_bit
+            reward += 100
+        reward += self._get_reward()
+        reward += reward_bit
         self.current_state = self._get_state()
         return self.current_state, reward, self.game.context.done, None
 
