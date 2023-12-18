@@ -8,8 +8,8 @@ from typing import List
 class Backlog:
     def __init__(self, context: GlobalContext):
         self.context = context
-        self.backlog: List[UserStoryCardInfo] = []
-        self.sprint: List[UserStoryCardInfo] = []
+        self.backlog: List[Card] = []
+        self.sprint: List[Card] = []
 
     def can_start_sprint(self):
         hours_to_sum = self.calculate_hours_sum()
