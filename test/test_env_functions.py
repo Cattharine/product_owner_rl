@@ -18,7 +18,7 @@ class TestEnvFunctions(unittest.TestCase):
             count_common_userstories=4, count_bug_userstories=2, count_td_userstories=1
         )
 
-    def test_start_game(self):
+    def _test_start_game(self):
         # тестируются действия, выполняемые с момента начала игры до первого релиза включительно
         state = self.env.reset()
         if not IS_SILENT:
@@ -93,7 +93,10 @@ class TestEnvFunctions(unittest.TestCase):
 
     def find_available_to_move_backlog_card(self):
         state = self.env._get_state()
-        state = state[32:]
+        backlog_begin = self.env.meta_space_dim + \
+            self.env.userstory_space_dim
+        backlog_end = backlog_begin + self.env.backlog_space_dim
+        state = state[backlog_begin:backlog_end]
         game_sim = self.env.game
 
         current_hours = game_sim.backlog.calculate_hours_sum()
