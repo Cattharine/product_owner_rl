@@ -14,7 +14,7 @@ if __name__ == "__main__":
     study = LoggingStudy(env, agent, trajecory_max_len=1_000, save_rate=100)
 
     try:
-        study.study_agent(1_000)
+        study.study_agent(300)
     except KeyboardInterrupt:
         pass
 
