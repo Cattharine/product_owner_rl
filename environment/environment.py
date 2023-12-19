@@ -448,7 +448,7 @@ class ProductOwnerEnv:
         return -1
 
     def _get_card(self, sampled, index):
-        if 0 < index < len(sampled):
+        if 0 <= index < len(sampled):
             return sampled[index]
         return None
 

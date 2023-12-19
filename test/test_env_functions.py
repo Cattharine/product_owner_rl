@@ -42,7 +42,7 @@ class TestEnvFunctions(unittest.TestCase):
         state_dim = self.env.state_dim
         state = self.env.reset()
 
-        assert len(state) == state_dim
+        self.assertEqual(len(state), state_dim)
 
     def buy_statistical_research(self, current_money, us_count):
         state = self.env.step(5)  # buy statistical research
