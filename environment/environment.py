@@ -315,8 +315,10 @@ class ProductOwnerEnv:
     def _perform_start_sprint_action(self) -> int:
         if not self.game.backlog.can_start_sprint():
             return -10
-        self.game.backlog_start_sprint()
-        return 1
+        if self.game.backlog.on_start_sprint_pressed():
+            self.game.backlog_start_sprint()
+            return 1
+        return -10
 
     def _perform_decomposition(self) -> int:
         is_release_available = self.game.userstories.release_available
