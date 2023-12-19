@@ -13,7 +13,10 @@ if __name__ == "__main__":
 
     study = LoggingStudy(env, agent, trajecory_max_len=10_000, save_rate=100)
 
-    study.study_agent(1_000)
+    try:
+        study.study_agent(1_000)
+    except KeyboardInterrupt:
+        pass
 
     rewards = study.rewards_log
     estimates = study.q_value_log
