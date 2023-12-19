@@ -10,9 +10,14 @@ class Backlog:
         self.context = context
         self.backlog: List[Card] = []
         self.sprint: List[Card] = []
+    
+    def get_max_hours(self) -> int:
+        return self.context.available_developers_count * GlobalConstants.developer_hours
 
     def can_start_sprint(self):
         hours_to_sum = self.calculate_hours_sum()
+        if hours_to_sum > self.get_max_hours():
+            return False
         return int(hours_to_sum) != 0 or int(self.context.customers) != 0
 
     def generate_cards(self):
@@ -28,7 +33,7 @@ class Backlog:
 
     def on_start_sprint_pressed(self):
         hours = self.calculate_hours_sum()
-        if hours > self.context.available_developers_count * GlobalConstants.developer_hours:
+        if hours > self.get_max_hours():
             return
         self.context.current_sprint_hours = hours
         return self.get_cards()
