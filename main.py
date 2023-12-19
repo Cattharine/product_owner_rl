@@ -11,7 +11,7 @@ if __name__ == "__main__":
 
     agent = DoubleDQN(state_dim, action_n, tau=0.001, epsilon_decrease=1e-6)
 
-    study = LoggingStudy(env, agent, trajecory_max_len=10_000, save_rate=100)
+    study = LoggingStudy(env, agent, trajecory_max_len=1_000, save_rate=100)
 
     try:
         study.study_agent(1_000)
@@ -23,4 +23,12 @@ if __name__ == "__main__":
 
     plt.plot(rewards)
     plt.plot(estimates)
+    plt.xlabel("Trajectory")
+    plt.ylabel('Reward')
+    plt.show()
+
+    plt.plot(study.sprints_log)
+    plt.title('Sprints count')
+    plt.xlabel("Trajectory")
+    plt.ylabel("Sprint")
     plt.show()
