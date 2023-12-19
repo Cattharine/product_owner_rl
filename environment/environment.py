@@ -315,8 +315,6 @@ class ProductOwnerEnv:
     def _perform_start_sprint_action(self) -> int:
         if not self.game.backlog.can_start_sprint():
             return -10
-        if len(self.game.backlog.sprint) == 0:
-            return -10
         self.game.backlog_start_sprint()
         return 1
 
