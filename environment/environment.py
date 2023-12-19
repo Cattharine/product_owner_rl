@@ -297,7 +297,6 @@ class ProductOwnerEnv:
         reward += self._get_reward()
         reward += reward_bit
         self.current_state = self._get_state()
-        # print(action, reward, reward_bit)
         return self.current_state, reward, self.game.context.done, None
 
     def _get_reward(self):
@@ -308,7 +307,7 @@ class ProductOwnerEnv:
             if self.game.context.get_money() > 1e6:
                 reward_for_endgame = 500
             else:
-                reward_for_endgame = -500
+                reward_for_endgame = -50
         else:
             reward_for_endgame = 0
         return reward_for_endgame
@@ -470,3 +469,9 @@ class ProductOwnerEnv:
             if room.can_buy_room:
                 return i
         return -1
+
+class LoggingEnv(ProductOwnerEnv):
+    def step(self, action: int):
+        new_state, reward, done, info = super().step(action)
+        print(action, reward)
+        return new_state, reward, done, info
