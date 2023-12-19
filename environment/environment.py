@@ -297,6 +297,7 @@ class ProductOwnerEnv:
         reward += self._get_reward()
         reward += reward_bit
         self.current_state = self._get_state()
+        # print(action, reward, reward_bit)
         return self.current_state, reward, self.game.context.done, None
 
     def _get_reward(self):
@@ -429,7 +430,7 @@ class ProductOwnerEnv:
         else:
             card = self._get_card(
                 self.sampled_userstories_td, action - self.count_common_us - self.count_bug_us)
-        if card is not None:
+        if card is not None and self.game.userstories.available:
             self.game.move_userstory_card(card)
             return 1
         return -10
@@ -447,7 +448,7 @@ class ProductOwnerEnv:
         if card is None:
             return -10
         self.game.move_sprint_card(card)
-        return -1
+        return -2
 
     def _get_card(self, sampled, index):
         if 0 <= index < len(sampled):
