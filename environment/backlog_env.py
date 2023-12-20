@@ -104,7 +104,7 @@ class BacklogEnv:
 
         tech_debt_len = BACKLOG_TECH_DEBT_FEATURE_COUNT * tech_debt_count
         tech_debt_encoding = self._encode_cards(
-            tech_debt, self._encode_common_card, tech_debt_len)
+            tech_debt, self._encode_tech_debt, tech_debt_len)
 
         encoding = commons_encoding + bugs_encoding + tech_debt_encoding
 
