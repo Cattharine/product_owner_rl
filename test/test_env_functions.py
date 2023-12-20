@@ -14,7 +14,6 @@ IS_SILENT = True
 class TestEnvFunctions(unittest.TestCase):
     def setUp(self):
         self.env = ProductOwnerEnv(
-            count_common_cards=4, count_bug_cards=2, count_td_cards=1,
             count_common_userstories=4, count_bug_userstories=2, count_td_userstories=1
         )
 
@@ -95,7 +94,7 @@ class TestEnvFunctions(unittest.TestCase):
         state = self.env._get_state()
         backlog_begin = self.env.meta_space_dim + \
             self.env.userstory_space_dim
-        backlog_end = backlog_begin + self.env.backlog_space_dim
+        backlog_end = backlog_begin + self.env.backlog_env.backlog_space_dim
         state = state[backlog_begin:backlog_end]
         game_sim = self.env.game
 
