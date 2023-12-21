@@ -83,6 +83,8 @@ class DQN(nn.Module):
         self.epsilon -= self.epsilon_decrease
         self.epsilon = max(self.epsilon_min, self.epsilon)
 
+        return loss.detach().numpy()
+
 
 class TargetDQN(DQN):
     def __init__(
@@ -118,12 +120,14 @@ class TargetDQN(DQN):
         return torch.max(self.target_q_function(next_states), dim=1).values
 
     def fit(self, state, action, reward, done, next_state):
-        super().fit(state, action, reward, done, next_state)
+        loss = super().fit(state, action, reward, done, next_state)
 
         self.fit_calls += 1
         if self.fit_calls >= self.target_update:
             self.update_target()
             self.fit_calls = 0
+        
+        return loss
 
 
 class HardTargetDQN(TargetDQN):
