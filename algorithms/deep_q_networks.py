@@ -104,10 +104,10 @@ class TargetDQN(DQN):
         batch_size=64,
         target_update=10,
         epsilon_decrease=0.01,
-        epilon_min=0.01,
+        epsilon_min=0.01,
     ):
         super().__init__(
-            state_dim, action_dim, gamma, lr, batch_size, epsilon_decrease, epilon_min
+            state_dim, action_dim, gamma, lr, batch_size, epsilon_decrease, epsilon_min
         )
         self.target_q_function = QFunction(state_dim, action_dim)
 
