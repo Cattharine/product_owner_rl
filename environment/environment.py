@@ -30,7 +30,7 @@ class ProductOwnerEnv:
         self.sampled_userstories_bugs = None
         self.sampled_userstories_td = None
 
-        self.meta_space_dim = 16
+        self.meta_space_dim = 17
         
         self.userstory_space_dim = self.count_common_us * USERSTORY_COMMON_FEATURE_COUNT + \
             self.count_bug_us * USERSTORY_BUG_FEATURE_COUNT + \
@@ -75,9 +75,10 @@ class ProductOwnerEnv:
             context.available_developers_count,
             context.current_rooms_counter,
             context.current_sprint_hours,
+            context.blank_sprint_counter,
             self.game.backlog.can_start_sprint(),
-            self.game.userstories.release_available,
             self.game.hud.release_available,
+            self.game.userstories.release_available,
             self.game.userstories.statistical_research_available,
             self.game.userstories.user_survey_available,
             *self._get_completed_cards_count(),
