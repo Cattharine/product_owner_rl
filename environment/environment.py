@@ -179,8 +179,7 @@ class ProductOwnerEnv:
         reward_bit = self._perform_action(action)
         credit_after = self.game.context.credit
         if credit_before > 0 and credit_after <= 0:
-            print('Credit paid')
-            reward += 100
+            reward += 10
         reward += self._get_reward()
         reward += reward_bit
         self.current_state = self._get_state()
