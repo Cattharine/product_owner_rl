@@ -37,3 +37,10 @@ if __name__ == "__main__":
     plt.ylabel("Sprint")
     plt.savefig('figures/sprints.png')
     plt.show()
+
+    plt.plot(study.loss_log, '.')
+    plt.title('Loss')
+    plt.xlabel('Steps')
+    plt.ylabel('Loss')
+    plt.savefig('figures/loss.png')
+    plt.show()
