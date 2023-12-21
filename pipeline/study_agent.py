@@ -67,13 +67,13 @@ class LoggingStudy(BaseStudyDQN):
         self.sprints_log.append(sprint_n)
 
         credit_paid = self.env.game.context.credit <= 0
-        credit_sign = 'v' if credit_paid else 'x'
+        credit_sign = 'p' if credit_paid else ' '
 
-        victory_sign = '-'
+        victory_sign = ' '
         if self.env.game.context.is_victory:
             victory_sign = 'v'
         if self.env.game.context.is_lose:
-            victory_sign = 'x'
+            victory_sign = 'l'
 
         message = f"episode: {self.episode:03d}\t" + \
             f'total_reward: {reward:.2f}\t' + \
