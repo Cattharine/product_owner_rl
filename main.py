@@ -10,12 +10,17 @@ if __name__ == "__main__":
     state_dim = env.state_dim
     action_n = env.action_n
 
-    agent = DoubleDQN(state_dim, action_n, tau=0.001, epsilon_decrease=1e-5)
+    trajecory_max_len = 200
+    episode_n = 200
 
-    study = LoggingStudy(env, agent, trajecory_max_len=200, save_rate=100)
+    epsilon_decrease = 1 / (trajecory_max_len * episode_n)
+
+    agent = DoubleDQN(state_dim, action_n, tau=0.001, epsilon_decrease=epsilon_decrease)
+
+    study = LoggingStudy(env, agent, trajecory_max_len=trajecory_max_len, save_rate=100)
 
     try:
-        study.study_agent(1000)
+        study.study_agent(episode_n)
     except KeyboardInterrupt:
         pass
 
