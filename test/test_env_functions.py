@@ -1,7 +1,3 @@
-import sys
-
-sys.path.insert(0, '..')
-
 import unittest
 from environment.environment import ProductOwnerEnv
 from game.game_constants import GlobalConstants
