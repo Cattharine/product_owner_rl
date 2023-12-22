@@ -26,6 +26,10 @@ class ProductOwnerEnv:
         self.us_bug_count = userstories_bug_count
         self.us_td_count = userstories_td_count
 
+        self.userstories_common = []
+        self.userstories_bugs = []
+        self.userstories_td = []
+
         self.meta_space_dim = 17
         
         self.userstory_space_dim = + \
@@ -59,7 +63,7 @@ class ProductOwnerEnv:
             self.sprint_max_action_num
 
     def reset(self):
-        self.game = get_buggy_game()
+        self.game = ProductOwnerGame()
         self.current_state = self._get_state()
         return self.current_state
 
