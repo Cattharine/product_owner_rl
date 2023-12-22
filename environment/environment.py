@@ -377,3 +377,8 @@ class BuggyProductOwnerEnv(ProductOwnerEnv):
         super().__init__(common_userstories_count, bug_userstories_count, td_userstories_count, backlog_env)
         self.game = get_buggy_game()
         self.current_state = self._get_state()
+    
+    def reset(self):
+        self.game = get_buggy_game()
+        self.current_state = self._get_state()
+        return self.current_state
