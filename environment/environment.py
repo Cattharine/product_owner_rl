@@ -18,17 +18,13 @@ USERSTORY_BUG_FEATURE_COUNT = 2
 USERSTORY_TECH_DEBT_FEATURE_COUNT = 1
 
 class ProductOwnerEnv:
-    def __init__(self, common_userstories_count=4, bug_userstories_count=2, td_userstories_count=1, backlog_env=None):
-        self.game = get_buggy_game()
+    def __init__(self, userstories_common_count=4, userstories_bug_count=2, userstories_td_count=1, backlog_env=None):
+        self.game = ProductOwnerGame()
         self.backlog_env = BacklogEnv() if backlog_env is None else backlog_env
 
-        self.us_common_count = common_userstories_count
-        self.us_bug_count = bug_userstories_count
-        self.us_td_count = td_userstories_count
-
-        self.userstories_common = []
-        self.userstories_bugs = []
-        self.userstories_td = []
+        self.us_common_count = userstories_common_count
+        self.us_bug_count = userstories_bug_count
+        self.us_td_count = userstories_td_count
 
         self.meta_space_dim = 17
         
@@ -371,3 +367,9 @@ class LoggingEnv(ProductOwnerEnv):
         new_state, reward, done, info = super().step(action)
         print(action, reward)
         return new_state, reward, done, info
+
+class BuggyProductOwnerEnv(ProductOwnerEnv):
+    def __init__(self, common_userstories_count=4, bug_userstories_count=2, td_userstories_count=1, backlog_env=None):
+        super().__init__(common_userstories_count, bug_userstories_count, td_userstories_count, backlog_env)
+        self.game = get_buggy_game()
+        self.current_state = self._get_state()
