@@ -1,5 +1,5 @@
 from environment.backlog_env import BacklogEnv, split_cards_in_types, sample_n_or_less
-from game.game import ProductOwnerGame
+from game.game import ProductOwnerGame, get_buggy_game
 from game.game_constants import UserCardType
 import torch
 import numpy as np
@@ -19,7 +19,7 @@ USERSTORY_TECH_DEBT_FEATURE_COUNT = 1
 
 class ProductOwnerEnv:
     def __init__(self, common_userstories_count=4, bug_userstories_count=2, td_userstories_count=1, backlog_env=None):
-        self.game = ProductOwnerGame()
+        self.game = get_buggy_game()
         self.backlog_env = BacklogEnv() if backlog_env is None else backlog_env
 
         self.us_common_count = common_userstories_count
@@ -60,7 +60,7 @@ class ProductOwnerEnv:
             self.sprint_max_action_num
 
     def reset(self):
-        self.game = ProductOwnerGame()
+        self.game = get_buggy_game()
         self.current_state = self._get_state()
         return self.current_state
 
