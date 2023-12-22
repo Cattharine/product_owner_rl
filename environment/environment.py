@@ -18,13 +18,13 @@ USERSTORY_BUG_FEATURE_COUNT = 2
 USERSTORY_TECH_DEBT_FEATURE_COUNT = 1
 
 class ProductOwnerEnv:
-    def __init__(self, common_userstories_count=4, bug_userstories_count=2, td_userstories_count=1, backlog_env=None):
+    def __init__(self, userstories_common_count=4, userstories_bug_count=2, userstories_td_count=1, backlog_env=None):
         self.game = ProductOwnerGame()
         self.backlog_env = BacklogEnv() if backlog_env is None else backlog_env
 
-        self.us_common_count = common_userstories_count
-        self.us_bug_count = bug_userstories_count
-        self.us_td_count = td_userstories_count
+        self.us_common_count = userstories_common_count
+        self.us_bug_count = userstories_bug_count
+        self.us_td_count = userstories_td_count
 
         self.userstories_common = []
         self.userstories_bugs = []
@@ -32,7 +32,8 @@ class ProductOwnerEnv:
 
         self.meta_space_dim = 17
         
-        self.userstory_space_dim = self.us_common_count * USERSTORY_COMMON_FEATURE_COUNT + \
+        self.userstory_space_dim = + \
+            self.us_common_count * USERSTORY_COMMON_FEATURE_COUNT + \
             self.us_bug_count * USERSTORY_BUG_FEATURE_COUNT + \
             self.us_td_count * USERSTORY_TECH_DEBT_FEATURE_COUNT
 
@@ -44,8 +45,10 @@ class ProductOwnerEnv:
         self.current_state = self._get_state()
 
         self.meta_action_dim = 7
-        self.userstory_max_action_num = self.us_common_count + \
-            self.us_bug_count + self.us_td_count
+        self.userstory_max_action_num = + \
+            self.us_common_count + \
+            self.us_bug_count + \
+            self.us_td_count
         self.backlog_max_action_num = + \
             self.backlog_env.backlog_commons_count + \
             self.backlog_env.backlog_bugs_count + \
@@ -176,7 +179,7 @@ class ProductOwnerEnv:
         credit_before = self.game.context.credit
         reward_bit = self._perform_action(action)
         credit_after = self.game.context.credit
-        if credit_before > 0 and credit_after <= 0:
+        if credit_before > 0 >= credit_after:
             print('Credit paid')
             reward += 100
         reward += self._get_reward()
