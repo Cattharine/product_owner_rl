@@ -18,13 +18,13 @@ USERSTORY_BUG_FEATURE_COUNT = 2
 USERSTORY_TECH_DEBT_FEATURE_COUNT = 1
 
 class ProductOwnerEnv:
-    def __init__(self, count_common_userstories=4, count_bug_userstories=2, count_td_userstories=1, backlog_env=None):
+    def __init__(self, common_userstories_count=4, bug_userstories_count=2, td_userstories_count=1, backlog_env=None):
         self.game = ProductOwnerGame()
         self.backlog_env = BacklogEnv() if backlog_env is None else backlog_env
 
-        self.common_us_count = count_common_userstories
-        self.bug_us_count = count_bug_userstories
-        self.td_us_count = count_td_userstories
+        self.us_common_count = common_userstories_count
+        self.us_bug_count = bug_userstories_count
+        self.us_td_count = td_userstories_count
 
         self.userstories_common = []
         self.userstories_bugs = []
@@ -32,9 +32,9 @@ class ProductOwnerEnv:
 
         self.meta_space_dim = 17
         
-        self.userstory_space_dim = self.common_us_count * USERSTORY_COMMON_FEATURE_COUNT + \
-            self.bug_us_count * USERSTORY_BUG_FEATURE_COUNT + \
-            self.td_us_count * USERSTORY_TECH_DEBT_FEATURE_COUNT
+        self.userstory_space_dim = self.us_common_count * USERSTORY_COMMON_FEATURE_COUNT + \
+            self.us_bug_count * USERSTORY_BUG_FEATURE_COUNT + \
+            self.us_td_count * USERSTORY_TECH_DEBT_FEATURE_COUNT
 
         self.state_dim = self.meta_space_dim + \
             self.userstory_space_dim + \
@@ -44,8 +44,8 @@ class ProductOwnerEnv:
         self.current_state = self._get_state()
 
         self.meta_action_dim = 7
-        self.userstory_max_action_num = self.common_us_count + \
-            self.bug_us_count + self.td_us_count
+        self.userstory_max_action_num = self.us_common_count + \
+            self.us_bug_count + self.us_td_count
         self.backlog_max_action_num = + \
             self.backlog_env.backlog_commons_count + \
             self.backlog_env.backlog_bugs_count + \
@@ -104,8 +104,8 @@ class ProductOwnerEnv:
         return completed_us_count, completed_bug_count, completed_td_count
 
     def _get_userstories_descriptions(self):
-        return self._get_cards_descriptions(self.common_us_count, self.bug_us_count,
-                                            self.td_us_count)
+        return self._get_cards_descriptions(self.us_common_count, self.us_bug_count,
+                                            self.us_td_count)
 
     def _get_cards_descriptions(self, count_common, count_bug, count_td):
         cards = self.game.userstories.stories_list
@@ -137,7 +137,7 @@ class ProductOwnerEnv:
         return description_common + description_bugs + description_tech_debts
 
     def _get_transforms_to_descriptions_userstory_common(self, cards):
-        res = [0] * self.common_us_count * USERSTORY_COMMON_FEATURE_COUNT
+        res = [0] * self.us_common_count * USERSTORY_COMMON_FEATURE_COUNT
 
         for i in range(len(cards)):
             card_info: UserStoryCardInfo = cards[i].info
@@ -151,7 +151,7 @@ class ProductOwnerEnv:
         return res
 
     def _get_transforms_to_descriptions_userstory_bug(self, cards):
-        res = [0] * self.bug_us_count * USERSTORY_BUG_FEATURE_COUNT
+        res = [0] * self.us_bug_count * USERSTORY_BUG_FEATURE_COUNT
 
         for i in range(len(cards)):
             card_info: BugUserStoryInfo = cards[i].info
@@ -161,7 +161,7 @@ class ProductOwnerEnv:
         return res
 
     def _get_transforms_to_descriptions_userstory_tech_debt(self, cards):
-        res = [0] * self.td_us_count * USERSTORY_TECH_DEBT_FEATURE_COUNT
+        res = [0] * self.us_td_count * USERSTORY_TECH_DEBT_FEATURE_COUNT
 
         for i in range(len(cards)):
             card_info: TechDebtInfo = cards[i].info
@@ -309,14 +309,14 @@ class ProductOwnerEnv:
         return -10
 
     def _perform_action_userstory(self, action: int) -> int:
-        if action < self.common_us_count:
+        if action < self.us_common_count:
             card = self._get_card(self.userstories_common, action)
-        elif action - self.common_us_count < self.bug_us_count:
+        elif action - self.us_common_count < self.us_bug_count:
             card = self._get_card(
-                self.userstories_bugs, action - self.common_us_count)
+                self.userstories_bugs, action - self.us_common_count)
         else:
             card = self._get_card(
-                self.userstories_td, action - self.common_us_count - self.bug_us_count)
+                self.userstories_td, action - self.us_common_count - self.us_bug_count)
         if card is not None and self.game.userstories.available:
             self.game.move_userstory_card(card)
             return 1
