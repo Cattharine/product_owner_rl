@@ -31,7 +31,7 @@ class GlobalContext:
         self.current_rooms_counter = 1
         self.color_storage = ColorStorage()
         self.is_victory = False
-        self.is_lose = False
+        self.is_loss = False
 
     def get_money(self):
         return self._money
@@ -54,7 +54,7 @@ class GlobalContext:
             self.is_victory = True
         else:
             # print("lose")
-            self.is_lose = True
+            self.is_loss = True
 
     def get_loyalty(self):
         return self._loyalty
