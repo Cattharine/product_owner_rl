@@ -32,7 +32,8 @@ class ProductOwnerEnv:
 
         self.meta_space_dim = 17
         
-        self.userstory_space_dim = self.us_common_count * USERSTORY_COMMON_FEATURE_COUNT + \
+        self.userstory_space_dim = + \
+            self.us_common_count * USERSTORY_COMMON_FEATURE_COUNT + \
             self.us_bug_count * USERSTORY_BUG_FEATURE_COUNT + \
             self.us_td_count * USERSTORY_TECH_DEBT_FEATURE_COUNT
 
@@ -44,8 +45,10 @@ class ProductOwnerEnv:
         self.current_state = self._get_state()
 
         self.meta_action_dim = 7
-        self.userstory_max_action_num = self.us_common_count + \
-            self.us_bug_count + self.us_td_count
+        self.userstory_max_action_num = + \
+            self.us_common_count + \
+            self.us_bug_count + \
+            self.us_td_count
         self.backlog_max_action_num = + \
             self.backlog_env.backlog_commons_count + \
             self.backlog_env.backlog_bugs_count + \
