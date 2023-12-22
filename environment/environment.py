@@ -330,11 +330,11 @@ class ProductOwnerEnv:
         if card_id < backlog_env.sprint_commons_count:
             card = self._get_card(backlog_env.sprint_commons, card_id)
 
-        bugs_card_id = card_id - backlog_env.sprint_commons_count
-        if card is None and bugs_card_id < backlog_env.sprint_bugs_count:
-            card = self._get_card(backlog_env.sprint_bugs, bugs_card_id)
+        bug_card_id = card_id - backlog_env.sprint_commons_count
+        if card is None and bug_card_id < backlog_env.sprint_bugs_count:
+            card = self._get_card(backlog_env.sprint_bugs, bug_card_id)
 
-        texh_debt_card_id = bugs_card_id - backlog_env.sprint_bugs_count
+        texh_debt_card_id = bug_card_id - backlog_env.sprint_bugs_count
         if card is None and texh_debt_card_id < backlog_env.sprint_tech_debt_count:
             card = self._get_card(backlog_env.sprint_tech_debt, texh_debt_card_id)
 
