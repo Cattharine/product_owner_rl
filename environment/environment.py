@@ -18,17 +18,17 @@ USERSTORY_BUG_FEATURE_COUNT = 2
 USERSTORY_TECH_DEBT_FEATURE_COUNT = 1
 
 class ProductOwnerEnv:
-    def __init__(self, count_common_userstories=4, count_bug_userstories=2, count_td_userstories=1):
+    def __init__(self, count_common_userstories=4, count_bug_userstories=2, count_td_userstories=1, backlog_env=None):
         self.game = ProductOwnerGame()
-        self.backlog_env = BacklogEnv()
+        self.backlog_env = BacklogEnv() if backlog_env is None else backlog_env
 
         self.count_common_us = count_common_userstories
         self.count_bug_us = count_bug_userstories
         self.count_td_us = count_td_userstories
 
-        self.sampled_userstories_common = None
-        self.sampled_userstories_bugs = None
-        self.sampled_userstories_td = None
+        self.sampled_userstories_common = []
+        self.sampled_userstories_bugs = []
+        self.sampled_userstories_td = []
 
         self.meta_space_dim = 17
         
