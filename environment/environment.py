@@ -366,6 +366,19 @@ class ProductOwnerEnv:
                 return i
         return -1
 
+class CreditPayerEnv(ProductOwnerEnv):
+    def __init__(self, common_userstories_count=4, backlog_env=None):
+        if backlog_env is None:
+            backlog_env = BacklogEnv(4, 0, 0, 4, 0, 0)
+        super().__init__(common_userstories_count, 0, 0, backlog_env)
+    
+    def step(self, action: int):
+        new_state, reward, done, info = super().step(action)
+        if self.game.context.current_sprint == 35:
+            done = True
+            reward += self.game.context.get_money() / 1e5
+        return new_state, reward, done, info
+
 class LoggingEnv(ProductOwnerEnv):
     def step(self, action: int):
         new_state, reward, done, info = super().step(action)
@@ -380,5 +393,20 @@ class BuggyProductOwnerEnv(ProductOwnerEnv):
     
     def reset(self):
         self.game = get_buggy_game()
+        self.current_state = self._get_state()
+        return self.current_state
+
+class StochasticGameStartEnv(ProductOwnerEnv):
+    def __init__(self, userstories_common_count=4, userstories_bug_count=2, userstories_td_count=1, backlog_env=None):
+        super().__init__(userstories_common_count, userstories_bug_count, userstories_td_count, backlog_env)
+
+        self.is_buggy = True
+    
+    def reset(self):
+        self.is_buggy = not self.is_buggy
+        if self.is_buggy:
+            self.game = get_buggy_game()
+        else:
+            self.game = ProductOwnerGame()
         self.current_state = self._get_state()
         return self.current_state
