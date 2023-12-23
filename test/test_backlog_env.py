@@ -1,14 +1,9 @@
-import sys
-
-from game.backlog_card.backlog_card import Card
-from game.backlog_card.card_info import CardInfo
-from game.game_constants import UserCardType
-
-sys.path.insert(0, '..')
-
 import unittest
 from environment.backlog_env import BacklogEnv
 from game.backlog.backlog import Backlog
+from game.backlog_card.backlog_card import Card
+from game.backlog_card.card_info import CardInfo
+from game.game_constants import UserCardType
 from game.game_variables import GlobalContext
 
 

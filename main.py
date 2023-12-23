@@ -3,15 +3,15 @@ import matplotlib.pyplot as plt
 
 from pipeline.study_agent import LoggingStudy, load_dqn_agent
 from algorithms.deep_q_networks import DQN, DoubleDQN
-from environment.environment import ProductOwnerEnv
+from environment.environment import ProductOwnerEnv, CreditPayerEnv
 
 if __name__ == "__main__":
-    env = ProductOwnerEnv()
+    env = CreditPayerEnv()
     state_dim = env.state_dim
     action_n = env.action_n
 
-    trajecory_max_len = 200
-    episode_n = 200
+    trajecory_max_len = 100
+    episode_n = 400
 
     epsilon_decrease = 1 / (trajecory_max_len * episode_n)
 
@@ -20,7 +20,7 @@ if __name__ == "__main__":
     study = LoggingStudy(env, agent, trajecory_max_len=trajecory_max_len, save_rate=100)
 
     try:
-        study.study_agent(episode_n)
+        study.study_agent(episode_n + 100)
     except KeyboardInterrupt:
         pass
 

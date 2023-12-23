@@ -1,5 +1,5 @@
-from environment.backlog_env import BacklogEnv, split_cards_in_types
-from game.game import ProductOwnerGame
+from environment.backlog_env import BacklogEnv, split_cards_in_types, sample_n_or_less
+from game.game import ProductOwnerGame, get_buggy_game
 from game.game_constants import UserCardType
 import torch
 import numpy as np
@@ -18,23 +18,24 @@ USERSTORY_BUG_FEATURE_COUNT = 2
 USERSTORY_TECH_DEBT_FEATURE_COUNT = 1
 
 class ProductOwnerEnv:
-    def __init__(self, count_common_userstories=4, count_bug_userstories=2, count_td_userstories=1):
+    def __init__(self, userstories_common_count=4, userstories_bug_count=2, userstories_td_count=1, backlog_env=None):
         self.game = ProductOwnerGame()
-        self.backlog_env = BacklogEnv()
+        self.backlog_env = BacklogEnv() if backlog_env is None else backlog_env
 
-        self.count_common_us = count_common_userstories
-        self.count_bug_us = count_bug_userstories
-        self.count_td_us = count_td_userstories
+        self.us_common_count = userstories_common_count
+        self.us_bug_count = userstories_bug_count
+        self.us_td_count = userstories_td_count
 
-        self.sampled_userstories_common = None
-        self.sampled_userstories_bugs = None
-        self.sampled_userstories_td = None
+        self.userstories_common = []
+        self.userstories_bugs = []
+        self.userstories_td = []
 
         self.meta_space_dim = 17
         
-        self.userstory_space_dim = self.count_common_us * USERSTORY_COMMON_FEATURE_COUNT + \
-            self.count_bug_us * USERSTORY_BUG_FEATURE_COUNT + \
-            self.count_td_us * USERSTORY_TECH_DEBT_FEATURE_COUNT
+        self.userstory_space_dim = + \
+            self.us_common_count * USERSTORY_COMMON_FEATURE_COUNT + \
+            self.us_bug_count * USERSTORY_BUG_FEATURE_COUNT + \
+            self.us_td_count * USERSTORY_TECH_DEBT_FEATURE_COUNT
 
         self.state_dim = self.meta_space_dim + \
             self.userstory_space_dim + \
@@ -44,8 +45,10 @@ class ProductOwnerEnv:
         self.current_state = self._get_state()
 
         self.meta_action_dim = 7
-        self.userstory_max_action_num = self.count_common_us + \
-            self.count_bug_us + self.count_td_us
+        self.userstory_max_action_num = + \
+            self.us_common_count + \
+            self.us_bug_count + \
+            self.us_td_count
         self.backlog_max_action_num = + \
             self.backlog_env.backlog_commons_count + \
             self.backlog_env.backlog_bugs_count + \
@@ -104,18 +107,16 @@ class ProductOwnerEnv:
         return completed_us_count, completed_bug_count, completed_td_count
 
     def _get_userstories_descriptions(self):
-        return self._get_cards_descriptions(self.count_common_us, self.count_bug_us,
-                                            self.count_td_us)
+        return self._get_cards_descriptions(self.us_common_count, self.us_bug_count,
+                                            self.us_td_count)
 
     def _get_cards_descriptions(self, count_common, count_bug, count_td):
         cards = self.game.userstories.stories_list
         commons, bugs, tech_debts = split_cards_in_types(cards)
 
-        sampled_cards_common = random.sample(
-            commons, min(count_common, len(commons)))
-        sampled_cards_bugs = random.sample(bugs, min(count_bug, len(bugs)))
-        sampled_cards_td = random.sample(
-            tech_debts, min(count_td, len(tech_debts)))
+        sampled_cards_common = sample_n_or_less(commons, count_common)
+        sampled_cards_bugs = sample_n_or_less(bugs, count_bug)
+        sampled_cards_td = sample_n_or_less(tech_debts, count_td)
 
         self._set_sampled_cards(sampled_cards_common, sampled_cards_bugs,
                                 sampled_cards_td)
@@ -124,9 +125,9 @@ class ProductOwnerEnv:
                                                     sampled_cards_td)
 
     def _set_sampled_cards(self, common, bugs, tech_debt):
-        self.sampled_userstories_common = common
-        self.sampled_userstories_bugs = bugs
-        self.sampled_userstories_td = tech_debt
+        self.userstories_common = common
+        self.userstories_bugs = bugs
+        self.userstories_td = tech_debt
 
     def _get_transforms_to_descriptions(self, sampled_cards_common, sampled_cards_bugs, sampled_cards_td):
         description_common = self._get_transforms_to_descriptions_userstory_common(
@@ -139,7 +140,7 @@ class ProductOwnerEnv:
         return description_common + description_bugs + description_tech_debts
 
     def _get_transforms_to_descriptions_userstory_common(self, cards):
-        res = [0] * self.count_common_us * USERSTORY_COMMON_FEATURE_COUNT
+        res = [0] * self.us_common_count * USERSTORY_COMMON_FEATURE_COUNT
 
         for i in range(len(cards)):
             card_info: UserStoryCardInfo = cards[i].info
@@ -153,7 +154,7 @@ class ProductOwnerEnv:
         return res
 
     def _get_transforms_to_descriptions_userstory_bug(self, cards):
-        res = [0] * self.count_bug_us * USERSTORY_BUG_FEATURE_COUNT
+        res = [0] * self.us_bug_count * USERSTORY_BUG_FEATURE_COUNT
 
         for i in range(len(cards)):
             card_info: BugUserStoryInfo = cards[i].info
@@ -163,7 +164,7 @@ class ProductOwnerEnv:
         return res
 
     def _get_transforms_to_descriptions_userstory_tech_debt(self, cards):
-        res = [0] * self.count_td_us * USERSTORY_TECH_DEBT_FEATURE_COUNT
+        res = [0] * self.us_td_count * USERSTORY_TECH_DEBT_FEATURE_COUNT
 
         for i in range(len(cards)):
             card_info: TechDebtInfo = cards[i].info
@@ -311,14 +312,14 @@ class ProductOwnerEnv:
         return -10
 
     def _perform_action_userstory(self, action: int) -> int:
-        if action < self.count_common_us:
-            card = self._get_card(self.sampled_userstories_common, action)
-        elif action - self.count_common_us < self.count_bug_us:
+        if action < self.us_common_count:
+            card = self._get_card(self.userstories_common, action)
+        elif action - self.us_common_count < self.us_bug_count:
             card = self._get_card(
-                self.sampled_userstories_bugs, action - self.count_common_us)
+                self.userstories_bugs, action - self.us_common_count)
         else:
             card = self._get_card(
-                self.sampled_userstories_td, action - self.count_common_us - self.count_bug_us)
+                self.userstories_td, action - self.us_common_count - self.us_bug_count)
         if card is not None and self.game.userstories.available:
             self.game.move_userstory_card(card)
             return 1
@@ -331,11 +332,11 @@ class ProductOwnerEnv:
         if card_id < backlog_env.sprint_commons_count:
             card = self._get_card(backlog_env.sprint_commons, card_id)
 
-        bugs_card_id = card_id - backlog_env.sprint_commons_count
-        if card is None and bugs_card_id < backlog_env.sprint_bugs_count:
-            card = self._get_card(backlog_env.sprint_bugs, bugs_card_id)
+        bug_card_id = card_id - backlog_env.sprint_commons_count
+        if card is None and bug_card_id < backlog_env.sprint_bugs_count:
+            card = self._get_card(backlog_env.sprint_bugs, bug_card_id)
 
-        texh_debt_card_id = bugs_card_id - backlog_env.sprint_bugs_count
+        texh_debt_card_id = bug_card_id - backlog_env.sprint_bugs_count
         if card is None and texh_debt_card_id < backlog_env.sprint_tech_debt_count:
             card = self._get_card(backlog_env.sprint_tech_debt, texh_debt_card_id)
 
@@ -365,8 +366,47 @@ class ProductOwnerEnv:
                 return i
         return -1
 
+class CreditPayerEnv(ProductOwnerEnv):
+    def __init__(self, common_userstories_count=4, backlog_env=None):
+        if backlog_env is None:
+            backlog_env = BacklogEnv(4, 0, 0, 4, 0, 0)
+        super().__init__(common_userstories_count, 0, 0, backlog_env)
+    
+    def step(self, action: int):
+        new_state, reward, done, info = super().step(action)
+        if self.game.context.current_sprint == 35:
+            done = True
+            reward += self.game.context.get_money() / 1e5
+        return new_state, reward, done, info
+
 class LoggingEnv(ProductOwnerEnv):
     def step(self, action: int):
         new_state, reward, done, info = super().step(action)
         print(action, reward)
         return new_state, reward, done, info
+
+class BuggyProductOwnerEnv(ProductOwnerEnv):
+    def __init__(self, common_userstories_count=4, bug_userstories_count=2, td_userstories_count=1, backlog_env=None):
+        super().__init__(common_userstories_count, bug_userstories_count, td_userstories_count, backlog_env)
+        self.game = get_buggy_game()
+        self.current_state = self._get_state()
+    
+    def reset(self):
+        self.game = get_buggy_game()
+        self.current_state = self._get_state()
+        return self.current_state
+
+class StochasticGameStartEnv(ProductOwnerEnv):
+    def __init__(self, userstories_common_count=4, userstories_bug_count=2, userstories_td_count=1, backlog_env=None):
+        super().__init__(userstories_common_count, userstories_bug_count, userstories_td_count, backlog_env)
+
+        self.is_buggy = True
+    
+    def reset(self):
+        self.is_buggy = not self.is_buggy
+        if self.is_buggy:
+            self.game = get_buggy_game()
+        else:
+            self.game = ProductOwnerGame()
+        self.current_state = self._get_state()
+        return self.current_state

@@ -72,7 +72,7 @@ class LoggingStudy(BaseStudyDQN):
         victory_sign = ' '
         if self.env.game.context.is_victory:
             victory_sign = 'v'
-        if self.env.game.context.is_lose:
+        if self.env.game.context.is_loss:
             victory_sign = 'l'
 
         message = f"episode: {self.episode:03d}\t" + \

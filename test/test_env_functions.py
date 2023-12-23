@@ -1,7 +1,3 @@
-import sys
-
-sys.path.insert(0, '..')
-
 import unittest
 from environment.environment import ProductOwnerEnv
 from game.game_constants import GlobalConstants
@@ -14,7 +10,7 @@ IS_SILENT = True
 class TestEnvFunctions(unittest.TestCase):
     def setUp(self):
         self.env = ProductOwnerEnv(
-            count_common_userstories=4, count_bug_userstories=2, count_td_userstories=1
+            userstories_common_count=4, userstories_bug_count=2, userstories_td_count=1
         )
 
     def test_start_game(self):
