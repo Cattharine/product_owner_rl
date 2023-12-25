@@ -22,6 +22,8 @@ def get_buggy_game():
     game.context.set_loyalty(4.5)
     game.context.customers = 40
     game.context.is_new_game = False
+    game.userstories.disable_restrictions()
+    game.office.toggle_purchases(True)
     return game
 
 class ProductOwnerGame:
