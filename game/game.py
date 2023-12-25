@@ -30,9 +30,22 @@ def get_buggy_game_2():
     game = ProductOwnerGame()
     game.context.current_sprint = 35
     game.context.credit = 0
-    game.context.set_money(77_000)
+    game.context.set_money(77_000 + 50_000)
     game.context.set_loyalty(4.52)
     game.context.customers = 48.08
+    game.context.is_new_game = False
+    game.userstories.disable_restrictions()
+    game.office.toggle_purchases(True)
+    game.buy_robot(0)
+    return game
+
+def get_buggy_game_3():
+    game = ProductOwnerGame()
+    game.context.current_sprint = 35
+    game.context.credit = 0
+    game.context.set_money(161_000)
+    game.context.set_loyalty(4.42)
+    game.context.customers = 46.54
     game.context.is_new_game = False
     game.userstories.disable_restrictions()
     game.office.toggle_purchases(True)
