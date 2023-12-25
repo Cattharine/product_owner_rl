@@ -395,18 +395,3 @@ class BuggyProductOwnerEnv(ProductOwnerEnv):
         self.game = get_buggy_game()
         self.current_state = self._get_state()
         return self.current_state
-
-class StochasticGameStartEnv(ProductOwnerEnv):
-    def __init__(self, userstories_common_count=4, userstories_bug_count=2, userstories_td_count=1, backlog_env=None):
-        super().__init__(userstories_common_count, userstories_bug_count, userstories_td_count, backlog_env)
-
-        self.is_buggy = True
-    
-    def reset(self):
-        self.is_buggy = not self.is_buggy
-        if self.is_buggy:
-            self.game = get_buggy_game()
-        else:
-            self.game = ProductOwnerGame()
-        self.current_state = self._get_state()
-        return self.current_state
