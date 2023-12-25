@@ -26,6 +26,18 @@ def get_buggy_game():
     game.office.toggle_purchases(True)
     return game
 
+def get_buggy_game_2():
+    game = ProductOwnerGame()
+    game.context.current_sprint = 35
+    game.context.credit = 0
+    game.context.set_money(77_000)
+    game.context.set_loyalty(4.52)
+    game.context.customers = 48.08
+    game.context.is_new_game = False
+    game.userstories.disable_restrictions()
+    game.office.toggle_purchases(True)
+    return game
+
 class ProductOwnerGame:
     def __init__(self):
         self.context = GlobalContext()
