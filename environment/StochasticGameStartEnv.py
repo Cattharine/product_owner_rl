@@ -6,6 +6,7 @@ from game.game import (
     get_buggy_game_3,
     get_game_on_sprint_21,
     get_game_on_sprint_26,
+    get_game_on_sprint_6,
 )
 
 
@@ -27,6 +28,7 @@ class StochasticGameStartEnv(ProductOwnerEnv):
         self.index = 0
         self.generators = [
             ProductOwnerGame,
+            get_game_on_sprint_6,
             get_game_on_sprint_21,
             get_game_on_sprint_26,
             get_buggy_game,

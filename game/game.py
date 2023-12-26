@@ -76,6 +76,19 @@ def get_game_on_sprint_21():
     game.context.customers = 35.42
     return game
 
+def get_game_on_sprint_6():
+    game = ProductOwnerGame()
+    game.context.is_new_game = False
+    game.userstories.disable_restrictions()
+    game.office.toggle_purchases(True)
+    game.buy_robot(0)
+    game.context.current_sprint = 6
+    game.context.credit = 255_000
+    game.context.set_money(28_000)
+    game.context.set_loyalty(4.03)
+    game.context.customers = 27.53
+    return game
+
 class ProductOwnerGame:
     def __init__(self):
         self.context = GlobalContext()
