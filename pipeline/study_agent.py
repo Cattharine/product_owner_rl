@@ -56,7 +56,7 @@ class LoggingStudy(BaseStudyDQN):
     
     def play_trajectory(self, init_state):
         with torch.no_grad():
-            state = torch.tensor(init_state)
+            state = torch.tensor(init_state).to(self.agent.device)
             q_values: torch.Tensor = self.agent.q_function(state)
             self.q_value_log.append(q_values.max())
         
