@@ -1,12 +1,12 @@
 from environment.environment import ProductOwnerEnv
-from game.game import (
+from game.game_generators import (
     ProductOwnerGame,
-    get_buggy_game,
+    get_buggy_game_1,
     get_buggy_game_2,
     get_buggy_game_3,
+    get_game_on_sprint_6,
     get_game_on_sprint_21,
     get_game_on_sprint_26,
-    get_game_on_sprint_6,
 )
 
 
@@ -31,7 +31,7 @@ class StochasticGameStartEnv(ProductOwnerEnv):
             get_game_on_sprint_6,
             get_game_on_sprint_21,
             get_game_on_sprint_26,
-            get_buggy_game,
+            get_buggy_game_1,
             get_buggy_game_2,
             get_buggy_game_3,
         ]
