@@ -1,4 +1,4 @@
-from environment.backlog_env import BacklogEnv, split_cards_in_types, sample_n
+from environment.backlog_env import BacklogEnv, split_cards_in_types, sample_n_or_zero
 from game.backlog_card.backlog_card import Card
 from game.game import ProductOwnerGame
 from game.game_constants import UserCardType
@@ -116,9 +116,9 @@ class ProductOwnerEnv:
         cards = self.game.userstories.stories_list
         commons, bugs, tech_debts = split_cards_in_types(cards)
 
-        sampled_cards_common = sample_n(commons, count_common)
-        sampled_cards_bugs = sample_n(bugs, count_bug)
-        sampled_cards_td = sample_n(tech_debts, count_td)
+        sampled_cards_common = sample_n_or_zero(commons, count_common)
+        sampled_cards_bugs = sample_n_or_zero(bugs, count_bug)
+        sampled_cards_td = sample_n_or_zero(tech_debts, count_td)
 
         self._set_sampled_cards(sampled_cards_common, sampled_cards_bugs,
                                 sampled_cards_td)

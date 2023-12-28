@@ -1,5 +1,7 @@
 import random
 
+import numpy as np
+
 from typing import Sequence
 
 def clamp(x, minimum, maximum):
@@ -37,12 +39,11 @@ def sample_n_or_less(collection, count):
     count = min(count, len(collection))
     return random.sample(collection, count)
 
-def sample_n(collection: Sequence, count: int):
+def sample_n_or_zero(collection: Sequence, count: int):
     if len(collection) == 0:
         return []
     
-    repeat_count = count // len(collection) + 1
-    counts = [repeat_count] * len(collection)
+    replace = len(collection) < count
 
-    result = random.sample(collection, count, counts=counts)
+    result = np.random.choice(collection, size=count, replace=replace)
     return result
