@@ -370,7 +370,7 @@ class ProductOwnerEnv:
 class CreditPayerEnv(ProductOwnerEnv):
     def __init__(self, common_userstories_count=4, backlog_env=None):
         if backlog_env is None:
-            backlog_env = BacklogEnv(4, 0, 0, 4, 0, 0)
+            backlog_env = BacklogEnv(12, 0, 0, 12, 0, 0)
         super().__init__(common_userstories_count, 0, 0, backlog_env)
     
     def step(self, action: int):

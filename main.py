@@ -7,7 +7,7 @@ from algorithms.deep_q_networks import DQN, DoubleDQN
 from environment.environment import ProductOwnerEnv, CreditPayerEnv
 
 if __name__ == "__main__":
-    env = StochasticGameStartEnv()
+    env = CreditPayerEnv()
     state_dim = env.state_dim
     action_n = env.action_n
 
