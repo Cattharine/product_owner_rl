@@ -39,9 +39,10 @@ def sample_n_or_less(collection, count):
 
 def sample_n(collection: Sequence, count: int):
     if len(collection) == 0:
-        return 0
+        return []
     
     repeat_count = count // len(collection) + 1
     counts = [repeat_count] * len(collection)
 
-    return random.sample(collection, count, counts=counts)
+    result = random.sample(collection, count, counts=counts)
+    return result
