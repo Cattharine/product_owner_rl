@@ -31,8 +31,8 @@ def split_cards_in_types(cards: List[Card]):
 
 
 class BacklogEnv:
-    def __init__(self, backlog_commons_count=4, backlog_bugs_count=2, backlog_tech_debt_count=1,
-                 sprint_commons_count=1, sprint_bugs_count=1, sprint_tech_debt_count=1) -> None:
+    def __init__(self, backlog_commons_count=12, backlog_bugs_count=2, backlog_tech_debt_count=2,
+                 sprint_commons_count=12, sprint_bugs_count=2, sprint_tech_debt_count=2) -> None:
         self.backlog_commons_count = backlog_commons_count
         self.backlog_bugs_count = backlog_bugs_count
         self.backlog_tech_debt_count = backlog_tech_debt_count
