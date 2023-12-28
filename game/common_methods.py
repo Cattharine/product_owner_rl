@@ -1,5 +1,7 @@
 import random
 
+from typing import Sequence
+
 def clamp(x, minimum, maximum):
     if x < minimum:
         return minimum
@@ -34,3 +36,12 @@ def interpolate(value, table: dict):
 def sample_n_or_less(collection, count):
     count = min(count, len(collection))
     return random.sample(collection, count)
+
+def sample_n(collection: Sequence, count: int):
+    if len(collection) == 0:
+        return 0
+    
+    repeat_count = count // len(collection) + 1
+    counts = [repeat_count] * len(collection)
+
+    return random.sample(collection, count, counts=counts)
