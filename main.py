@@ -34,6 +34,7 @@ if __name__ == "__main__":
     plt.plot(estimates, '.', label='Estimates')
     plt.xlabel("Trajectory")
     plt.ylabel('Reward')
+    plt.legend()
     plt.savefig('figures/rewards.png')
     plt.show()
 
