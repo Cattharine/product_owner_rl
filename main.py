@@ -30,8 +30,8 @@ if __name__ == "__main__":
 
     os.makedirs('figures', exist_ok=True)
 
-    plt.plot(rewards, '.')
-    plt.plot(estimates, '.')
+    plt.plot(rewards, '.', label='Rewards')
+    plt.plot(estimates, '.', label='Estimates')
     plt.xlabel("Trajectory")
     plt.ylabel('Reward')
     plt.savefig('figures/rewards.png')
