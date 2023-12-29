@@ -1,11 +1,8 @@
 from environment import ProductOwnerEnv
 
-
 from typing import List
 
 from .metrics_study import MetricsStudy
-
-from .base_study import BaseStudy
 
 
 class ConfidenceStudy(MetricsStudy):
@@ -19,6 +16,7 @@ class ConfidenceStudy(MetricsStudy):
         for i in range(repeat_count):
             self.agent = self.agent_generator()
             super().study_agent(episode_n)
+            print(f'Complete #{i} study with reward {self.rewards_log[-1]}')
             self.rewards_logs.append(self.rewards_log)
             self.q_value_logs.append(self.q_value_log)
             self.rewards_log = []
