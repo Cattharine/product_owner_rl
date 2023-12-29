@@ -28,7 +28,7 @@ class BaseStudy:
 
         return total_reward
 
-    def study_agent(self, episode_n):
+    def study_agent(self, episode_n: int):
         for episode in range(episode_n):
             state = self.env.reset()
             self.play_trajectory(state)
