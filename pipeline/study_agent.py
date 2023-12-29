@@ -1,6 +1,6 @@
 import torch
 from algorithms.deep_q_networks import DQN
-from environment.environment import ProductOwnerEnv
+from environment import ProductOwnerEnv
 
 from typing import List
 
