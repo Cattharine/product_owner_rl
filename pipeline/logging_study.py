@@ -28,18 +28,20 @@ class LoggingStudy(MetricsStudy):
         self.sprints_log.append(sprint_n)
 
         credit_paid = self.env.game.context.credit <= 0
-        credit_sign = 'p' if credit_paid else ' '
+        credit_sign = "p" if credit_paid else " "
 
-        victory_sign = ' '
+        victory_sign = " "
         if self.env.game.context.is_victory:
-            victory_sign = 'v'
+            victory_sign = "v"
         if self.env.game.context.is_loss:
-            victory_sign = 'l'
+            victory_sign = "l"
 
-        message = f"episode: {self.episode:03d}\t" + \
-            f'total_reward: {reward:.2f}\t' + \
-            f'sprint_n: {sprint_n:02d}\t' + \
-            f'{credit_sign} {victory_sign}\t'
+        message = (
+            f"episode: {self.episode:03d}\t"
+            + f"total_reward: {reward:.2f}\t"
+            + f"sprint_n: {sprint_n:02d}\t"
+            + f"{credit_sign} {victory_sign}\t"
+        )
 
         print(message)
         self.episode += 1
@@ -51,15 +53,15 @@ class LoggingStudy(MetricsStudy):
         os.makedirs(agent_name, exist_ok=True)
 
         for epoche in range(epoche_n):
-            path = f'{agent_name}/model_{epoche}.pt'
+            path = f"{agent_name}/model_{epoche}.pt"
             super().study_agent(self.save_rate)
             memory = self.agent.memory
             self.agent.memory = []
             save_dqn_agent(self.agent, path=path)
             self.agent.memory = memory
-            with open(f'{agent_name}/rewards_{epoche}.txt', mode='w') as f:
+            with open(f"{agent_name}/rewards_{epoche}.txt", mode="w") as f:
                 f.write(repr(self.rewards_log))
-            with open(f'{agent_name}/estimates_{epoche}.txt', mode='w') as f:
+            with open(f"{agent_name}/estimates_{epoche}.txt", mode="w") as f:
                 f.write(repr(self.q_value_log))
-            with open(f'{agent_name}/sprints_{epoche}.txt', mode='w') as f:
+            with open(f"{agent_name}/sprints_{epoche}.txt", mode="w") as f:
                 f.write(repr(self.sprints_log))
