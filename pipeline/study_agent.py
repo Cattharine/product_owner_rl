@@ -68,7 +68,7 @@ class LoggingStudy(MetricsStudy):
 
 
 class ConfidenceStudy:
-    def __init__(self, env: ProductOwnerEnv, agent_generator, trajecory_max_len) -> None:
+    def __init__(self, env: ProductOwnerEnv, agent_generator, trajecory_max_len, repeat_count) -> None:
         self.rewards_logs: List[List[int]] = []
         self.q_value_logs: List[List[int]] = []
 
