@@ -41,12 +41,13 @@ def double_objective(trial: optuna.Trial):
 
     trajectory_max_len = 100
 
+    gamma = trial.suggest_float('gamma', 0.9, 1)
     tau = trial.suggest_float("tau", 0.5, 0.99)
 
-    agent = DoubleDQN(state_dim, action_n, tau=tau)
+    agent = DoubleDQN(state_dim, action_n, gamma=gamma,  tau=tau)
     study = MetricsStudy(env, agent, trajectory_max_len)
 
-    study.study_agent(episode_n=50)
+    study.study_agent(episode_n=500)
 
     agent.epsilon_min = 0
     agent.epsilon = 0
@@ -55,7 +56,7 @@ def double_objective(trial: optuna.Trial):
 
 
 double_study = optuna.create_study(direction="maximize")
-double_study.optimize(double_objective, n_trials=5)
+double_study.optimize(double_objective, n_trials=50)
 
 trial = double_study.best_trial
 
