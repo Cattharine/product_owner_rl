@@ -29,7 +29,7 @@ def get_agent_generator(env: ProductOwnerEnv, trajectory_max_len, episode_n):
 if __name__ == "__main__":
     env = CreditPayerEnv()
 
-    episode_n = 100
+    episode_n = 500
     trajectory_max_len = 100
 
     agent_generator = get_agent_generator(env, trajectory_max_len, episode_n)
@@ -64,16 +64,16 @@ if __name__ == "__main__":
     plt.savefig("figures/rewards.png")
     plt.show()
 
-    plt.plot(study.sprints_log, ".")
-    plt.title("Sprints count")
-    plt.xlabel("Trajectory")
-    plt.ylabel("Sprint")
-    plt.savefig("figures/sprints.png")
-    plt.show()
+    # plt.plot(study.sprints_log, ".")
+    # plt.title("Sprints count")
+    # plt.xlabel("Trajectory")
+    # plt.ylabel("Sprint")
+    # plt.savefig("figures/sprints.png")
+    # plt.show()
 
-    plt.plot(study.loss_log, ".")
-    plt.title("Loss")
-    plt.xlabel("Steps")
-    plt.ylabel("Loss")
-    plt.savefig("figures/loss.png")
-    plt.show()
+    # plt.plot(study.loss_log, ".")
+    # plt.title("Loss")
+    # plt.xlabel("Steps")
+    # plt.ylabel("Loss")
+    # plt.savefig("figures/loss.png")
+    # plt.show()

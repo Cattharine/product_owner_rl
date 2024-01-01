@@ -16,7 +16,7 @@ class ConfidenceStudy(MetricsStudy):
         for i in range(repeat_count):
             self.agent = self.agent_generator()
             super().study_agent(episode_n)
-            print(f'Complete #{i} study with reward {self.rewards_log[-1]}')
+            print(f'Complete study #{i} with reward {self.rewards_log[-1]}')
             self.rewards_logs.append(self.rewards_log)
             self.q_value_logs.append(self.q_value_log)
             self.rewards_log = []
