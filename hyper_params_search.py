@@ -45,13 +45,17 @@ def double_objective(trial: optuna.Trial):
     epsilon_decrease = 1 / episode_n / trajectory_max_len
 
     gamma = trial.suggest_float("gamma", 0.9, 1)
-    tau = trial.suggest_float("tau", 0.5, 0.99)
+    tau = trial.suggest_float("tau", 0.001, 0.999)
+
+    batch_size = trial.suggest_int('batch_size', 60, 70)
 
     agent = DoubleDQN(
         state_dim,
         action_n,
         gamma=gamma,
+        lr=0.001,
         tau=tau,
+        batch_size=batch_size,
         epsilon_decrease=epsilon_decrease,
         epsilon_min=0,
     )
