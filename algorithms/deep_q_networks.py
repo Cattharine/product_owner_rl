@@ -102,12 +102,6 @@ class DQN(nn.Module):
 
         return loss.cpu().detach().numpy()
 
-    def reset_optimizer(self, learning_rate):
-        self.optimizer = torch.optim.Adam(self.q_function.parameters(), lr=learning_rate)
-
-    def define_device(self):
-        self.device = torch.device("cpu")
-
 
 class TargetDQN(DQN):
     def __init__(

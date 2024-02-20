@@ -1,6 +1,6 @@
 from game.backlog.backlog import Backlog
 from game.backlog_card.backlog_card import Card
-from game.common_methods import sample_n_or_less, sample_n_or_zero
+from game.common_methods import sample_n_or_zero
 from game.game_constants import UserCardType
 
 
