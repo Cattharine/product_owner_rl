@@ -65,7 +65,7 @@ class BacklogEnv:
         self.sprint_bugs = bugs
         self.sprint_tech_debt = tech_debt
 
-    def encode(self, backlog: Backlog) -> List[int]:
+    def encode(self, backlog: Backlog) -> List[float]:
         self.backlog = backlog
         self.context = backlog.context
         counts = (self.backlog_commons_count,
@@ -85,7 +85,7 @@ class BacklogEnv:
 
         return backlog_encoding + sprint_encoding
 
-    def _encode_queue(self, cards: List[Card], counts: Tuple[int, int, int], setter):
+    def _encode_queue(self, cards: List[Card], counts: Tuple[int, int, int], setter) -> List[float]:
         commons, bugs, tech_debt = split_cards_in_types(cards)
         commons_count, bugs_count, tech_debt_count = counts
 
@@ -109,7 +109,7 @@ class BacklogEnv:
 
         return encoding
 
-    def _encode_cards(self, cards, encoder, result_len) -> List[int]:
+    def _encode_cards(self, cards, encoder, result_len) -> List[float]:
         result = []
         for card in cards:
             result.extend(encoder(card))
