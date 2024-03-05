@@ -4,7 +4,9 @@ from .study_agent import save_dqn_agent
 
 import datetime
 import os
-from typing import List
+import sys
+import logging
+from typing import List, Tuple
 
 
 class LoggingStudy(MetricsStudy):
@@ -17,6 +19,16 @@ class LoggingStudy(MetricsStudy):
         self.loss_log: List[float] = []
         self.time_log: List[datetime.datetime] = []
         self.save_rate = save_rate
+        self.logger = self._get_logger()
+    
+    def _get_logger(self):
+        logger = logging.getLogger()
+        handler = logging.StreamHandler(sys.stdout)
+        # handler.setFormatter(logging.Formatter('%(asctime)s %(message)s'))
+        logger.addHandler(handler)
+        logger.setLevel(logging.DEBUG)
+
+        return logger
 
     def fit_agent(self, state, action, reward, done, next_state):
         loss = super().fit_agent(state, action, reward, done, next_state)
@@ -32,6 +44,10 @@ class LoggingStudy(MetricsStudy):
         credit = self.env.game.context.credit
 
         termination = "none"
+        if not self.env.game.context.is_new_game:
+            termination = 'tutorial'
+        if self.env.game.context.credit == 0:
+            termination = 'credit paid'
         if self.env.game.context.is_victory:
             termination = "victory"
         if self.env.game.context.is_loss:
@@ -44,9 +60,25 @@ class LoggingStudy(MetricsStudy):
             + f"credit: {credit: 6d}\t"
             + f"termination: {termination}\t"
         )
+        self.logger.info(message)
 
-        print(message)
+        # message_template = (
+        #     "episode: {:03d}\t"
+        #     + "total_reward: {:.2f}\t"
+        #     + "sprint_n: {:02d}\t"
+        #     + "credit: {:6d}\t"
+        #     + "termination: {}\t"
+        # )
+        # args = (self.episode, reward, sprint_n, credit, termination)
+        # self.logger.info(message_template, *args)
         self.episode += 1
+
+    def _choose_action(self, action, inner_sprint_action_count) -> Tuple[int, int]:
+        result = super()._choose_action(action, inner_sprint_action_count)
+        chosen_action, _ = result
+        if action != chosen_action and chosen_action == 0:
+            self.logger.debug('enforced next sprint')
+        return result
 
     def study_agent(self, episode_n):
         agent_name = type(self.agent).__name__
