@@ -48,9 +48,12 @@ class LoggingStudy(MetricsStudy):
         print(message)
         self.episode += 1
 
-    def study_agent(self, episode_n):
+    def study_agent(self, episode_n=None):
         agent_name = type(self.agent).__name__
-        epoch_n = (episode_n + self.save_rate - 1) // self.save_rate
+        if episode_n is None:
+            episode_n = self.save_rate
+        else:
+            epoch_n = (episode_n + self.save_rate - 1) // self.save_rate
 
         os.makedirs(agent_name, exist_ok=True)
 

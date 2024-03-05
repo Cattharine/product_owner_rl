@@ -19,9 +19,10 @@ def main():
     agent = DoubleDQN(
             state_dim, action_n, gamma=0.9, tau=0.001, epsilon_decrease=epsilon_decrease
         )
-    study = LoggingStudy(env, agent, 100, 1)
+    study = LoggingStudy(env, agent, trajectory_max_len, episode_n)
+    study.SAVE_MEMORY = False
 
-    study.study_agent(100)
+    study.study_agent()
 
     visualizer.show_rewards(study, show_estimates=True, filename='figures/rewards.png')
     visualizer.show_sprints(study, filename='figures/sprints.png')
