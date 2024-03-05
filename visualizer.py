@@ -10,7 +10,7 @@ def show_rewards(study: MetricsStudy, show_estimates=False, filename=None):
     plt.ylabel("Reward")
     plt.legend()
     if filename is not None:
-        plt.savefig("figures/rewards.png")
+        plt.savefig(filename)
     plt.show()
 
 def show_sprints(study: LoggingStudy, filename=None):
