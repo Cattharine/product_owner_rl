@@ -51,7 +51,7 @@ class LoggingStudy(MetricsStudy):
     def study_agent(self, episode_n=None):
         agent_name = type(self.agent).__name__
         if episode_n is None:
-            episode_n = self.save_rate
+            epoch_n = self.save_rate
         else:
             epoch_n = (episode_n + self.save_rate - 1) // self.save_rate
 
