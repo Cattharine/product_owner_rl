@@ -24,7 +24,7 @@ class LoggingStudy(MetricsStudy):
     def _get_logger(self):
         logger = logging.getLogger()
         handler = logging.StreamHandler(sys.stdout)
-        # handler.setFormatter(logging.Formatter('%(asctime)s %(message)s'))
+        handler.setFormatter(logging.Formatter('%(asctime)s %(message)s'))
         logger.addHandler(handler)
         logger.setLevel(logging.DEBUG)
 
@@ -61,16 +61,6 @@ class LoggingStudy(MetricsStudy):
             + f"termination: {termination}\t"
         )
         self.logger.info(message)
-
-        # message_template = (
-        #     "episode: {:03d}\t"
-        #     + "total_reward: {:.2f}\t"
-        #     + "sprint_n: {:02d}\t"
-        #     + "credit: {:6d}\t"
-        #     + "termination: {}\t"
-        # )
-        # args = (self.episode, reward, sprint_n, credit, termination)
-        # self.logger.info(message_template, *args)
         self.episode += 1
 
     def _choose_action(self, action, inner_sprint_action_count) -> Tuple[int, int]:
