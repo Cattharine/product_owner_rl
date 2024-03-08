@@ -1,16 +1,19 @@
+import math
 from .metrics_study import MetricsStudy
 from .study_agent import save_dqn_agent
 
 
 import datetime
 import os
-from typing import List
+from typing import List, Optional
 
 
 class LoggingStudy(MetricsStudy):
     SAVE_MEMORY = True
 
-    def __init__(self, env, agent, trajectory_max_len, save_rate=1000) -> None:
+    def __init__(
+        self, env, agent, trajectory_max_len, save_rate: Optional[int] = None
+    ) -> None:
         super().__init__(env, agent, trajectory_max_len)
         self.episode = 0
         self.sprints_log: List[int] = []
@@ -48,12 +51,13 @@ class LoggingStudy(MetricsStudy):
         print(message)
         self.episode += 1
 
-    def study_agent(self, episode_n=None):
+    def study_agent(self, episode_n):
         agent_name = type(self.agent).__name__
-        if episode_n is None:
-            epoch_n = self.save_rate
+        if self.save_rate is None:
+            epoch_n = 1
+            self.save_rate = episode_n
         else:
-            epoch_n = (episode_n + self.save_rate - 1) // self.save_rate
+            epoch_n = math.ceil(episode_n / self.save_rate)
 
         os.makedirs(agent_name, exist_ok=True)
 
