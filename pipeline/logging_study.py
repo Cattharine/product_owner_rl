@@ -14,7 +14,12 @@ class LoggingStudy(MetricsStudy):
     SAVE_MEMORY = True
 
     def __init__(
-        self, env, agent, trajectory_max_len, save_rate: Optional[int] = None
+        self,
+        env,
+        agent,
+        trajectory_max_len,
+        save_rate: Optional[int] = None,
+        log_level=logging.DEBUG,
     ) -> None:
         super().__init__(env, agent, trajectory_max_len)
         self.episode = 0
@@ -22,17 +27,17 @@ class LoggingStudy(MetricsStudy):
         self.loss_log: List[float] = []
         self.time_log: List[datetime.datetime] = []
         self.save_rate = save_rate
-        self.logger = self._get_logger()
-    
-    def _get_logger(self):
+        self.logger = self._get_logger(log_level)
+
+    def _get_logger(self, log_level):
         logger = logging.getLogger()
         handler = logging.StreamHandler(sys.stdout)
-        handler.setFormatter(logging.Formatter('%(asctime)s %(message)s'))
+        handler.setFormatter(logging.Formatter("%(asctime)s %(message)s"))
         logger.addHandler(handler)
-        logger.setLevel(logging.DEBUG)
+        logger.setLevel(log_level)
 
         return logger
-    
+
     def _log_action(self, action, reward):
         message = ''
         if reward < 0:
@@ -55,7 +60,7 @@ class LoggingStudy(MetricsStudy):
             message += 'buy user survey'
         if action >= 7:
             message += 'move card'
-        
+
         self.logger.debug(message)
 
     def fit_agent(self, state, action, reward, done, next_state):
