@@ -32,8 +32,34 @@ class LoggingStudy(MetricsStudy):
         logger.setLevel(logging.DEBUG)
 
         return logger
+    
+    def _log_action(self, action, reward):
+        message = ''
+        if reward < 0:
+            message = 'failed to '
+        if action == 0:
+            message += 'start sprint'
+        if action == 1:
+            cards_count = len(self.env.game.userstories.release)
+            message += f'decompose {cards_count} cards'
+        if action == 2:
+            released_count = len(self.env.game.completed_us)
+            message += f'release {released_count} user stories'
+        if action == 3:
+            message += 'buy robot'
+        if action == 4:
+            message += 'buy room'
+        if action == 5:
+            message += 'buy statistical research'
+        if action == 6:
+            message += 'buy user survey'
+        if action >= 7:
+            message += 'move card'
+        
+        self.logger.debug(message)
 
     def fit_agent(self, state, action, reward, done, next_state):
+        self._log_action(action, reward)
         loss = super().fit_agent(state, action, reward, done, next_state)
         self.loss_log.append(loss)
         return loss
