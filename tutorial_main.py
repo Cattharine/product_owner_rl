@@ -6,7 +6,7 @@ from pipeline.study_agent import save_dqn_agent
 
 import visualizer
 
-def main():
+def make_tutorial_study():
     env = TutorialSolverEnv()
 
     state_dim = env.state_dim
@@ -23,6 +23,11 @@ def main():
     study.SAVE_MEMORY = False
 
     study.study_agent(episode_n)
+    return study
+
+def main():
+    study = make_tutorial_study()
+    agent = study.agent
 
     visualizer.show_rewards(study, show_estimates=True, filename='figures/rewards.png')
     visualizer.show_sprints(study, filename='figures/sprints.png')

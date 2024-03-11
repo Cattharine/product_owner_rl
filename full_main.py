@@ -9,6 +9,7 @@
         # use previous agents to study credit end agent
         # use previous agents to study end agent
 
+        # eval model
         # collect quality metrics
 
     # analize collected metrica
