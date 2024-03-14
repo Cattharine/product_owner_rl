@@ -6,14 +6,11 @@ from pipeline.study_agent import save_dqn_agent
 
 import visualizer
 
-def make_tutorial_study():
+def make_tutorial_study(trajectory_max_len, episode_n):
     env = TutorialSolverEnv()
 
     state_dim = env.state_dim
     action_n = env.action_n
-
-    trajectory_max_len = 100
-    episode_n = 40
 
     epsilon_decrease = 1 / (trajectory_max_len * episode_n)
     agent = DoubleDQN(
@@ -26,7 +23,7 @@ def make_tutorial_study():
     return study
 
 def main():
-    study = make_tutorial_study()
+    study = make_tutorial_study(trajectory_max_len=100, episode_n=40)
     agent = study.agent
 
     visualizer.show_rewards(study, show_estimates=True, filename='figures/rewards.png')
