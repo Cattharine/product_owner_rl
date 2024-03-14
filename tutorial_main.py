@@ -1,6 +1,6 @@
 from environment import TutorialSolverEnv
-from algorithms import DoubleDQN
 from pipeline import LoggingStudy
+from main import make_average_agent
 
 from pipeline.study_agent import save_dqn_agent
 
@@ -8,14 +8,7 @@ import visualizer
 
 def make_tutorial_study(trajectory_max_len, episode_n):
     env = TutorialSolverEnv()
-
-    state_dim = env.state_dim
-    action_n = env.action_n
-
-    epsilon_decrease = 1 / (trajectory_max_len * episode_n)
-    agent = DoubleDQN(
-            state_dim, action_n, gamma=0.9, tau=0.001, epsilon_decrease=epsilon_decrease
-        )
+    agent = make_average_agent(env, trajectory_max_len, episode_n)
     study = LoggingStudy(env, agent, trajectory_max_len)
     study.SAVE_MEMORY = False
 
