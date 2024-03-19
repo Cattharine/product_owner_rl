@@ -9,7 +9,7 @@ from algorithms.deep_q_networks import DQN, DoubleDQN
 import numpy as np
 
 
-def make_average_agent(env: ProductOwnerEnv, trajectory_max_len: int, episode_n: int):
+def create_usual_agent(env: ProductOwnerEnv, trajectory_max_len: int, episode_n: int):
     state_dim = env.state_dim
     action_n = env.action_n
 

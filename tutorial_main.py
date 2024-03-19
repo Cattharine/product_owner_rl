@@ -1,6 +1,6 @@
 from environment import TutorialSolverEnv
 from pipeline import LoggingStudy
-from main import make_average_agent
+from main import create_usual_agent
 
 from pipeline.study_agent import save_dqn_agent
 
@@ -8,7 +8,7 @@ import visualizer
 
 def make_tutorial_study(trajectory_max_len, episode_n):
     env = TutorialSolverEnv()
-    agent = make_average_agent(env, trajectory_max_len, episode_n)
+    agent = create_usual_agent(env, trajectory_max_len, episode_n)
     study = LoggingStudy(env, agent, trajectory_max_len)
     study.SAVE_MEMORY = False
 
