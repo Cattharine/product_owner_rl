@@ -23,7 +23,7 @@ for i in range(n):
     # eval model
     # collect quality metrics
 
-# analize collected metrica
+# analize collected metrics
 # show results
 
 # chose best varant
