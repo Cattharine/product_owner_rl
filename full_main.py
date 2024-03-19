@@ -26,4 +26,4 @@ for i in range(n):
 # analize collected metrics
 # show results
 
-# chose best varant
+# choose best varant
