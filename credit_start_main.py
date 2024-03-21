@@ -6,7 +6,7 @@ from main import create_usual_agent
 import visualizer
 
 def make_credit_start_study(tutorial_agent, trajectory_max_len, episode_n):
-    env = CreditPayerEnv()
+    env = CreditPayerEnv(with_end=True)
 
     agent = create_usual_agent(env, trajectory_max_len, episode_n)
 
