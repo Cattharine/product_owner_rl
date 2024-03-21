@@ -5,8 +5,8 @@ from main import create_usual_agent
 
 import visualizer
 
-def make_credit_start_study(tutorial_agent, trajectory_max_len, episode_n):
-    env = CreditPayerEnv(with_end=True)
+def make_credit_study(tutorial_agent, trajectory_max_len, episode_n, with_end):
+    env = CreditPayerEnv(with_end=with_end)
 
     agent = create_usual_agent(env, trajectory_max_len, episode_n)
 
@@ -21,7 +21,7 @@ def main():
     tutorial_model_path = 'models/tutorial_model.pt'
     tutorial_agent = load_dqn_agent(tutorial_model_path)
 
-    study = make_credit_start_study(tutorial_agent, 100, 40)
+    study = make_credit_study(tutorial_agent, 100, 40, True)
     agent = study.agent
 
     visualizer.show_rewards(study, show_estimates=True, filename='figures/rewards.png')
