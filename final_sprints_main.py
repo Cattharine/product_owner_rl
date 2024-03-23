@@ -1,5 +1,10 @@
+from pipeline import AggregatorStudy
 from pipeline.study_agent import load_dqn_agent
 
+
+def create_final_sprints_agent(prev_agents, trajectory_max_len, episode_n):
+    
+    study = AggregatorStudy(env, agents, trajectory_max_len)
 
 def main():
     tutorial_model_path = 'models/tutorial_model.pt'
