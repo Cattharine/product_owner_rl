@@ -121,13 +121,13 @@ def choose_action(agent, state, inner_sprint_action_count, is_silent=True):
 
 
 def load_agents():
-    agent_tutorial = load_dqn_agent("./models/current/tutorial_agent.pt")
+    agent_tutorial = load_dqn_agent('models/tutorial_model.pt')
     agent_tutorial.epsilon = 0
-    agent_credit = load_dqn_agent("./models/current/credit_start_agent.pt")
+    agent_credit = load_dqn_agent('models/credit_start_model.pt')
     agent_credit.epsilon = 0
-    agent_credit_end = load_dqn_agent("./models/current/credit_end_agent.pt")
+    agent_credit_end = load_dqn_agent('models/credit_end_model.pt')
     agent_credit_end.epsilon = 0
-    agent_end = load_dqn_agent("./models/current/end_agent.pt")
+    agent_end = load_dqn_agent('models/final_sprints_model.pt')
     return [agent_tutorial, agent_credit, agent_credit_end, agent_end]
 
 
