@@ -5,7 +5,7 @@ from pipeline.study_agent import load_dqn_agent, save_dqn_agent
 import visualizer
 
 
-def create_final_sprints_agent(prev_agents, trajectory_max_len, episode_n):
+def make_final_sprints_study(prev_agents, trajectory_max_len, episode_n):
     env = ProductOwnerEnv()
     agent = create_usual_agent(env, trajectory_max_len, episode_n)
     agents = prev_agents + [agent]
@@ -27,7 +27,7 @@ def main():
 
     agents = [tutorial_agent, credit_start_agent, credit_end_agent]
 
-    study = create_final_sprints_agent(agents, 100, 40)
+    study = make_final_sprints_study(agents, 100, 40)
     agent = study.agent
 
     visualizer.show_rewards(study, show_estimates=True, filename='figures/rewards.png')
