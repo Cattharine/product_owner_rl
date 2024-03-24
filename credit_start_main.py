@@ -21,7 +21,7 @@ def main():
     tutorial_model_path = 'models/tutorial_model.pt'
     tutorial_agent = load_dqn_agent(tutorial_model_path)
 
-    study = make_credit_study([tutorial_agent], 100, 100, False)
+    study = make_credit_study([tutorial_agent], 100, 40, False)
     agent = study.agent
 
     visualizer.show_rewards(study, show_estimates=True, filename='figures/rewards.png')
@@ -32,7 +32,7 @@ def main():
     save_dqn_agent(agent, 'models/credit_start_model.pt')
 
     end_agents = [tutorial_agent, agent]
-    end_study = make_credit_study(end_agents, 100, 100, True)
+    end_study = make_credit_study(end_agents, 100, 40, True)
     end_agent = end_study.agent
 
     visualizer.show_rewards(end_study, show_estimates=True, filename='figures/rewards.png')
