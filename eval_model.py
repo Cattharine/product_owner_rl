@@ -121,13 +121,13 @@ def choose_action(agent, state, inner_sprint_action_count, is_silent=True):
 
 
 def load_agents():
-    agent_tutorial = load_dqn_agent('models/tutorial_model.pt')
+    agent_tutorial = load_dqn_agent("./models/current/tutorial_agent.pt")
     agent_tutorial.epsilon = 0
-    agent_credit = load_dqn_agent('models/credit_start_model.pt')
+    agent_credit = load_dqn_agent("./models/current/credit_start_agent.pt")
     agent_credit.epsilon = 0
-    agent_credit_end = load_dqn_agent('models/credit_end_model.pt')
+    agent_credit_end = load_dqn_agent("./models/current/credit_end_agent.pt")
     agent_credit_end.epsilon = 0
-    agent_end = load_dqn_agent('models/final_sprints_model.pt')
+    agent_end = load_dqn_agent("./models/current/end_agent.pt")
     return [agent_tutorial, agent_credit, agent_credit_end, agent_end]
 
 
@@ -135,12 +135,12 @@ def define_backlog_environments():
     return [None] * 4
 
 
-def eval_model(agents):
+def eval_model():
     backlog_environments = define_backlog_environments()
     env = ProductOwnerEnv(backlog_env=backlog_environments[-1])
     env.IS_SILENT = True
 
-    results = eval_some_model(env, agents, backlog_environments, 10, is_silent=True)
+    results = eval_some_model(env, load_agents(), backlog_environments, 10, is_silent=True)
     print(results[0])
     results = results[1]
 
@@ -170,5 +170,4 @@ def eval_model(agents):
 
 
 if __name__ == "__main__":
-    agents = load_agents()
     eval_model()
