@@ -135,12 +135,12 @@ def define_backlog_environments():
     return [None] * 4
 
 
-def eval_model():
+def eval_model(agents):
     backlog_environments = define_backlog_environments()
     env = ProductOwnerEnv(backlog_env=backlog_environments[-1])
     env.IS_SILENT = True
 
-    results = eval_some_model(env, load_agents(), backlog_environments, 10, is_silent=True)
+    results = eval_some_model(env, agents, backlog_environments, 10, is_silent=True)
     print(results[0])
     results = results[1]
 
@@ -170,4 +170,5 @@ def eval_model():
 
 
 if __name__ == "__main__":
+    agents = load_agents()
     eval_model()
