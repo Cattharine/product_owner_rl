@@ -95,7 +95,7 @@ class ProductOwnerEnv:
         reward_bit = self._perform_action(action)
         credit_after = self.game.context.credit
         if credit_before > 0 and credit_after <= 0:
-            reward += 0.5
+            reward += 0.1
         reward += self._get_reward()
         reward += reward_bit
         return reward
@@ -117,32 +117,32 @@ class ProductOwnerEnv:
         if not self.game.backlog.can_start_sprint():
             return -0.1
         self.game.backlog_start_sprint()
-        return 0.1
+        return 0.01
 
     def _perform_decomposition(self) -> float:
         is_release_available = self.game.userstories.release_available
         if is_release_available:
             self.game.userstories_start_release()
-            return 0.1
+            return 0.01
         return -0.1
     
     def _perform_release(self) -> float:
         is_release_available = self.game.hud.release_available
         if is_release_available:
             self.game.hud_release_product()
-            return 0.1
+            return 0.01
         return -0.1
 
     def _perform_buy_robot(self) -> float:
         room_num = self._get_min_not_full_room_number()
         if room_num == -1:
-            return -10
+            return -0.1
         worker_count_before = self.game.context.available_developers_count
         self.game.buy_robot(room_num)
         worker_count = self.game.context.available_developers_count
         if worker_count_before == worker_count:
             return -0.1
-        return 0.1
+        return 0.01
     
     def _perform_buy_room(self) -> float:
         room_num = self._get_min_available_to_buy_room_number()
@@ -153,7 +153,7 @@ class ProductOwnerEnv:
         worker_count = self.game.context.available_developers_count
         if worker_count_before == worker_count:
             return -0.1
-        return 0.1
+        return 0.01
     
     def _perform_statistical_research(self) -> float:
         if not self.game.userstories.statistical_research_available:
@@ -163,7 +163,7 @@ class ProductOwnerEnv:
         stories_after = len(self.game.userstories.stories_list)
         if stories_before == stories_after:
             return -0.1
-        return 0.1
+        return 0.01
     
     def _perform_user_survey(self) -> float:
         if not self.game.userstories.user_survey_available:
@@ -173,7 +173,7 @@ class ProductOwnerEnv:
         stories_after = len(self.game.userstories.stories_list)
         if stories_before == stories_after:
             return -0.1
-        return 0.1
+        return 0.01
     
     def _perform_action(self, action: int) -> float:
         # we'll assume that action in range(0, max_action_num)
@@ -225,10 +225,10 @@ class ProductOwnerEnv:
         
         hours_after_move = self.game.backlog.calculate_hours_sum() + card.info.hours
         if hours_after_move > self.game.backlog.get_max_hours():
-            return -0.01
+            return -0.1
 
         self.game.move_backlog_card(card)
-        return 0.1
+        return 0.01
 
     def _perform_action_userstory(self, action: int) -> float:
         if action < self.userstory_env.us_common_count:
@@ -245,10 +245,10 @@ class ProductOwnerEnv:
             return -0.1
 
         if not card.is_movable:
-            return -0.01
+            return -0.1
 
         self.game.move_userstory_card(card)
-        return 0.1
+        return 0.01
 
     def _perform_remove_sprint_card(self, card_id: int) -> float:
         card = None
@@ -268,7 +268,7 @@ class ProductOwnerEnv:
         if card is None:
             return -0.1
         self.game.move_sprint_card(card)
-        return -0.05
+        return -0.02
 
     def _get_card(self, sampled, index):
         if 0 <= index < len(sampled):
