@@ -27,7 +27,7 @@ def main():
 
     agents = [tutorial_agent, credit_start_agent, credit_end_agent]
 
-    study = make_final_sprints_study(agents, 100, 40)
+    study = make_final_sprints_study(agents, 1000, 1000)
     agent = study.agent
 
     visualizer.show_rewards(study, show_estimates=True, filename='figures/rewards.png')

@@ -16,7 +16,7 @@ def make_tutorial_study(trajectory_max_len, episode_n):
     return study
 
 def main():
-    study = make_tutorial_study(trajectory_max_len=100, episode_n=40)
+    study = make_tutorial_study(trajectory_max_len=1000, episode_n=1000)
     agent = study.agent
 
     visualizer.show_rewards(study, show_estimates=True, filename='figures/rewards.png')
