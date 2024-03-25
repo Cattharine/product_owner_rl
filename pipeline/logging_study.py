@@ -30,7 +30,7 @@ class LoggingStudy(MetricsStudy):
         self.logger = self._get_logger(log_level)
 
     def _get_logger(self, log_level):
-        logger = logging.getLogger()
+        logger = logging.getLogger(f'{datetime.datetime.now()}')
         handler = logging.StreamHandler(sys.stdout)
         handler.setFormatter(logging.Formatter("%(asctime)s %(message)s"))
         logger.addHandler(handler)
