@@ -6,7 +6,7 @@ import random
 
 import matplotlib.pyplot as plt
 
-def plot_gradients(network: 'QFunction'):
+def plot_gradients(network: nn.Module):
     for param in network.parameters():
         grad = param.grad
         if grad is None:
