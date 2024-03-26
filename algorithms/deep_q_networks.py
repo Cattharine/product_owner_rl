@@ -4,6 +4,23 @@ import numpy as np
 
 import random
 
+import matplotlib.pyplot as plt
+
+def plot_gradients(network: 'QFunction'):
+    for param in network.parameters():
+        grad = param.grad
+        if grad is None:
+            continue
+        grad = grad.detach()
+        if len(grad.shape) == 1:
+            grad = grad.unsqueeze(dim=0)
+
+        fig, ax = plt.subplots()
+        im = ax.imshow(grad)
+        cbar = ax.figure.colorbar(im, ax=ax)
+
+        plt.show()
+
 
 class QFunction(nn.Module):
     def __init__(self, state_dim, action_n, inner_layer=32):
@@ -94,6 +111,7 @@ class DQN(nn.Module):
 
         loss = torch.mean((q_values - targets.detach()) ** 2)
         loss.backward()
+        plot_gradients(self.q_function)
         self.optimizer.step()
         self.optimizer.zero_grad()
 
