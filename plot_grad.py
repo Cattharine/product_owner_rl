@@ -19,5 +19,6 @@ print(net.weight.grad)
 
 fig, ax = plt.subplots()
 im = ax.imshow(net.weight.grad)
+cbar = ax.figure.colorbar(im, ax=ax)
 
 plt.show()
