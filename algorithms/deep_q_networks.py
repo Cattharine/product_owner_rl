@@ -111,7 +111,8 @@ class DQN(nn.Module):
 
         loss = torch.mean((q_values - targets.detach()) ** 2)
         loss.backward()
-        plot_gradients(self.q_function)
+        if loss > 100:
+            plot_gradients(self.q_function)
         self.optimizer.step()
         self.optimizer.zero_grad()
 
