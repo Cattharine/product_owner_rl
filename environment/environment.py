@@ -71,7 +71,7 @@ class ProductOwnerEnv:
             self.game.userstories.release_available,
             self.game.userstories.statistical_research_available,
             self.game.userstories.user_survey_available,
-            int(self.game.context.done),
+            int(context.done),
             *self._get_completed_cards_count(),
             *self.userstory_env.encode(self.game.userstories.stories_list),
             *self.backlog_env.encode(self.game.backlog)
