@@ -30,7 +30,7 @@ class ProductOwnerEnv:
             self.backlog_env = backlog_env
         self.userstory_env = UserstoryEnv() if userstory_env is None else userstory_env
 
-        self.meta_space_dim = 18
+        self.meta_space_dim = 19
 
         self.state_dim = self.meta_space_dim + \
             self.userstory_env.userstory_space_dim + \
@@ -71,6 +71,7 @@ class ProductOwnerEnv:
             self.game.userstories.release_available,
             self.game.userstories.statistical_research_available,
             self.game.userstories.user_survey_available,
+            int(self.game.context.done),
             *self._get_completed_cards_count(),
             *self.userstory_env.encode(self.game.userstories.stories_list),
             *self.backlog_env.encode(self.game.backlog)
