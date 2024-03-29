@@ -1,9 +1,10 @@
 class BaseRewardSystem:
-    def __init__(self) -> None:
+    def __init__(self, config: dict) -> None:
         self.sprint_index = 0
         self.money_index = 1
         self.credit_index = 4
         self.done_index = 15
+        self.config = config
     
     def get_reward(self, state_old, action, state_new) -> float:
         pass
