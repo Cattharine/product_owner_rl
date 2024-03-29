@@ -17,6 +17,9 @@ class BaseRewardSystem:
     def get_customers(self, state) -> float:
         return state[self.customers_index]
     
+    def get_loyalty(self, state) -> float:
+        return state[self.loyalty_index]
+    
     def get_credit(self, state) -> float:
         return state[self.credit_index]
     
