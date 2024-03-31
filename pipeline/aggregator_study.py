@@ -1,6 +1,6 @@
 from environment.userstory_env import UserstoryEnv
 from environment.backlog_env import BacklogEnv
-from environment.reward_sytem import BaseRewardSystem, EmpiricalRewardSystem
+from environment.reward_sytem import BaseRewardSystem, EmpiricalRewardSystem, EmpiricalCreditStageRewardSystem
 from pipeline.logging_study import LoggingStudy
 from environment import TutorialSolverEnv, CreditPayerEnv, ProductOwnerEnv
 from environment.credit_payer_env import USUAL_CREDIT_ENV_END_SPRINT, EARLY_CREDIT_ENV_END_SPRINT
@@ -72,10 +72,12 @@ class AggregatorStudy(LoggingStudy):
         return self.play_some_stage(tutorial_agent, env, done, "tutorial")
 
     def play_credit_payment(self, credit_agent, credit_backlog_env, with_end):
+        reward_system = EmpiricalCreditStageRewardSystem(config={})
         env = CreditPayerEnv(backlog_env=credit_backlog_env, with_end=with_end,
-                             with_info=self.env.with_info)
+                             with_info=self.env.with_info, reward_system=reward_system)
         end_sprint = USUAL_CREDIT_ENV_END_SPRINT if with_end else EARLY_CREDIT_ENV_END_SPRINT
         done = self.env.game.context.current_sprint == end_sprint
+        update_reward_system_config(env, reward_system)
 
         return self.play_some_stage(credit_agent, env, done, "credit")
 
