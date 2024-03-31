@@ -1,9 +1,13 @@
 from empirical_reward_system import EmpiricalRewardSystem
 
+PURCHASE_ACTIONS = {3, 4, 5, 6}
+LATE_PURCHASE_SPRINT = 29
+
 class EmpiricalCreditStageRewardSystem(EmpiricalRewardSystem):
     def get_reward(self, state_old, action, state_new) -> float:
         reward = super().get_reward(state_old, action, state_new)
         reward += self.get_credit_payer_reward()
+        reward += self.get_late_purchases_punishment(state_old, action, state_new)
         return reward
 
     def get_credit_payer_reward(self, state_old, state_new) -> float:
@@ -20,5 +24,13 @@ class EmpiricalCreditStageRewardSystem(EmpiricalRewardSystem):
         potential = loyalty * customers
         return potential
 
-    def get_late_purchases_punishment(self):
-        pass
+    def get_late_purchases_punishment(self, state_old, action, state_new) -> float:
+        money_diff = self.get_money(state_old) - self.get_money(state_new)
+        if money_diff >= 0:
+            return 0
+        if self.get_sprint(state_new) < LATE_PURCHASE_SPRINT:
+            return 0
+        if action not in PURCHASE_ACTIONS:
+            return 0
+        return -100
+        

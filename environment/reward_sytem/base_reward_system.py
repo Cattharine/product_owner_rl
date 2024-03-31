@@ -10,6 +10,9 @@ class BaseRewardSystem:
     
     def get_reward(self, state_old, action, state_new) -> float:
         pass
+
+    def get_sprint(self, state) -> float:
+        return state[self.sprint_index]
     
     def get_money(self, state) -> float:
         return state[self.money_index]
