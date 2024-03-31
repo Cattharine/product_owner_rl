@@ -1,4 +1,4 @@
-from empirical_reward_system import EmpiricalRewardSystem
+from .empirical_reward_system import EmpiricalRewardSystem
 
 PURCHASE_ACTIONS = {3, 4, 5, 6}
 LATE_PURCHASE_SPRINT = 29
