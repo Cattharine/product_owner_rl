@@ -6,7 +6,7 @@ LATE_PURCHASE_SPRINT = 29
 class EmpiricalCreditStageRewardSystem(EmpiricalRewardSystem):
     def get_reward(self, state_old, action, state_new) -> float:
         reward = super().get_reward(state_old, action, state_new)
-        reward += self.get_credit_payer_reward()
+        reward += self.get_credit_payer_reward(state_old, state_new)
         reward += self.get_late_purchases_punishment(state_old, action, state_new)
         return reward
 
