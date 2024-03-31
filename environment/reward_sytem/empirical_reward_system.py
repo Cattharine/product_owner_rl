@@ -2,7 +2,7 @@ from .base_reward_system import BaseRewardSystem
 
 class EmpiricalRewardSystem(BaseRewardSystem):
     def get_reward(self, state_old, action, state_new) -> float:
-        if state_old == state_new:
+        if (state_old == state_new).all():
             return -10
         reward = 0
         if self.get_credit(state_old) > 0 and self.get_credit(state_new) <= 0:
