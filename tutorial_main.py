@@ -1,14 +1,19 @@
 from environment import TutorialSolverEnv
+from environment.backlog_env import BacklogEnv
 from pipeline import LoggingStudy
 from main import create_usual_agent
 
+from environment.reward_sytem import EmpiricalRewardSystem
 from pipeline.study_agent import save_dqn_agent
 
 import visualizer
 
 
 def make_tutorial_study(trajectory_max_len, episode_n, with_info):
-    env = TutorialSolverEnv(with_info=with_info)
+    backlog_env = BacklogEnv(4, 0, 0, 0, 0, 0)
+    config = {'remove_sprint_card_actinos': []}
+    reward_system = EmpiricalRewardSystem(config=config)
+    env = TutorialSolverEnv(backlog_env=backlog_env, with_info=with_info, reward_system=reward_system)
     agent = create_usual_agent(env, trajectory_max_len, episode_n)
     study = LoggingStudy(env, agent, trajectory_max_len)
     study.SAVE_MEMORY = False
