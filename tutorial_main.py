@@ -11,8 +11,7 @@ import visualizer
 
 def make_tutorial_study(trajectory_max_len, episode_n, with_info):
     backlog_env = BacklogEnv(4, 0, 0, 0, 0, 0)
-    config = {'remove_sprint_card_actinos': []}
-    reward_system = EmpiricalRewardSystem(config=config)
+    reward_system = EmpiricalRewardSystem(config={})
     env = TutorialSolverEnv(backlog_env=backlog_env, with_info=with_info, reward_system=reward_system)
     agent = create_usual_agent(env, trajectory_max_len, episode_n)
     study = LoggingStudy(env, agent, trajectory_max_len)

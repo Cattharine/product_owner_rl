@@ -22,7 +22,7 @@ class EmpiricalRewardSystem(BaseRewardSystem):
         return -50
 
     def get_action_reward(self, state_old, action, state_new) -> float:
-        if action in self.config["remove_sprint_card_actinos"]:
+        if action in self.config["remove_sprint_card_actions"]:
             return -2
         return 1
 
@@ -48,6 +48,6 @@ class BoundedEmpiricalRewardSystem(BaseRewardSystem):
         return -0.5
 
     def get_action_reward(self, state_old, action, state_new) -> float:
-        if action in self.config["remove_sprint_card_actinos"]:
+        if action in self.config["remove_sprint_card_actions"]:
             return -0.05
         return 0.01

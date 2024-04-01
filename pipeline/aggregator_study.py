@@ -10,7 +10,7 @@ def update_reward_system_config(env: ProductOwnerEnv, reward_system: BaseRewardS
     backlog = env.backlog_env
     offset = env.meta_action_dim + env.userstory_env.max_action_num + backlog.backlog_max_action_num
     actions = [offset + i for i in range(backlog.sprint_max_action_num)]
-    reward_system.config["remove_sprint_card_actinos"] = actions
+    reward_system.config["remove_sprint_card_actions"] = actions
 
 class AggregatorStudy(LoggingStudy):
     def __init__(self, env, agents, trajectory_max_len, save_rate=100,
