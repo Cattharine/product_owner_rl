@@ -5,6 +5,7 @@ class BaseRewardSystem:
         self.customers_index = 2
         self.loyalty_index = 3
         self.credit_index = 4
+        self.sprint_hours_index = 8
         self.done_index = 15
         self.config = config
 
@@ -25,6 +26,9 @@ class BaseRewardSystem:
 
     def get_credit(self, state) -> float:
         return state[self.credit_index]
+    
+    def get_sprint_hours(self, state) -> float:
+        return state[self.sprint_hours_index]
 
     def get_done(self, state) -> bool:
         done_int = state[self.done_index]
