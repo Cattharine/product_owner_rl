@@ -176,31 +176,9 @@ class ProductOwnerEnv:
         if success:
             self.current_state = self._get_state()
         reward = self.reward_system.get_reward(state_old, action, self.current_state)
-        return self.current_state, reward, self.game.context.done, self.get_info()
-    
-    def _perform_action_and_get_reward(self, action: int) -> float:
-        reward = 0
-        credit_before = self.game.context.credit
-        reward_bit = self._perform_action(action)
-        credit_after = self.game.context.credit
-        if credit_before > 0 and credit_after <= 0:
-            reward += 0.1
-        reward += self._get_reward()
-        reward += reward_bit
-        return reward
-
-    def _get_reward(self) -> float:
-        # sprint_penalty = +1
-        # money_reward = self.game.context.get_money() / 10 ** 6
-        done = self.game.context.done
-        if done:
-            if self.game.context.get_money() > 1e6:
-                reward_for_endgame = 1
-            else:
-                reward_for_endgame = -1
-        else:
-            reward_for_endgame = 0
-        return reward_for_endgame
+        info = self.get_info()
+        done = self.game.context.done or len(info) == 0
+        return self.current_state, reward, done, info
 
     def _perform_start_sprint_action(self) -> bool:
         can_start_sprint = self.game.backlog.can_start_sprint()
