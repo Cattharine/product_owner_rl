@@ -39,9 +39,9 @@ class EmpiricalRewardSystem(BaseRewardSystem):
         return self.valid_action_reward
 
     def get_reward_for_starting_sprint(self, state_old, state_new) -> float:
-        money_befor = self.get_money(state_old)
+        money_before = self.get_money(state_old)
         money_after = self.get_money(state_new)
-        base_reward = money_after - money_befor
+        base_reward = money_after - money_before
         if base_reward < 0:
             return base_reward
         if self.get_sprint_hours(state_old) > 0:
