@@ -72,7 +72,7 @@ class AggregatorStudy(LoggingStudy):
         return self.play_some_stage(tutorial_agent, env, done, "tutorial")
 
     def play_credit_payment(self, credit_agent, credit_backlog_env, with_end):
-        reward_system = EmpiricalCreditStageRewardSystem(config={})
+        reward_system = EmpiricalCreditStageRewardSystem(with_late_purchase_punishment=True, config={})
         env = CreditPayerEnv(backlog_env=credit_backlog_env, with_end=with_end,
                              with_info=self.env.with_info, reward_system=reward_system)
         end_sprint = USUAL_CREDIT_ENV_END_SPRINT if with_end else EARLY_CREDIT_ENV_END_SPRINT
