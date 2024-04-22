@@ -71,14 +71,20 @@ def get_user_story_description(user_story):
 
     return color, loyalty_value, customers_value
 
+def get_board(image):
+    board = image[135:495, 715:925]
+    return board
+
+def get_rows():
+    pass
 
 def get_user_stories(frame):
     user_stories = []
-    user_stories_board = frame[135:495, 715:925]
+    user_stories_board = get_board(frame)
     # plt.imshow(user_stories_board)
     # plt.show()
-    w = 86
-    h = 35
+    w = 88
+    h = 37
     for i in range(10):
         x_0 = 10
         y_0 = 48 + 46 * i
@@ -97,10 +103,40 @@ def get_user_stories(frame):
 
 
 def main():
-    image = cv2.imread("iframe_user_stories.png")
+    # image = cv2.imread("iframe_user_stories.png")
 
-    user_stories = get_user_stories(image)
-    print(user_stories)
+    # user_stories = get_user_stories(image)
+    # print(user_stories)
+
+    image = cv2.imread("iframe_backlog.png")
+
+    backlog_board = get_board(image)
+    plt.imshow(backlog_board)
+    plt.show()
+
+    w = 88
+    h = 37
+    for i in range(10):
+        x_0 = 10
+        y_0 = 48 + 46 * i
+        card = backlog_board[y_0 : y_0 + h, x_0 : x_0 + w]
+        plt.imshow(card)
+        plt.show()
+
+        color = card[0, 0]
+        if (color == [255, 255, 255]).all():
+            break
+
+        color = card[0, 0]
+        lower = color * 0.6
+        upper = color * 1.01
+        mask = cv2.inRange(card, lower, upper)
+        card[mask == 255] = [255, 255, 255]
+        card[mask == 0] = [0, 0, 0]
+
+        plt.imshow(card)
+        plt.show()
+        break
 
 
 if __name__ == "__main__":
