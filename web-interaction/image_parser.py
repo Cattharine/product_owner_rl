@@ -112,6 +112,13 @@ def get_user_stories(frame):
     return user_stories
 
 
+def split_row(row: cv2.typing.MatLike):
+    left = row[:, :42]
+    right = row[:, 46:]
+    if (right[0, 0] == [255, 255, 255]).all():
+        return [left]
+    return [left, right]
+
 def main():
     # image = cv2.imread("iframe_user_stories.png")
 
@@ -125,7 +132,14 @@ def main():
     plt.show()
 
     backlog_rows = get_rows(backlog_board)
-    for card in backlog_rows:
+    cards = []
+    for row in backlog_rows:
+        row_cards = split_row(row)
+        cards.extend(row_cards)
+    
+    for card in cards:
+        plt.imshow(card)
+        plt.show()
         color = card[0, 0]
         lower = color * 0.6
         upper = color * 1.01
