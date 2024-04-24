@@ -17,8 +17,14 @@ def load_characters():
 
 CHARACTERS = load_characters()
 
-def get_black_white_image(image):
-    pass
+def get_black_white_image(image, backgruond_color):
+    lower = backgruond_color * 0.6
+    upper = backgruond_color * 1.01
+    mask = cv2.inRange(image, lower, upper)
+    image[mask == 255] = [255, 255, 255]
+    image[mask == 0] = [0, 0, 0]
+
+    return image
 
 def find_digit(image):
     for key, value in CHARACTERS.items():
@@ -71,31 +77,35 @@ def get_user_story_description(user_story):
 
     return color, loyalty_value, customers_value
 
-def get_board(image):
+def get_board(image: cv2.typing.MatLike):
     board = image[135:495, 715:925]
     return board
 
-def get_rows():
-    pass
+def get_rows(board_image: cv2.typing.MatLike):
+    rows = []
+    w, h = 88, 37
+    for i in range(10):
+        x_0 = 10
+        y_0 = 48 + 46 * i
+        row = board_image[y_0 : y_0 + h, x_0 : x_0 + w]
+        # plt.imshow(row)
+        # plt.show()
+
+        color = row[0, 0]
+        if (color == [255, 255, 255]).all():
+            break
+
+        rows.append(row)
+    
+    return rows
 
 def get_user_stories(frame):
     user_stories = []
     user_stories_board = get_board(frame)
     # plt.imshow(user_stories_board)
     # plt.show()
-    w = 88
-    h = 37
-    for i in range(10):
-        x_0 = 10
-        y_0 = 48 + 46 * i
-        user_story = user_stories_board[y_0 : y_0 + h, x_0 : x_0 + w]
-        # plt.imshow(user_story)
-        # plt.show()
-
-        color = user_story[0, 0]
-        if (color == [255, 255, 255]).all():
-            break
-
+    user_stories_cards = get_rows(user_stories_board)
+    for user_story in user_stories_cards:
         description = get_user_story_description(user_story)
         user_stories.append(description)
     
@@ -114,19 +124,8 @@ def main():
     plt.imshow(backlog_board)
     plt.show()
 
-    w = 88
-    h = 37
-    for i in range(10):
-        x_0 = 10
-        y_0 = 48 + 46 * i
-        card = backlog_board[y_0 : y_0 + h, x_0 : x_0 + w]
-        plt.imshow(card)
-        plt.show()
-
-        color = card[0, 0]
-        if (color == [255, 255, 255]).all():
-            break
-
+    backlog_rows = get_rows(backlog_board)
+    for card in backlog_rows:
         color = card[0, 0]
         lower = color * 0.6
         upper = color * 1.01
