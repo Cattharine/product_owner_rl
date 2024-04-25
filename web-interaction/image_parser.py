@@ -1,6 +1,7 @@
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
+from os import listdir
 
 def load_characters():
     digits = {}
@@ -15,7 +16,16 @@ def load_characters():
     digits["k"] = k_char
     return digits
 
+def load_backlog_characters():
+    characters = []
+    for f in listdir("backlog_nums"):
+        key = f[0]
+        digit = cv2.imread(f"backlog_nums/{f}")
+        characters.append((key, digit))
+    return characters
+
 CHARACTERS = load_characters()
+BACKLOG_CHARACTERS = load_backlog_characters()
 
 def get_black_white_image(image, backgruond_color):
     lower = backgruond_color * 0.6
@@ -31,6 +41,11 @@ def find_digit(image):
         if (image == value).all():
             return key
 
+def find_backlog_digit(image):
+    for key, value in BACKLOG_CHARACTERS:
+        if (image == value).all():
+            return key
+
 def get_user_story_float(nums):
     num_width = 6
     value = ""
@@ -41,6 +56,20 @@ def get_user_story_float(nums):
             break
         if digit is None:
             cv2.imwrite(f"user_stories_nums/unknown.png", num)
+            plt.imshow(num)
+            plt.show()
+            break
+        value += str(digit)
+    return float(value)
+
+def get_backlog_float(nums):
+    num_width = 11
+    value = ""
+    for i in range(0, 2):
+        num = nums[:, num_width * i : num_width * (i + 1)]
+        digit = find_backlog_digit(num)
+        if digit is None:
+            cv2.imwrite(f"backlog_nums/unknown.png", num)
             plt.imshow(num)
             plt.show()
             break
@@ -138,18 +167,16 @@ def main():
         cards.extend(row_cards)
     
     for card in cards:
-        plt.imshow(card)
-        plt.show()
         color = card[0, 0]
         card = get_black_white_image(card, color)
 
         plt.imshow(card)
         plt.show()
         
-        digits = card[9:24, :25]
-        plt.imshow(digits)
-        plt.show()
-        # break
+        digits = card[9:24, 3:25]
+
+        backlog_hours = get_backlog_float(digits)
+        print(backlog_hours)
 
 
 if __name__ == "__main__":
