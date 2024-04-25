@@ -128,8 +128,8 @@ def main():
     image = cv2.imread("iframe_backlog.png")
 
     backlog_board = get_board(image)
-    plt.imshow(backlog_board)
-    plt.show()
+    # plt.imshow(backlog_board)
+    # plt.show()
 
     backlog_rows = get_rows(backlog_board)
     cards = []
@@ -141,15 +141,15 @@ def main():
         plt.imshow(card)
         plt.show()
         color = card[0, 0]
-        lower = color * 0.6
-        upper = color * 1.01
-        mask = cv2.inRange(card, lower, upper)
-        card[mask == 255] = [255, 255, 255]
-        card[mask == 0] = [0, 0, 0]
+        card = get_black_white_image(card, color)
 
         plt.imshow(card)
         plt.show()
-        break
+        
+        digits = card[9:24, :25]
+        plt.imshow(digits)
+        plt.show()
+        # break
 
 
 if __name__ == "__main__":
