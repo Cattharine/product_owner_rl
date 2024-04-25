@@ -6,20 +6,6 @@ from os import listdir
 
 def load_characters():
     characters = []
-    for i in range(10):
-        digit = cv2.imread(f"user_stories_nums/digit_{i}.png")
-        characters.append((str(i), digit))
-    dot = cv2.imread(f"user_stories_nums/dot.png")
-    characters.append((".", dot))
-    empty = cv2.imread(f"user_stories_nums/empty.png")
-    characters.append(("", empty))
-    k_char = cv2.imread(f"user_stories_nums/k.png")
-    characters.append(("k", k_char))
-    return characters
-
-
-def load_backlog_characters():
-    characters = []
     for f in listdir("templates"):
         key = '' if f[:5] == 'empty' else f[0]
         digit = cv2.imread(f"templates/{f}")
@@ -28,7 +14,6 @@ def load_backlog_characters():
 
 
 CHARACTERS = load_characters()
-BACKLOG_CHARACTERS = load_backlog_characters()
 
 
 def get_black_white_image(image, backgruond_color):
@@ -51,42 +36,29 @@ def find_digit(image):
             return key
 
 
-def find_backlog_digit(image):
-    for key, value in BACKLOG_CHARACTERS:
-        if (image == value).all():
-            return key
-
-
-def get_user_story_float(nums):
-    num_width = 6
+def get_float(nums, num_width, num_count):
     value = ""
-    for i in range(1, 6):
-        num = nums[:, num_width * (i - 1) : num_width * i]
+    for i in range(num_count):
+        num = nums[:, num_width * i : num_width * (i + 1)]
         digit = find_digit(num)
-        if digit == "k":
+        if digit == 'k':
             break
         if digit is None:
-            cv2.imwrite(f"user_stories_nums/unknown.png", num)
+            cv2.imwrite(f"templates/unknown.png", num)
             plt.imshow(num)
             plt.show()
             break
         value += str(digit)
     return float(value)
+
+def get_user_story_float(nums):
+    num_width = 6
+    return get_float(nums, num_width, 5)
 
 
 def get_backlog_float(nums):
     num_width = 11
-    value = ""
-    for i in range(0, 2):
-        num = nums[:, num_width * i : num_width * (i + 1)]
-        digit = find_backlog_digit(num)
-        if digit is None:
-            cv2.imwrite(f"backlog_nums/unknown.png", num)
-            plt.imshow(num)
-            plt.show()
-            break
-        value += str(digit)
-    return float(value)
+    return get_float(nums, num_width, 2)
 
 
 def get_user_story_loyalty(user_story):
