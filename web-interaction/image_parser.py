@@ -3,29 +3,33 @@ import matplotlib.pyplot as plt
 import numpy as np
 from os import listdir
 
+
 def load_characters():
-    digits = {}
+    characters = []
     for i in range(10):
         digit = cv2.imread(f"user_stories_nums/digit_{i}.png")
-        digits[i] = digit
+        characters.append((str(i), digit))
     dot = cv2.imread(f"user_stories_nums/dot.png")
-    digits["."] = dot
+    characters.append((".", dot))
     empty = cv2.imread(f"user_stories_nums/empty.png")
-    digits[""] = empty
+    characters.append(("", empty))
     k_char = cv2.imread(f"user_stories_nums/k.png")
-    digits["k"] = k_char
-    return digits
+    characters.append(("k", k_char))
+    return characters
+
 
 def load_backlog_characters():
     characters = []
-    for f in listdir("backlog_nums"):
-        key = f[0]
-        digit = cv2.imread(f"backlog_nums/{f}")
+    for f in listdir("templates"):
+        key = '' if f[:5] == 'empty' else f[0]
+        digit = cv2.imread(f"templates/{f}")
         characters.append((key, digit))
     return characters
 
+
 CHARACTERS = load_characters()
 BACKLOG_CHARACTERS = load_backlog_characters()
+
 
 def get_black_white_image(image, backgruond_color):
     lower = backgruond_color * 0.6
@@ -36,15 +40,22 @@ def get_black_white_image(image, backgruond_color):
 
     return image
 
+
 def find_digit(image):
-    for key, value in CHARACTERS.items():
+    for key, value in CHARACTERS:
+        if value is None:
+            continue
+        if value.shape != image.shape:
+            continue
         if (image == value).all():
             return key
+
 
 def find_backlog_digit(image):
     for key, value in BACKLOG_CHARACTERS:
         if (image == value).all():
             return key
+
 
 def get_user_story_float(nums):
     num_width = 6
@@ -52,7 +63,7 @@ def get_user_story_float(nums):
     for i in range(1, 6):
         num = nums[:, num_width * (i - 1) : num_width * i]
         digit = find_digit(num)
-        if digit == 'k':
+        if digit == "k":
             break
         if digit is None:
             cv2.imwrite(f"user_stories_nums/unknown.png", num)
@@ -61,6 +72,7 @@ def get_user_story_float(nums):
             break
         value += str(digit)
     return float(value)
+
 
 def get_backlog_float(nums):
     num_width = 11
@@ -76,39 +88,33 @@ def get_backlog_float(nums):
         value += str(digit)
     return float(value)
 
+
 def get_user_story_loyalty(user_story):
     loyalty_nums = user_story[7:15, 55:]
-    # plt.imshow(loyalty_nums)
-    # plt.show()
     loyalty_value = get_user_story_float(loyalty_nums)
     return loyalty_value
 
+
 def get_user_story_customers(user_story):
     customers_nums = user_story[19:27, 55:]
-    # plt.imshow(customers_nums)
-    # plt.show()
     customers_value = get_user_story_float(customers_nums)
     return customers_value
 
+
 def get_user_story_description(user_story):
     color = user_story[0, 0]
-    lower = color * 0.6
-    upper = color * 1.01
-    mask = cv2.inRange(user_story, lower, upper)
-    user_story[mask == 255] = [255, 255, 255]
-    user_story[mask == 0] = [0, 0, 0]
+    user_story_bw = get_black_white_image(user_story, color)
 
-    # plt.imshow(user_story)
-    # plt.show()
-
-    loyalty_value = get_user_story_loyalty(user_story)
-    customers_value = get_user_story_customers(user_story)
+    loyalty_value = get_user_story_loyalty(user_story_bw)
+    customers_value = get_user_story_customers(user_story_bw)
 
     return color, loyalty_value, customers_value
+
 
 def get_board(image: cv2.typing.MatLike):
     board = image[135:495, 715:925]
     return board
+
 
 def get_rows(board_image: cv2.typing.MatLike):
     rows = []
@@ -125,8 +131,9 @@ def get_rows(board_image: cv2.typing.MatLike):
             break
 
         rows.append(row)
-    
+
     return rows
+
 
 def get_user_stories(frame):
     user_stories = []
@@ -137,7 +144,7 @@ def get_user_stories(frame):
     for user_story in user_stories_cards:
         description = get_user_story_description(user_story)
         user_stories.append(description)
-    
+
     return user_stories
 
 
@@ -148,35 +155,48 @@ def split_row(row: cv2.typing.MatLike):
         return [left]
     return [left, right]
 
-def main():
-    # image = cv2.imread("iframe_user_stories.png")
 
-    # user_stories = get_user_stories(image)
-    # print(user_stories)
+def get_backlog_card_descripton(card_image):
+    color = card_image[0, 0]
+    card_image = get_black_white_image(card_image, color)
 
-    image = cv2.imread("iframe_backlog.png")
+    hours = card_image[9:24, 3:25]
+    hours_value = get_backlog_float(hours)
 
+    return color, hours_value
+
+
+def get_backlog_card_images(image):
     backlog_board = get_board(image)
-    # plt.imshow(backlog_board)
-    # plt.show()
 
     backlog_rows = get_rows(backlog_board)
     cards = []
     for row in backlog_rows:
         row_cards = split_row(row)
         cards.extend(row_cards)
-    
+
+    return cards
+
+
+def get_backlog(image):
+    backlog_cards = []
+    cards = get_backlog_card_images(image)
+
     for card in cards:
-        color = card[0, 0]
-        card = get_black_white_image(card, color)
+        card_descripton = get_backlog_card_descripton(card)
+        backlog_cards.append(card_descripton)
 
-        plt.imshow(card)
-        plt.show()
-        
-        digits = card[9:24, 3:25]
+    return backlog_cards
 
-        backlog_hours = get_backlog_float(digits)
-        print(backlog_hours)
+
+def main():
+    image = cv2.imread("iframe_user_stories.png")
+    user_stories = get_user_stories(image)
+    print(user_stories)
+
+    image = cv2.imread("iframe_backlog.png")
+    backlog_cards = get_backlog(image)
+    print(backlog_cards)
 
 
 if __name__ == "__main__":
