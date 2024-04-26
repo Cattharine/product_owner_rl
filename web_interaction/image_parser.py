@@ -1,14 +1,13 @@
 import cv2
 import matplotlib.pyplot as plt
-import numpy as np
 from os import listdir
 
 
 def load_characters():
     characters = []
-    for f in listdir("templates"):
+    for f in listdir("web_interaction/templates"):
         key = '' if f[:5] == 'empty' else f[0]
-        digit = cv2.imread(f"templates/{f}")
+        digit = cv2.imread(f"web_interaction/templates/{f}")
         characters.append((key, digit))
     return characters
 
@@ -95,8 +94,6 @@ def get_rows(board_image: cv2.typing.MatLike):
         x_0 = 10
         y_0 = 48 + 46 * i
         row = board_image[y_0 : y_0 + h, x_0 : x_0 + w]
-        # plt.imshow(row)
-        # plt.show()
 
         color = row[0, 0]
         if (color == [255, 255, 255]).all():
@@ -110,8 +107,6 @@ def get_rows(board_image: cv2.typing.MatLike):
 def get_user_stories(frame):
     user_stories = []
     user_stories_board = get_board(frame)
-    # plt.imshow(user_stories_board)
-    # plt.show()
     user_stories_cards = get_rows(user_stories_board)
     for user_story in user_stories_cards:
         description = get_user_story_description(user_story)
