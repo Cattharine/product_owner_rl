@@ -1,5 +1,4 @@
 import cv2
-import importlib
 
 from web_interaction import image_parser as ip
 
