@@ -157,11 +157,11 @@ def get_backlog(image):
 
 
 def main():
-    image = cv2.imread("iframe_user_stories.png")
+    image = cv2.imread("tests/test_images/iframe_user_stories.png")
     user_stories = get_user_stories(image)
     print(user_stories)
 
-    image = cv2.imread("iframe_backlog.png")
+    image = cv2.imread("tests/test_images/iframe_backlog.png")
     backlog_cards = get_backlog(image)
     print(backlog_cards)
 
