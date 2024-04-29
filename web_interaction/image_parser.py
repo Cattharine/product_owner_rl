@@ -41,9 +41,10 @@ def get_float(nums, num_width, num_count):
         num = nums[:, num_width * i : num_width * (i + 1)]
         digit = find_digit(num)
         if digit == 'k':
+            value += '000'
             break
         if digit is None:
-            cv2.imwrite(f"templates/unknown.png", num)
+            cv2.imwrite(f"web_interaction/templates/unknown.png", num)
             plt.imshow(num)
             plt.show()
             break
@@ -69,7 +70,7 @@ def get_user_story_loyalty(user_story):
 def get_user_story_customers(user_story):
     customers_nums = user_story[19:27, 55:]
     customers_value = get_user_story_float(customers_nums)
-    return customers_value
+    return customers_value / 1000
 
 
 def get_user_story_description(user_story):
@@ -155,15 +156,44 @@ def get_backlog(image):
 
     return backlog_cards
 
+def get_sprint_number(meta_info: cv2.typing.MatLike):
+    sprint = meta_info[14:30, 487:530]
+    # plt.imshow(sprint)
+    # plt.grid()
+    # plt.show()
+
+    sprint_n = get_float(sprint, 11, 3)
+    
+    return sprint_n
+
+def get_game_money(meta_info: cv2.typing.MatLike):
+    money = meta_info[33:49:, 421:480]
+    # plt.imshow(money)
+    # plt.grid()
+    # plt.show()
+
+    money_value = get_float(money, 11, 5)
+    print(money_value)
+
 
 def main():
-    image = cv2.imread("tests/test_images/iframe_user_stories.png")
-    user_stories = get_user_stories(image)
-    print(user_stories)
+    # image = cv2.imread("tests/test_images/iframe_user_stories.png")
+    # user_stories = get_user_stories(image)
+    # print(user_stories)
 
-    image = cv2.imread("tests/test_images/iframe_backlog.png")
-    backlog_cards = get_backlog(image)
-    print(backlog_cards)
+    # image = cv2.imread("tests/test_images/iframe_backlog.png")
+    # backlog_cards = get_backlog(image)
+    # print(backlog_cards)
+    imgage = cv2.imread("tests/test_images/iframe_user_stories.png")
+    meta_info = imgage[7:83, 57:932]
+    # plt.imshow(meta_info)
+    # plt.show()
+
+    sprint_n = get_sprint_number(meta_info)
+    print(sprint_n)
+
+    money = get_game_money(meta_info)
+    print(money)    
 
 
 if __name__ == "__main__":
