@@ -6,7 +6,7 @@ from os import listdir
 def load_characters():
     characters = []
     for f in listdir("web_interaction/templates"):
-        key = '' if f[:5] == 'empty' else f[0]
+        key = "" if f[:5] == "empty" else f[0]
         digit = cv2.imread(f"web_interaction/templates/{f}")
         characters.append((key, digit))
     return characters
@@ -40,8 +40,8 @@ def get_float(nums, num_width, num_count):
     for i in range(num_count):
         num = nums[:, num_width * i : num_width * (i + 1)]
         digit = find_digit(num)
-        if digit == 'k':
-            value += '000'
+        if digit == "k":
+            value += "000"
             break
         if digit is None:
             cv2.imwrite(f"web_interaction/templates/unknown.png", num)
@@ -50,6 +50,7 @@ def get_float(nums, num_width, num_count):
             break
         value += str(digit)
     return float(value)
+
 
 def get_user_story_float(nums):
     num_width = 6
@@ -156,6 +157,7 @@ def get_backlog(image):
 
     return backlog_cards
 
+
 def get_sprint_number(meta_info: cv2.typing.MatLike):
     sprint = meta_info[14:30, 487:530]
     # plt.imshow(sprint)
@@ -163,8 +165,9 @@ def get_sprint_number(meta_info: cv2.typing.MatLike):
     # plt.show()
 
     sprint_n = get_float(sprint, 11, 3)
-    
+
     return sprint_n
+
 
 def get_game_money(meta_info: cv2.typing.MatLike):
     money = meta_info[33:49:, 421:480]
@@ -173,7 +176,27 @@ def get_game_money(meta_info: cv2.typing.MatLike):
     # plt.show()
 
     money_value = get_float(money, 11, 5)
-    print(money_value)
+    return money_value
+
+
+def get_customers(meta_info: cv2.typing.MatLike):
+    customers_nums = meta_info[18:29, 161:180]
+    # plt.imshow(customers_nums)
+    # plt.grid()
+    # plt.show()
+
+    customers_value = get_float(customers_nums, 9, 2)
+    return customers_value / 1000
+
+
+def get_loyalty(meta_info: cv2.typing.MatLike):
+    loyalty_nums = meta_info[38:49, 143:206]
+    # plt.imshow(loyalty_nums)
+    # plt.grid()
+    # plt.show()
+
+    loyalty_value = get_float(loyalty_nums, 9, 5)
+    return loyalty_value
 
 
 def main():
@@ -193,7 +216,13 @@ def main():
     print(sprint_n)
 
     money = get_game_money(meta_info)
-    print(money)    
+    print(money)
+
+    customers_value = get_customers(meta_info)
+    print(customers_value)
+
+    loyalty_value = get_loyalty(meta_info)
+    print(loyalty_value)
 
 
 if __name__ == "__main__":
