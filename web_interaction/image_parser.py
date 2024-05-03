@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 import matplotlib.pyplot as plt
 from os import listdir
 
@@ -73,7 +74,7 @@ def get_user_story_customers(user_story):
 
 
 def get_user_story_description(user_story):
-    color = user_story[0, 0]
+    color = np.array(user_story[0, 0])
     user_story_bw = get_black_white_image(user_story, color)
 
     loyalty_value = get_user_story_loyalty(user_story_bw)
@@ -123,8 +124,8 @@ def split_row(row: cv2.typing.MatLike):
     return [left, right]
 
 
-def get_backlog_card_descripton(card_image):
-    color = card_image[0, 0]
+def get_backlog_card_descripton(card_image: cv2.typing.MatLike):
+    color = np.array(card_image[0, 0])
     card_image = get_black_white_image(card_image, color)
 
     hours = card_image[9:24, 3:25]
