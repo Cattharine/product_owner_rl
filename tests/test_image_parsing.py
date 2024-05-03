@@ -10,10 +10,10 @@ def test_get_backlog_description():
     assert len(backlog) == 4
     assert len(backlog[0]) == 2
     expected_backlog = [
-        (array([255, 255, 255]), 8.0),
-        (array([255, 255, 255]), 8.0),
-        (array([255, 255, 255]), 13.0),
-        (array([255, 255, 255]), 9.0),
+        (array([ 43, 194, 249]), 8.0),
+        (array([ 43, 194, 249]), 8.0),
+        (array([ 43, 194, 249]), 13.0),
+        (array([ 43, 194, 249]), 9.0),
     ]
 
     for expected, actual in zip(expected_backlog, backlog):
@@ -29,8 +29,8 @@ def test_get_user_stories():
     assert len(user_stories) == 2
     assert len(user_stories[0]) == 3
     expected_user_stories = [
-        (array([255, 255, 255]), 0.05, 2.0),
-        (array([255, 255, 255]), 0.065, 1.0),
+        (array([ 23, 150, 247]), 0.05, 2.0),
+        (array([ 43, 194, 249]), 0.065, 1.0),
     ]
     for expected, actual in zip(expected_user_stories, user_stories):
         color, loyalty, customers = actual
