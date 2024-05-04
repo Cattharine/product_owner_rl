@@ -1,14 +1,19 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-from os import listdir
+from os import listdir, getcwd, path
 
 
 def load_characters():
     characters = []
-    for f in listdir("web_interaction/templates"):
+    template_dir = getcwd()
+    if 'web_interaction' not in template_dir:
+        template_dir = path.join(template_dir, 'web_interaction')
+    template_dir = path.join(template_dir, 'templates')
+
+    for f in listdir(template_dir):
         key = "" if f[:5] == "empty" else f[0]
-        digit = cv2.imread(f"web_interaction/templates/{f}")
+        digit = cv2.imread(path.join(template_dir, f))
         characters.append((key, digit))
     return characters
 
@@ -175,18 +180,24 @@ def get_game_money(meta_info: cv2.typing.MatLike):
     # plt.imshow(money)
     # plt.grid()
     # plt.show()
-
+    unique_colors = np.unique(money[:, 0], axis=0)
+    while len(unique_colors) == 1:
+        money = money[:, 1:]
+        unique_colors = np.unique(money[:, 0], axis=0)
     money_value = get_float(money, 11, 5)
     return money_value
 
 
 def get_customers(meta_info: cv2.typing.MatLike):
-    customers_nums = meta_info[18:29, 161:180]
+    num_width = 9
+    num_count = 3
+    image_width = num_width * num_count
+    customers_nums = meta_info[18:29, 161:161 + image_width]
     # plt.imshow(customers_nums)
     # plt.grid()
     # plt.show()
 
-    customers_value = get_float(customers_nums, 9, 2)
+    customers_value = get_float(customers_nums, num_width, num_count)
     return customers_value / 1000
 
 
