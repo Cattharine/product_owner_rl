@@ -26,11 +26,12 @@ def test_get_backlog_description():
 def test_get_user_stories():
     image = cv2.imread("tests/test_images/iframe_user_stories.png")
     user_stories = ip.get_user_stories(image)
-    assert len(user_stories) == 2
+    assert len(user_stories) == 3
     assert len(user_stories[0]) == 3
     expected_user_stories = [
         (array([ 23, 150, 247]), 0.05, 2.0),
         (array([ 43, 194, 249]), 0.065, 1.0),
+        (array([255, 211, 143]), 0.045, 1.0),
     ]
     for expected, actual in zip(expected_user_stories, user_stories):
         color, loyalty, customers = actual
