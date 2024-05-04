@@ -7,9 +7,9 @@ from os import listdir, getcwd, path
 def load_characters():
     characters = []
     template_dir = getcwd()
-    if 'web_interaction' not in template_dir:
-        template_dir = path.join(template_dir, 'web_interaction')
-    template_dir = path.join(template_dir, 'templates')
+    if "web_interaction" not in template_dir:
+        template_dir = path.join(template_dir, "web_interaction")
+    template_dir = path.join(template_dir, "templates")
 
     for f in listdir(template_dir):
         key = "" if f[:5] == "empty" else f[0]
@@ -192,7 +192,7 @@ def get_customers(meta_info: cv2.typing.MatLike):
     num_width = 9
     num_count = 3
     image_width = num_width * num_count
-    customers_nums = meta_info[18:29, 161:161 + image_width]
+    customers_nums = meta_info[18:29, 161 : 161 + image_width]
     # plt.imshow(customers_nums)
     # plt.grid()
     # plt.show()
@@ -211,16 +211,27 @@ def get_loyalty(meta_info: cv2.typing.MatLike):
     return loyalty_value
 
 
+def get_current_sprint_hours(backlog_image):
+    backlog_board = get_board(backlog_image)
+    button = backlog_board[334:356, 11:199]
+    nums = button[8:16, 138:168]
+    nums = get_black_white_image(nums, nums[0, 0])
+    current_hours_nums = nums[:, :12]
+    current_hours_value = get_float(current_hours_nums, 6, 2)
+
+    return current_hours_value
+
+
 def main():
     # image = cv2.imread("tests/test_images/iframe_user_stories.png")
     # user_stories = get_user_stories(image)
     # print(user_stories)
 
-    # image = cv2.imread("tests/test_images/iframe_backlog.png")
+    image = cv2.imread("tests/test_images/iframe_backlog.png")
     # backlog_cards = get_backlog(image)
     # print(backlog_cards)
-    imgage = cv2.imread("tests/test_images/iframe_user_stories.png")
-    meta_info = imgage[7:83, 57:932]
+    # image = cv2.imread("tests/test_images/iframe_user_stories.png")
+    meta_info = image[7:83, 57:932]
     # plt.imshow(meta_info)
     # plt.show()
 
@@ -235,6 +246,9 @@ def main():
 
     loyalty_value = get_loyalty(meta_info)
     print(loyalty_value)
+
+    current_sprint_hours = get_current_sprint_hours(image)
+    print(current_sprint_hours)
 
 
 if __name__ == "__main__":
