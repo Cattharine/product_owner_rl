@@ -214,7 +214,13 @@ def get_loyalty(meta_info: cv2.typing.MatLike):
 def get_current_sprint_hours(backlog_image):
     backlog_board = get_board(backlog_image)
     button = backlog_board[334:356, 11:199]
-    nums = button[8:16, 138:168]
+    
+    button_action = button[:, :100]
+    button_action_digit = find_digit(button_action)
+    if button_action_digit == 'd':
+        nums = button[7:15, 115:145]
+    else:
+        nums = button[8:16, 138:168]
     nums = get_black_white_image(nums, nums[0, 0])
     current_hours_nums = nums[:, :12]
     current_hours_value = get_float(current_hours_nums, 6, 2)
@@ -227,7 +233,7 @@ def main():
     # user_stories = get_user_stories(image)
     # print(user_stories)
 
-    image = cv2.imread("tests/test_images/iframe_backlog.png")
+    image = cv2.imread("web_interaction/iframe.png")
     # backlog_cards = get_backlog(image)
     # print(backlog_cards)
     # image = cv2.imread("tests/test_images/iframe_user_stories.png")
