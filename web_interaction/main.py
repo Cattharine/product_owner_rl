@@ -39,6 +39,8 @@ def start_game(driver, iframe: WebElement):
         iframe, -int(0.35 * width), int(0.4 * height)
     ).click().perform()
 
+    time.sleep(1)
+
     # turn off sprint animation
     ActionChains(driver).move_to_element_with_offset(
         iframe, -int(0.45 * width), -int(0.42 * height)  # move to settings icon
