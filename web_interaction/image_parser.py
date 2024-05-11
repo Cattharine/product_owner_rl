@@ -230,8 +230,6 @@ def get_current_sprint_hours(backlog_image):
 
 def main():
     # image = cv2.imread("tests/test_images/iframe_user_stories.png")
-    # user_stories = get_user_stories(image)
-    # print(user_stories)
 
     image = cv2.imread("web_interaction/iframe.png")
     # backlog_cards = get_backlog(image)
@@ -255,6 +253,9 @@ def main():
 
     current_sprint_hours = get_current_sprint_hours(image)
     print(current_sprint_hours)
+
+    user_stories = get_user_stories(image)
+    print(user_stories)
 
 
 if __name__ == "__main__":
