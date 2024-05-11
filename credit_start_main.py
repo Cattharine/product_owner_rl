@@ -1,7 +1,6 @@
 from environment import CreditPayerEnv
 from environment.backlog_env import BacklogEnv
-from environment.reward_sytem import BoundedEmpiricalCreditStageRewardSystem
-from environment.userstory_env import UserstoryEnv
+from environment.reward_sytem import EmpiricalCreditStageRewardSystem, FullPotentialCreditRewardSystem
 from pipeline import AggregatorStudy
 from pipeline.study_agent import load_dqn_agent, save_dqn_agent
 from pipeline.aggregator_study import update_reward_system_config
@@ -10,17 +9,15 @@ from main import create_usual_agent
 import visualizer
 
 
-def make_credit_study(prev_agents, trajectory_max_len, episode_n, with_end, with_info, with_late_purchase_penalty):
-    userstory_env = UserstoryEnv(2, 0, 0)
-    backlog_env = BacklogEnv(6, 0, 0, 6, 0, 0)
-    reward_system = BoundedEmpiricalCreditStageRewardSystem(with_late_purchase_punishment=with_late_purchase_penalty, config={})
-    env = CreditPayerEnv(userstory_env, backlog_env, with_end=with_end, with_info=with_info, reward_system=reward_system)
+def make_credit_study(prev_agents, trajectory_max_len, episode_n, with_end, with_info, with_late_purchase_penalty, save_rate=None):
+    reward_system = FullPotentialCreditRewardSystem(config={})
+    env = CreditPayerEnv(with_end=with_end, with_info=with_info, reward_system=reward_system)
     update_reward_system_config(env, reward_system)
 
     agent = create_usual_agent(env, trajectory_max_len, episode_n)
 
     agents = prev_agents + [agent]
-    study = AggregatorStudy(env, agents, trajectory_max_len)
+    study = AggregatorStudy(env, agents, trajectory_max_len, save_rate=save_rate)
 
     study.study_agent(episode_n)
 
