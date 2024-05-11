@@ -3,6 +3,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 from os import listdir, getcwd, path
 
+BOARD_X0 = 715
+BOARD_Y0 = 135
+
+
+class UserStoryImageInfo:
+    def __init__(self, color, loyalty, customers, position) -> None:
+        self.color = color
+        self.loyalty = loyalty
+        self.customers = customers
+        self.position = position
+
 
 def load_characters():
     characters = []
@@ -91,7 +102,7 @@ def get_user_story_description(user_story):
 
 
 def get_board(image: cv2.typing.MatLike):
-    board = image[135:495, 715:925]
+    board = image[BOARD_Y0:495, BOARD_X0:925]
     return board
 
 
@@ -107,20 +118,22 @@ def get_rows(board_image: cv2.typing.MatLike):
         if (color == [255, 255, 255]).all():
             break
 
-        rows.append(row)
+        rows.append((row, (BOARD_X0 + x_0, BOARD_Y0 + y_0)))
 
     return rows
 
 
 def get_user_stories(frame):
     user_stories = []
+    positions = []
     user_stories_board = get_board(frame)
     user_stories_cards = get_rows(user_stories_board)
-    for user_story in user_stories_cards:
+    for user_story, position in user_stories_cards:
         description = get_user_story_description(user_story)
         user_stories.append(description)
+        positions.append(position)
 
-    return user_stories
+    return user_stories, positions
 
 
 def split_row(row: cv2.typing.MatLike):
@@ -146,7 +159,7 @@ def get_backlog_card_images(image):
 
     backlog_rows = get_rows(backlog_board)
     cards = []
-    for row in backlog_rows:
+    for row, position in backlog_rows:
         row_cards = split_row(row)
         cards.extend(row_cards)
 
@@ -214,10 +227,10 @@ def get_loyalty(meta_info: cv2.typing.MatLike):
 def get_current_sprint_hours(backlog_image):
     backlog_board = get_board(backlog_image)
     button = backlog_board[334:356, 11:199]
-    
+
     button_action = button[:, :100]
     button_action_digit = find_digit(button_action)
-    if button_action_digit == 'd':
+    if button_action_digit == "d":
         nums = button[7:15, 115:145]
     else:
         nums = button[8:16, 138:168]

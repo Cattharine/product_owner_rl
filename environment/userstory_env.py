@@ -1,6 +1,9 @@
+from typing import List
+
 from game.common_methods import sample_n_or_zero
 from game.userstory_card.bug_user_story_info import BugUserStoryInfo
 from game.userstory_card.tech_debt_user_story_info import TechDebtInfo
+from game.userstories.userstories import UserStoryCard
 from game.userstory_card.userstory_card_info import UserStoryCardInfo
 from environment.card_methods import split_cards_in_types
 
@@ -28,7 +31,7 @@ class UserstoryEnv:
             self.us_bug_count + \
             self.us_td_count
 
-        self.userstories_common = []
+        self.userstories_common: List[UserStoryCard] = []
         self.userstories_bugs = []
         self.userstories_td = []
 
