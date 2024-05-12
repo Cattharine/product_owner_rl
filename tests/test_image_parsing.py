@@ -7,13 +7,15 @@ from web_interaction import image_parser as ip
 def test_get_backlog_description():
     frame = cv2.imread("tests/test_images/iframe_backlog.png")
     backlog = ip.get_backlog(frame)
-    assert len(backlog) == 4
+    assert len(backlog) == 6
     assert len(backlog[0]) == 2
     expected_backlog = [
         (array([43, 194, 249]), 8.0),
         (array([43, 194, 249]), 8.0),
         (array([43, 194, 249]), 13.0),
         (array([43, 194, 249]), 9.0),
+        (array([120, 79, 240]), 17.0),
+        (array([120, 79, 240]), 5.0),
     ]
 
     for expected, actual in zip(expected_backlog, backlog):
