@@ -267,8 +267,11 @@ def main():
     current_sprint_hours = get_current_sprint_hours(image)
     print(current_sprint_hours)
 
-    user_stories = get_user_stories(image)
-    print(user_stories)
+    # user_stories = get_user_stories(image)
+    # print(user_stories)
+
+    backlog_cards = get_backlog(image)
+    print(backlog_cards)
 
 
 if __name__ == "__main__":
