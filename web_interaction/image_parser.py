@@ -248,6 +248,10 @@ def get_current_sprint_hours(backlog_image):
     return current_hours_value
 
 
+def get_meta_info_image(image: cv2.typing.MatLike) -> cv2.typing.MatLike:
+    return image[7:83, 57:932]
+
+
 def main():
     # image = cv2.imread("tests/test_images/iframe_user_stories.png")
 
@@ -255,7 +259,7 @@ def main():
     # backlog_cards = get_backlog(image)
     # print(backlog_cards)
     # image = cv2.imread("tests/test_images/iframe_user_stories.png")
-    meta_info = image[7:83, 57:932]
+    meta_info = get_meta_info_image(image)
     # plt.imshow(meta_info)
     # plt.show()
 
