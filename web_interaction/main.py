@@ -1,7 +1,12 @@
+from game.game import ProductOwnerGame
+from game.userstory_card.userstory_card_info import UserStoryCardInfo
 from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
+from single_color_storage import SingleColorStorage
+from typing import List
+
 import cv2
 import time
 import image_parser
@@ -63,6 +68,42 @@ def start_game(driver, iframe: WebElement):
     ).click().perform()
 
 
+def buy_research(driver, iframe: WebElement, width: int, height: int):
+    ActionChains(driver).move_to_element_with_offset(
+        iframe, 950 - width // 2, 396 - height // 2
+    ).click().move_to_element_with_offset(
+        iframe, int(0.3 * width), -int(0.3 * height)
+    ).click().perform()
+
+
+def get_game_user_stories_from_image(image: cv2.typing.MatLike, current_sprint: int):
+    game_user_stories: List[UserStoryCardInfo] = []
+    user_stories, positions = image_parser.get_user_stories(image)
+
+    for user_story, position in zip(user_stories, positions):
+        color, loyalty, customers = user_story
+        color_storage = SingleColorStorage(color)
+        game_user_story = UserStoryCardInfo("S", current_sprint, color_storage)
+        game_user_story.loyalty = loyalty
+        game_user_story.customers_to_bring = customers
+        game_user_story.position = position
+        game_user_stories.append(game_user_story)
+
+    return game_user_stories
+
+
+def insert_user_stories_from_image(game: ProductOwnerGame, image: cv2.typing.MatLike):
+    user_stories = get_game_user_stories_from_image(image, game.context.current_sprint)
+    game.userstories.stories_list.clear()
+    game.context.available_stories.clear()
+    for user_story in user_stories:
+        game.userstories.add_us(user_story)
+
+
+def fill_main_info_from_image(game: ProductOwnerGame, image: cv2.typing.MatLike):
+    pass
+
+
 def main():
     driver = open_game()
 
@@ -71,6 +112,8 @@ def main():
     wait_loading(iframe)
 
     start_game(driver, iframe)
+
+    time.sleep(10)
 
     driver.quit()
 
