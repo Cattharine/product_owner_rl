@@ -32,14 +32,21 @@ def load_characters():
 CHARACTERS = load_characters()
 
 
-def get_black_white_image(image, backgruond_color):
+def get_black_white_image(image: cv2.typing.MatLike, backgruond_color):
     lower = backgruond_color * 0.6
     upper = backgruond_color * 1.01
     mask = cv2.inRange(image, lower, upper)
+    image = image.copy()
     image[mask == 255] = [255, 255, 255]
     image[mask == 0] = [0, 0, 0]
 
     return image
+
+
+def is_loading(image: cv2.typing.MatLike):
+    black_color = [0, 0, 0]
+    uniform_area = image[5:155, 5:155]
+    return (uniform_area == black_color).all()
 
 
 def find_digit(image):

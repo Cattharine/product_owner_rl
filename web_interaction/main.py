@@ -2,7 +2,9 @@ from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
+import cv2
 import time
+import image_parser
 
 
 def open_game():
@@ -14,6 +16,16 @@ def open_game():
     load_iframe_btn.click()
 
     return driver
+
+
+def wait_loading(iframe: WebElement):
+    while True:
+        time.sleep(1)
+        iframe.screenshot("loading.png")
+        loading_image = cv2.imread("loading.png")
+        is_loading = image_parser.is_loading(loading_image)
+        if not is_loading:
+            break
 
 
 def start_game(driver, iframe: WebElement):
@@ -54,13 +66,9 @@ def start_game(driver, iframe: WebElement):
 def main():
     driver = open_game()
 
-    time.sleep(10)
-
-    fullscreen_btn = driver.find_element(by=By.CLASS_NAME, value="fullscreen_btn")
-    fullscreen_btn.click()
-    time.sleep(1)
-
     iframe = driver.find_element(by=By.ID, value="game_drop")
+
+    wait_loading(iframe)
 
     start_game(driver, iframe)
 
