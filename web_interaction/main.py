@@ -100,8 +100,26 @@ def insert_user_stories_from_image(game: ProductOwnerGame, image: cv2.typing.Mat
         game.userstories.add_us(user_story)
 
 
-def fill_main_info_from_image(game: ProductOwnerGame, image: cv2.typing.MatLike):
-    pass
+def fill_game_main_info_from_image(game: ProductOwnerGame, image: cv2.typing.MatLike):
+    context = game.context
+    meta_info = image_parser.get_meta_info_image(image)
+
+    current_sprint_hours = image_parser.get_current_sprint_hours(image)
+    context.current_sprint_hours = current_sprint_hours
+
+    current_sprint = image_parser.get_sprint_number(meta_info)
+    context.current_sprint = current_sprint
+
+    money = image_parser.get_game_money(meta_info)
+    context.set_money(money)
+
+    loyalty = image_parser.get_loyalty(meta_info)
+    context.set_loyalty(loyalty)
+
+    context.customers = image_parser.get_customers(meta_info)
+
+    credit = max(300_000 - (current_sprint - 1) * 9_000, 0)
+    context.credit = credit
 
 
 def main():
