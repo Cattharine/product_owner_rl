@@ -1,11 +1,16 @@
+from environment.environment import ProductOwnerEnv
+from game.backlog_card.card_info import CardInfo
 from game.game import ProductOwnerGame
+from game.userstory_card.userstory_card import UserStoryCard
 from game.userstory_card.userstory_card_info import UserStoryCardInfo
+from itertools import groupby
+from operator import itemgetter
 from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from single_color_storage import SingleColorStorage
-from typing import List
+from typing import List, Sequence, Tuple, FrozenSet
 
 import cv2
 import time
@@ -125,6 +130,33 @@ def insert_user_stories_from_image(game: ProductOwnerGame, image: cv2.typing.Mat
         game.userstories.add_us(user_story)
 
 
+def insert_backlog_cards_from_image(game: ProductOwnerGame, image: cv2.typing.MatLike):
+    backlog_cards = image_parser.get_backlog(image)
+
+    backlog_cards_by_color = {}
+    for key, group in groupby(backlog_cards, itemgetter(0)):
+        backlog_cards_by_color[key] = list(group)
+
+    for user_story in game.userstories.release:
+        info = user_story.info
+        us_id_val = id(info)
+        info.related_cards.clear()
+        color = info.color
+        backlog_cards = backlog_cards_by_color[color]
+
+        print(color)
+        for _, hours in backlog_cards:
+            print(hours)
+            card_info = CardInfo(
+                hours_val=hours,
+                color_val=key,
+                us_id_val=us_id_val,
+                label_val=info.label,
+                card_type_val=info.card_type,
+            )
+            info.related_cards.append(card_info)
+
+
 def fill_game_main_info_from_image(game: ProductOwnerGame, image: cv2.typing.MatLike):
     context = game.context
     meta_info = image_parser.get_meta_info_image(image)
@@ -145,6 +177,45 @@ def fill_game_main_info_from_image(game: ProductOwnerGame, image: cv2.typing.Mat
 
     credit = max(300_000 - (current_sprint - 1) * 9_000, 0)
     context.credit = credit
+
+
+def apply_decompose_action(
+    driver, iframe: WebElement, width: int, height: int, env: ProductOwnerEnv
+):
+    print("Start decomposition")
+    click_decompose_button(driver, iframe, width, height)
+
+    time.sleep(1)
+
+    filename = "backlog_cards.png"
+    iframe.screenshot(filename)
+    image = cv2.imread(filename)
+    # os.remove(filename)
+
+    insert_backlog_cards_from_image(env.game, image)
+
+    env._perform_decomposition()
+
+
+def apply_user_story_action(
+    action: int, driver, iframe: WebElement, env: ProductOwnerEnv
+):
+    print("Start user story action:", action)
+    user_story = env.userstory_env.get_encoded_card(action)
+    print("User story:", user_story)
+
+    click_user_story(driver, iframe, *user_story.info.position)
+
+    reward = env._perform_action_userstory(action)
+
+    filename = "user_stroy.png"
+    iframe.screenshot(filename)
+    image = cv2.imread(filename)
+    # os.remove(filename)
+
+    insert_user_stories_from_image(env.game, image)
+
+    print(reward)
 
 
 def main():

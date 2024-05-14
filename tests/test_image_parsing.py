@@ -21,7 +21,7 @@ def test_get_backlog_description():
     for expected, actual in zip(expected_backlog, backlog):
         expected_color, expected_hours = expected
         color, hours = actual
-        assert (color == expected_color).all()
+        assert color == frozenset(enumerate(expected_color))
         assert hours == expected_hours
 
 
@@ -42,6 +42,6 @@ def test_get_user_stories():
     for expected, actual in zip(expected_user_stories, user_stories):
         color, loyalty, customers = actual
         ex_color, ex_loyalty, ex_customers = expected
-        assert (color == ex_color).all()
+        assert color == frozenset(enumerate(ex_color))
         assert loyalty == ex_loyalty
         assert customers == ex_customers
