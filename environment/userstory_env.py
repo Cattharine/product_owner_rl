@@ -40,6 +40,18 @@ class UserstoryEnv:
                                   self.us_common_count,
                                   self.us_bug_count,
                                   self.us_td_count)
+    
+    def get_encoded_card(self, index: int):
+        # resturns card by index
+        if index < self.us_common_count:
+            return self.userstories_common[index]
+        index -= self.us_common_count
+        if index < self.us_bug_count:
+            return self.userstories_bugs[index]
+        index -= self.us_bug_count
+        if index < self.us_td_count:
+            return self.userstories_td[index]
+        return None
 
     def _encode_queue(self, cards, count_common, count_bug, count_td):
         commons, bugs, tech_debts = split_cards_in_types(cards)

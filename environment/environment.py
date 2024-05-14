@@ -299,15 +299,7 @@ class ProductOwnerEnv:
         return True
 
     def _perform_action_userstory(self, action: int) -> bool:
-        if action < self.userstory_env.us_common_count:
-            card = self._get_card(self.userstory_env.userstories_common, action)
-        elif action - self.userstory_env.us_common_count < self.userstory_env.us_bug_count:
-            card = self._get_card(
-                self.userstory_env.userstories_bugs, action - self.userstory_env.us_common_count)
-        else:
-            card = self._get_card(
-                self.userstory_env.userstories_td,
-                action - self.userstory_env.us_common_count - self.userstory_env.us_bug_count)
+        card = self.userstory_env.get_encoded_card(action)
 
         if card is None or not self.game.userstories.available:
             return False
