@@ -68,10 +68,35 @@ def start_game(driver, iframe: WebElement):
     ).click().perform()
 
 
-def buy_research(driver, iframe: WebElement, width: int, height: int):
+def select_user_story_board(driver, iframe: WebElement, width: int, height: int):
     ActionChains(driver).move_to_element_with_offset(
-        iframe, 950 - width // 2, 396 - height // 2
-    ).click().move_to_element_with_offset(
+        iframe, 950 - width // 2, 396 - height // 2  # click to user story segment
+    ).click()
+
+
+def click_decompose_button(driver, iframe: WebElement, width: int, height: int):
+    select_user_story_board(driver, iframe, width, height)
+    ActionChains(driver).move_to_element_with_offset(
+        iframe, 817 - width // 2, 480 - height // 2  # click to decompose button
+    ).click().perform()
+
+
+def click_user_story(driver, iframe: WebElement, x: int, y: int):
+    height = iframe.rect["height"]  # 540
+    width = iframe.rect["width"]  # 960
+
+    x_offset = x - width // 2 + 5
+    y_offset = y - height // 2 + 5
+
+    select_user_story_board(driver, iframe, width, height)
+    ActionChains(driver).move_to_element_with_offset(
+        iframe, x_offset, y_offset
+    ).click().perform()
+
+
+def buy_research(driver, iframe: WebElement, width: int, height: int):
+    select_user_story_board(driver, iframe, width, height)
+    ActionChains(driver).move_to_element_with_offset(
         iframe, int(0.3 * width), -int(0.3 * height)
     ).click().perform()
 
