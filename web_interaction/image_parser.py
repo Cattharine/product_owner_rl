@@ -68,10 +68,13 @@ def get_float(nums, num_width, num_count):
             value += "000"
             break
         if digit is None:
-            cv2.imwrite(f"web_interaction/templates/unknown.png", num)
             plt.imshow(num)
             plt.show()
-            break
+            filename = input()
+            cv2.imwrite(f"web_interaction/templates/{filename}.png", num)
+            global CHARACTERS
+            CHARACTERS = load_characters()
+            digit = filename[0]
         value += str(digit)
     return float(value)
 
@@ -104,6 +107,8 @@ def get_user_story_description(user_story):
 
     loyalty_value = get_user_story_loyalty(user_story_bw)
     customers_value = get_user_story_customers(user_story_bw)
+
+    color = frozenset(enumerate(color))
 
     return color, loyalty_value, customers_value
 
@@ -157,6 +162,8 @@ def get_backlog_card_descripton(card_image: cv2.typing.MatLike):
 
     hours = card_image[9:24, 3:25]
     hours_value = get_backlog_float(hours)
+
+    color = frozenset(enumerate(color))
 
     return color, hours_value
 
@@ -255,7 +262,7 @@ def get_meta_info_image(image: cv2.typing.MatLike) -> cv2.typing.MatLike:
 def main():
     # image = cv2.imread("tests/test_images/iframe_user_stories.png")
 
-    image = cv2.imread("web_interaction/iframe.png")
+    image = cv2.imread("web_interaction/backlog_cards.png")
     # backlog_cards = get_backlog(image)
     # print(backlog_cards)
     # image = cv2.imread("tests/test_images/iframe_user_stories.png")
