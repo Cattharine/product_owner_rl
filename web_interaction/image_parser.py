@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from os import listdir, getcwd, path
+from typing import Tuple
 
 BOARD_X0 = 715
 BOARD_Y0 = 135
@@ -148,15 +149,17 @@ def get_user_stories(frame):
     return user_stories, positions
 
 
-def split_row(row: cv2.typing.MatLike):
+def split_row(row: cv2.typing.MatLike, position: Tuple[int, int]):
     left = row[:, :42]
     right = row[:, 46:]
     if (right[0, 0] == [255, 255, 255]).all():
-        return [left]
-    return [left, right]
+        return [left], position
+    x, y = position
+    right_pos = (x + 46, y)
+    return [left, right], [position, right_pos]
 
 
-def get_backlog_card_descripton(card_image: cv2.typing.MatLike):
+def get_backlog_card_descripton(card_image: cv2.typing.MatLike, position: Tuple[int, int]):
     color = np.array(card_image[0, 0])
     card_image = get_black_white_image(card_image, color)
 
@@ -165,7 +168,7 @@ def get_backlog_card_descripton(card_image: cv2.typing.MatLike):
 
     color = frozenset(enumerate(color))
 
-    return color, hours_value
+    return color, hours_value, position
 
 
 def get_backlog_card_images(image):
@@ -173,19 +176,21 @@ def get_backlog_card_images(image):
 
     backlog_rows = get_rows(backlog_board)
     cards = []
+    positions = []
     for row, position in backlog_rows:
-        row_cards = split_row(row)
+        row_cards, row_positions = split_row(row, position)
         cards.extend(row_cards)
+        positions.extend(row_positions)
 
-    return cards
+    return cards, positions
 
 
 def get_backlog(image):
     backlog_cards = []
-    cards = get_backlog_card_images(image)
+    cards, positions = get_backlog_card_images(image)
 
-    for card in cards:
-        card_descripton = get_backlog_card_descripton(card)
+    for card, position in zip(cards, positions):
+        card_descripton = get_backlog_card_descripton(card, position)
         backlog_cards.append(card_descripton)
 
     return backlog_cards

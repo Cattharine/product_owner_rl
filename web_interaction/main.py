@@ -145,7 +145,7 @@ def insert_backlog_cards_from_image(game: ProductOwnerGame, image: cv2.typing.Ma
         backlog_cards = backlog_cards_by_color[color]
 
         print(color)
-        for _, hours in backlog_cards:
+        for _, hours, position in backlog_cards:
             print(hours)
             card_info = CardInfo(
                 hours_val=hours,
@@ -154,6 +154,7 @@ def insert_backlog_cards_from_image(game: ProductOwnerGame, image: cv2.typing.Ma
                 label_val=info.label,
                 card_type_val=info.card_type,
             )
+            card_info.position = position
             info.related_cards.append(card_info)
 
 

@@ -8,21 +8,22 @@ def test_get_backlog_description():
     frame = cv2.imread("tests/test_images/iframe_backlog.png")
     backlog = ip.get_backlog(frame)
     assert len(backlog) == 6
-    assert len(backlog[0]) == 2
+    assert len(backlog[0]) == 3
     expected_backlog = [
-        (array([43, 194, 249]), 8.0),
-        (array([43, 194, 249]), 8.0),
-        (array([43, 194, 249]), 13.0),
-        (array([43, 194, 249]), 9.0),
-        (array([120, 79, 240]), 17.0),
-        (array([120, 79, 240]), 5.0),
+        (array([43, 194, 249]), 8.0, (725, 183)),
+        (array([43, 194, 249]), 8.0, (771, 183)),
+        (array([43, 194, 249]), 13.0, (725, 229)),
+        (array([43, 194, 249]), 9.0, (771, 229)),
+        (array([120, 79, 240]), 17.0, (725, 275)),
+        (array([120, 79, 240]), 5.0, (771, 275)),
     ]
 
     for expected, actual in zip(expected_backlog, backlog):
-        expected_color, expected_hours = expected
-        color, hours = actual
+        expected_color, expected_hours, expected_position = expected
+        color, hours, position = actual
         assert color == frozenset(enumerate(expected_color))
         assert hours == expected_hours
+        assert position == expected_position
 
 
 def test_get_user_stories():
