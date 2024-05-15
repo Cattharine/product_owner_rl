@@ -76,16 +76,16 @@ def start_game(driver, iframe: WebElement):
 def select_user_story_board(driver, iframe: WebElement, width: int, height: int):
     ActionChains(driver).move_to_element_with_offset(
         iframe, 950 - width // 2, 396 - height // 2  # click to user story segment
-    ).click()
+    ).click().perform()
 
 
 def select_backlog_board(driver, iframe: WebElement, width: int, height: int):
     ActionChains(driver).move_to_element_with_offset(
-        iframe, 950 - width // 2, 245 - height // 2  # click to user story segment
-    ).click()
+        iframe, 950 - width // 2, 250 - height // 2  # click to user story segment
+    ).click().perform()
 
 
-def click_decompose_button(driver, iframe: WebElement, width: int, height: int):
+def click_board_button(driver, iframe: WebElement, width: int, height: int):
     select_user_story_board(driver, iframe, width, height)
     ActionChains(driver).move_to_element_with_offset(
         iframe, 817 - width // 2, 480 - height // 2  # click to decompose button
@@ -197,7 +197,7 @@ def apply_decompose_action(
     driver, iframe: WebElement, width: int, height: int, env: ProductOwnerEnv
 ):
     print("Start decomposition")
-    click_decompose_button(driver, iframe, width, height)
+    click_board_button(driver, iframe, width, height)
 
     time.sleep(1)
 
