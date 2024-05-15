@@ -79,6 +79,12 @@ def select_user_story_board(driver, iframe: WebElement, width: int, height: int)
     ).click()
 
 
+def select_backlog_board(driver, iframe: WebElement, width: int, height: int):
+    ActionChains(driver).move_to_element_with_offset(
+        iframe, 950 - width // 2, 296 - height // 2  # click to user story segment
+    ).click()
+
+
 def click_decompose_button(driver, iframe: WebElement, width: int, height: int):
     select_user_story_board(driver, iframe, width, height)
     ActionChains(driver).move_to_element_with_offset(
@@ -86,17 +92,24 @@ def click_decompose_button(driver, iframe: WebElement, width: int, height: int):
     ).click().perform()
 
 
-def click_user_story(driver, iframe: WebElement, x: int, y: int):
+def click_on_card(driver, iframe: WebElement, x: int, y: int):
     height = iframe.rect["height"]  # 540
     width = iframe.rect["width"]  # 960
 
     x_offset = x - width // 2 + 5
     y_offset = y - height // 2 + 5
 
-    select_user_story_board(driver, iframe, width, height)
     ActionChains(driver).move_to_element_with_offset(
         iframe, x_offset, y_offset
     ).click().perform()
+
+
+def click_user_story(driver, iframe: WebElement, x: int, y: int):
+    height = iframe.rect["height"]  # 540
+    width = iframe.rect["width"]  # 960
+
+    select_user_story_board(driver, iframe, width, height)
+    click_on_card(driver, iframe, x, y)
 
 
 def buy_research(driver, iframe: WebElement, width: int, height: int):

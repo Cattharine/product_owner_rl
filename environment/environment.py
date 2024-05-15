@@ -274,19 +274,7 @@ class ProductOwnerEnv:
         return self._perform_remove_sprint_card(card_id)
 
     def _perform_action_backlog_card(self, action: int) -> bool:
-        card: Card = None
-        backlog_env = self.backlog_env
-
-        if action < backlog_env.backlog_commons_count:
-            card = self._get_card(backlog_env.backlog_commons, action)
-
-        bug_card_id = action - backlog_env.backlog_commons_count
-        if card is None and bug_card_id < backlog_env.backlog_bugs_count:
-            card = self._get_card(backlog_env.backlog_bugs, bug_card_id)
-
-        tech_debt_card_id = bug_card_id - backlog_env.backlog_bugs_count
-        if card is None and tech_debt_card_id < backlog_env.backlog_tech_debt_count:    
-            card = self._get_card(backlog_env.backlog_tech_debt, tech_debt_card_id)
+        card: Card = self.backlog_env.get_card(action)
         
         if card is None:
             return False
