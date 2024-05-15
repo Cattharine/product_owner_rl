@@ -81,7 +81,7 @@ def select_user_story_board(driver, iframe: WebElement, width: int, height: int)
 
 def select_backlog_board(driver, iframe: WebElement, width: int, height: int):
     ActionChains(driver).move_to_element_with_offset(
-        iframe, 950 - width // 2, 296 - height // 2  # click to user story segment
+        iframe, 950 - width // 2, 245 - height // 2  # click to user story segment
     ).click()
 
 
