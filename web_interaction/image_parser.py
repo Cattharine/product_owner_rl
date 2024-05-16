@@ -5,7 +5,9 @@ from os import listdir, getcwd, path
 from typing import Tuple
 
 BOARD_X0 = 715
+BOARD_X1 = 925
 BOARD_Y0 = 135
+BOARD_Y1 = 495
 
 
 class UserStoryImageInfo:
@@ -115,7 +117,7 @@ def get_user_story_description(user_story):
 
 
 def get_board(image: cv2.typing.MatLike):
-    board = image[BOARD_Y0:495, BOARD_X0:925]
+    board = image[BOARD_Y0:BOARD_Y1, BOARD_X0:BOARD_Y1]
     return board
 
 
@@ -198,9 +200,6 @@ def get_backlog(image):
 
 def get_sprint_number(meta_info: cv2.typing.MatLike):
     sprint = meta_info[14:30, 487:530]
-    # plt.imshow(sprint)
-    # plt.grid()
-    # plt.show()
 
     sprint_n = get_float(sprint, 11, 3)
 
@@ -208,10 +207,7 @@ def get_sprint_number(meta_info: cv2.typing.MatLike):
 
 
 def get_game_money(meta_info: cv2.typing.MatLike):
-    money = meta_info[33:49:, 421:480]
-    # plt.imshow(money)
-    # plt.grid()
-    # plt.show()
+    money = meta_info[33:49, 421:480]
     unique_colors = np.unique(money[:, 0], axis=0)
     while len(unique_colors) == 1:
         money = money[:, 1:]
@@ -225,9 +221,6 @@ def get_customers(meta_info: cv2.typing.MatLike):
     num_count = 3
     image_width = num_width * num_count
     customers_nums = meta_info[18:29, 161 : 161 + image_width]
-    # plt.imshow(customers_nums)
-    # plt.grid()
-    # plt.show()
 
     customers_value = get_float(customers_nums, num_width, num_count)
     return customers_value / 1000
@@ -235,9 +228,6 @@ def get_customers(meta_info: cv2.typing.MatLike):
 
 def get_loyalty(meta_info: cv2.typing.MatLike):
     loyalty_nums = meta_info[38:49, 143:206]
-    # plt.imshow(loyalty_nums)
-    # plt.grid()
-    # plt.show()
 
     loyalty_value = get_float(loyalty_nums, 9, 5)
     return loyalty_value
@@ -265,15 +255,8 @@ def get_meta_info_image(image: cv2.typing.MatLike) -> cv2.typing.MatLike:
 
 
 def main():
-    # image = cv2.imread("tests/test_images/iframe_user_stories.png")
-
     image = cv2.imread("web_interaction/backlog_cards.png")
-    # backlog_cards = get_backlog(image)
-    # print(backlog_cards)
-    # image = cv2.imread("tests/test_images/iframe_user_stories.png")
     meta_info = get_meta_info_image(image)
-    # plt.imshow(meta_info)
-    # plt.show()
 
     sprint_n = get_sprint_number(meta_info)
     print(sprint_n)
