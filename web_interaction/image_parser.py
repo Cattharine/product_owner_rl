@@ -117,7 +117,7 @@ def get_user_story_description(user_story):
 
 
 def get_board(image: cv2.typing.MatLike):
-    board = image[BOARD_Y0:BOARD_Y1, BOARD_X0:BOARD_Y1]
+    board = image[BOARD_Y0:BOARD_Y1, BOARD_X0:BOARD_X1]
     return board
 
 
