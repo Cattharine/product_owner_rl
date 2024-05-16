@@ -92,12 +92,12 @@ def click_board_button(driver, iframe: WebElement, width: int, height: int):
     ).click().perform()
 
 
-def click_on_card(driver, iframe: WebElement, x: int, y: int):
+def click_on_element(driver, iframe: WebElement, x: int, y: int):
     height = iframe.rect["height"]  # 540
     width = iframe.rect["width"]  # 960
 
-    x_offset = x - width // 2 + 5
-    y_offset = y - height // 2 + 5
+    x_offset = x - width // 2 + 1
+    y_offset = y - height // 2 + 1
 
     ActionChains(driver).move_to_element_with_offset(
         iframe, x_offset, y_offset
@@ -109,7 +109,9 @@ def click_user_story(driver, iframe: WebElement, x: int, y: int):
     width = iframe.rect["width"]  # 960
 
     select_user_story_board(driver, iframe, width, height)
-    click_on_card(driver, iframe, x, y)
+    time.sleep(2)
+    click_on_element(driver, iframe, x, y)
+    time.sleep(2)
 
 
 def buy_research(driver, iframe: WebElement, width: int, height: int):
@@ -162,7 +164,7 @@ def insert_backlog_cards_from_image(game: ProductOwnerGame, image: cv2.typing.Ma
             print(hours)
             card_info = CardInfo(
                 hours_val=hours,
-                color_val=key,
+                color_val=color,
                 us_id_val=us_id_val,
                 label_val=info.label,
                 card_type_val=info.card_type,
@@ -175,8 +177,8 @@ def fill_game_main_info_from_image(game: ProductOwnerGame, image: cv2.typing.Mat
     context = game.context
     meta_info = image_parser.get_meta_info_image(image)
 
-    current_sprint_hours = image_parser.get_current_sprint_hours(image)
-    context.current_sprint_hours = current_sprint_hours
+    # current_sprint_hours = image_parser.get_current_sprint_hours(image)
+    # context.current_sprint_hours = current_sprint_hours
 
     current_sprint = image_parser.get_sprint_number(meta_info)
     context.current_sprint = current_sprint
@@ -193,13 +195,37 @@ def fill_game_main_info_from_image(game: ProductOwnerGame, image: cv2.typing.Mat
     context.credit = credit
 
 
+def apply_start_sprint_action(
+    driver, iframe: WebElement, width: int, height: int, env: ProductOwnerEnv
+):
+    print("Start new sprint")
+
+    select_backlog_board(driver, iframe, width, height)
+    time.sleep(2)
+
+    click_board_button(driver, iframe, width, height)
+    time.sleep(2)
+
+    env._perform_start_sprint_action()
+
+    filename = "game_state.png"
+    iframe.screenshot(filename)
+    game_image = cv2.imread(filename)
+    # os.remove(filename)
+
+    fill_game_main_info_from_image(env.game, game_image)
+
+    click_on_element(driver, iframe, 700, 245)
+    click_on_element(driver, iframe, 700, 396)
+
+
 def apply_decompose_action(
     driver, iframe: WebElement, width: int, height: int, env: ProductOwnerEnv
 ):
     print("Start decomposition")
     click_board_button(driver, iframe, width, height)
 
-    time.sleep(1)
+    time.sleep(5)
 
     filename = "backlog_cards.png"
     iframe.screenshot(filename)

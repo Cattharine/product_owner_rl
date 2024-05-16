@@ -68,7 +68,7 @@ def get_float(nums, num_width, num_count):
         num = nums[:, num_width * i : num_width * (i + 1)]
         digit = find_digit(num)
         if digit == "k":
-            value += "000"
+            value = str(float(value) * 1000)
             break
         if digit is None:
             plt.imshow(num)
@@ -155,7 +155,7 @@ def split_row(row: cv2.typing.MatLike, position: Tuple[int, int]):
     left = row[:, :42]
     right = row[:, 46:]
     if (right[0, 0] == [255, 255, 255]).all():
-        return [left], position
+        return [left], [position]
     x, y = position
     right_pos = (x + 46, y)
     return [left, right], [position, right_pos]
@@ -218,7 +218,7 @@ def get_game_money(meta_info: cv2.typing.MatLike):
 
 def get_customers(meta_info: cv2.typing.MatLike):
     num_width = 9
-    num_count = 3
+    num_count = 6
     image_width = num_width * num_count
     customers_nums = meta_info[18:29, 161 : 161 + image_width]
 
@@ -255,7 +255,7 @@ def get_meta_info_image(image: cv2.typing.MatLike) -> cv2.typing.MatLike:
 
 
 def main():
-    image = cv2.imread("web_interaction/backlog_cards.png")
+    image = cv2.imread("web_interaction/game_state.png")
     meta_info = get_meta_info_image(image)
 
     sprint_n = get_sprint_number(meta_info)
@@ -270,8 +270,8 @@ def main():
     loyalty_value = get_loyalty(meta_info)
     print(loyalty_value)
 
-    current_sprint_hours = get_current_sprint_hours(image)
-    print(current_sprint_hours)
+    # current_sprint_hours = get_current_sprint_hours(image)
+    # print(current_sprint_hours)
 
     # user_stories = get_user_stories(image)
     # print(user_stories)
