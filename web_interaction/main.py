@@ -208,6 +208,7 @@ def apply_start_sprint_action(
 
     if env.game.context.current_sprint == 34:
         ActionChains(driver).move_to_element(iframe).click().perform()
+        time.sleep(2)
 
     env._perform_start_sprint_action()
 
