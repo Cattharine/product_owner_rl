@@ -206,6 +206,9 @@ def apply_start_sprint_action(
     click_board_button(driver, iframe, width, height)
     time.sleep(2)
 
+    if env.game.context.current_sprint == 34:
+        ActionChains(driver).move_to_element(iframe).click().perform()
+
     env._perform_start_sprint_action()
 
     filename = "game_state.png"
