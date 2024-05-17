@@ -1,4 +1,5 @@
 from environment.environment import ProductOwnerEnv
+from game.backlog_card.backlog_card import Card
 from game.backlog_card.card_info import CardInfo
 from game.game import ProductOwnerGame
 from game.userstory_card.userstory_card import UserStoryCard
@@ -227,11 +228,13 @@ def apply_decompose_action(
     driver, iframe: WebElement, width: int, height: int, env: ProductOwnerEnv
 ):
     print("Start decomposition")
-    click_board_button(driver, iframe, width, height)
-
+    select_user_story_board(driver, iframe, width, height)
     time.sleep(5)
 
-    filename = "backlog_cards.png"
+    click_board_button(driver, iframe, width, height)
+    time.sleep(5)
+
+    filename = "game_state.png"
     iframe.screenshot(filename)
     image = cv2.imread(filename)
     # os.remove(filename)
@@ -252,7 +255,7 @@ def apply_user_story_action(
 
     reward = env._perform_action_userstory(action)
 
-    filename = "user_stroy.png"
+    filename = "game_state.png"
     iframe.screenshot(filename)
     image = cv2.imread(filename)
     # os.remove(filename)
@@ -260,6 +263,81 @@ def apply_user_story_action(
     insert_user_stories_from_image(env.game, image)
 
     print(reward)
+
+def find_backlog_card_position(card: Card, image: cv2.typing.MatLike):
+    card: CardInfo = card.info
+    backlog_cards = image_parser.get_backlog(image)
+    for color, hours, position in backlog_cards:
+        if color != card.color:
+            continue
+        if hours != card.hours:
+            continue
+        return position
+
+
+def apply_backlog_card_action(
+    action: int, driver, iframe: WebElement, env: ProductOwnerEnv
+):
+    height = iframe.rect["height"]  # 540
+    width = iframe.rect["width"]  # 960
+    print("Start moving backlog card")
+    select_backlog_board(driver, iframe, width, height)
+
+    time.sleep(2)
+
+    filename = "game_state.png"
+    iframe.screenshot(filename)
+    backlog_board_image = cv2.imread(filename)
+    # os.remove(filename)
+
+    card = env.backlog_env.get_card(action)
+    print("Selected card", card)
+    position = find_backlog_card_position(card, backlog_board_image)
+    print("Found at position", position)
+
+    click_on_element(driver, iframe, *position)
+
+    print("Clicked on card")
+
+    env._perform_action_backlog_card(action)
+
+
+def apply_release_action(
+    driver, iframe: WebElement, width: int, height: int, env: ProductOwnerEnv
+):
+    click_on_element(driver, iframe, 115, 455)
+
+    time.sleep(1)
+
+    filename = "game_state.png"
+    iframe.screenshot(filename)
+    game_image = cv2.imread(filename)
+    # os.remove(filename)
+
+    fill_game_main_info_from_image(env.game, game_image)
+
+    env._perform_release()
+
+
+def apply_buy_statistical_research_action(
+    driver, iframe: WebElement, env: ProductOwnerEnv
+):
+    height = iframe.rect["height"]  # 540
+    width = iframe.rect["width"]  # 960
+    select_user_story_board(driver, iframe, width, height)
+    time.sleep(2)
+
+    click_on_element(driver, iframe, 765, 115)
+    time.sleep(2)
+
+    env._perform_statistical_research()
+
+    filename = "game_state.png"
+    iframe.screenshot(filename)
+    userstory_image = cv2.imread(filename)
+    # os.remove(filename)
+
+    insert_user_stories_from_image(env.game, userstory_image)
 
 
 def main():
