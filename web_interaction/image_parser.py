@@ -1,6 +1,9 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+import os
+import sys
+from cv2.typing import MatLike
 from os import listdir, getcwd, path
 from typing import Tuple
 
@@ -51,6 +54,14 @@ def is_loading(image: cv2.typing.MatLike):
     uniform_area = image[5:155, 5:155]
     return (uniform_area == black_color).all()
 
+def check_digit(image: MatLike, value: MatLike):
+    image_bw = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    value_bw = cv2.cvtColor(value, cv2.COLOR_BGR2GRAY)
+
+    bitwise_and = cv2.bitwise_and(image_bw, value_bw)
+
+    return (bitwise_and == value_bw).all()
+
 
 def find_digit(image):
     for key, value in CHARACTERS:
@@ -58,6 +69,8 @@ def find_digit(image):
             continue
         if value.shape != image.shape:
             continue
+        if key.isdigit() and check_digit(image, value):
+            return key
         if (image == value).all():
             return key
 
