@@ -32,8 +32,8 @@ def open_game():
 def wait_loading(iframe: WebElement):
     while True:
         time.sleep(1)
-        iframe.screenshot("loading.png")
-        loading_image = cv2.imread("loading.png")
+        iframe.screenshot("game_state.png")
+        loading_image = cv2.imread("game_state.png")
         is_loading = image_parser.is_loading(loading_image)
         if not is_loading:
             break
