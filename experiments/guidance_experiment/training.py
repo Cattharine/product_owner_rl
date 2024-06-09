@@ -1,5 +1,9 @@
 import datetime
 import os
+import sys
+
+sys.path.append('..')
+sys.path.append('../..')
 
 from environment import ProductOwnerEnv
 from algorithms import DoubleDQN
