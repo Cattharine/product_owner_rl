@@ -11,7 +11,7 @@ from environment.userstory_env import UserstoryEnv
 from algorithms import DoubleDQN
 from environment.reward_sytem import EmpiricalRewardSystem
 from pipeline.aggregator_study import update_reward_system_config
-from pipeline import MetricsStudy
+from pipeline import MetricsStudy, LoggingStudy
 
 
 def play_forward_with_empty_sprints(env: ProductOwnerEnv):
@@ -27,7 +27,9 @@ def play_forward_with_empty_sprints(env: ProductOwnerEnv):
 def eval_agent(study: MetricsStudy):
     study.agent.epsilon = 0
     study.agent.epsilon_min = 0
-    reward, _ = study.play_trajectory()
+    state = study.env.reset()
+    info = study.env.get_info()
+    reward, _ = study.play_trajectory(state, info)
     game_context = study.env.game.context
     is_win = game_context.is_victory
     is_loss = game_context.is_loss
@@ -44,7 +46,7 @@ def train(guidance: bool):
     epsilon_decrease = 1e-5
     agent = DoubleDQN(env.state_dim, env.action_n, epsilon_decrease=epsilon_decrease)
 
-    study = MetricsStudy(env, agent, 200)
+    study = LoggingStudy(env, agent, 200)
     study.study_agent(10000)
 
     return study
