@@ -5,56 +5,66 @@ import sys
 sys.path.append("..")
 sys.path.append("../..")
 
-from environment import ProductOwnerEnv
+from environment import CreditPayerEnv
 from environment.backlog_env import BacklogEnv
 from environment.userstory_env import UserstoryEnv
-from algorithms import DoubleDQN
-from environment.reward_sytem import EmpiricalRewardSystem
+from environment.reward_sytem import EmpiricalCreditStageRewardSystem
 from pipeline.aggregator_study import update_reward_system_config
-from pipeline import MetricsStudy, LoggingStudy
+from pipeline import LoggingStudy, CREDIT_END, CREDIT_START
+from main import create_usual_agent
 
 
-def play_forward_with_empty_sprints(env: ProductOwnerEnv):
+def play_forward_with_empty_sprints(env: CreditPayerEnv):
     info = env.get_info()
     done = env.get_done(info)
     total_reward = 0
-    while not done:
+    context = env.game.context
+    while not context.done and context.customers > 0:
         state, reward, done, info = env.step(0)
         total_reward += reward
-    return total_reward
+    if context.customers <= 0:
+        context.done = True
+        context.is_loss = True
 
 
-def eval_agent(study: MetricsStudy):
-    study.agent.epsilon = 0
-    study.agent.epsilon_min = 0
+def eval_agent(study: LoggingStudy):
+    study.agent.eval()
     state = study.env.reset()
     info = study.env.get_info()
     reward, _ = study.play_trajectory(state, info)
+    play_forward_with_empty_sprints(study.env)
     game_context = study.env.game.context
     is_win = game_context.is_victory
     is_loss = game_context.is_loss
     return reward, is_win, is_loss
 
 
-def train(guidance: bool):
-    userstory_env = None
-    backlog_env = None
-    reward_system = EmpiricalRewardSystem(config={})
-    env = ProductOwnerEnv(userstory_env, backlog_env, guidance, reward_system)
+def parse_state_from_stage(stage):
+    with_end = stage != CREDIT_START
+    with_late_purchases_penalty = stage == CREDIT_END
+    return with_end, with_late_purchases_penalty
+
+
+def make_credit_study(trajectory_max_len,
+                      episode_n,
+                      with_info):
+    userstory_env = UserstoryEnv(2, 0, 0)
+    backlog_env = BacklogEnv(6, 0, 0, 0, 0, 0)
+    reward_system = EmpiricalCreditStageRewardSystem(True, config={})
+    env = CreditPayerEnv(userstory_env, backlog_env, with_end=True, with_info=with_info, reward_system=reward_system)
     update_reward_system_config(env, reward_system)
 
-    epsilon_decrease = 1e-5
-    agent = DoubleDQN(env.state_dim, env.action_n, epsilon_decrease=epsilon_decrease)
+    agent = create_usual_agent(env, trajectory_max_len, episode_n)
 
-    study = LoggingStudy(env, agent, 200)
-    study.study_agent(10000)
+    study = LoggingStudy(env, agent, trajectory_max_len)
+    study.study_agent(episode_n)
 
     return study
 
 
 if __name__ == "__main__":
     guidance = True
-    study = train(guidance)
+    study = make_credit_study(200, 1000, guidance)
     now = datetime.datetime.now().strftime("%Y-%m-%d-T-%H-%M-%S")
     current_dir = os.getcwd()
     if "experiments" not in current_dir:
