@@ -36,7 +36,7 @@ def eval_agent(study: LoggingStudy):
     game_context = study.env.game.context
     is_win = game_context.is_victory
     is_loss = game_context.is_loss
-    return reward, is_win, is_loss
+    return reward, is_win, is_loss  # sprint
 
 
 def parse_state_from_stage(stage):
@@ -87,4 +87,4 @@ def main(guidance):
 
 if __name__ == "__main__":
     for i in range(5):
-        main(True)
+        main(False)
