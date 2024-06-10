@@ -45,13 +45,17 @@ def parse_state_from_stage(stage):
     return with_end, with_late_purchases_penalty
 
 
-def make_credit_study(trajectory_max_len,
-                      episode_n,
-                      with_info):
+def make_credit_study(trajectory_max_len, episode_n, with_info):
     userstory_env = UserstoryEnv(2, 0, 0)
     backlog_env = BacklogEnv(6, 0, 0, 0, 0, 0)
     reward_system = EmpiricalCreditStageRewardSystem(True, config={})
-    env = CreditPayerEnv(userstory_env, backlog_env, with_end=True, with_info=with_info, reward_system=reward_system)
+    env = CreditPayerEnv(
+        userstory_env,
+        backlog_env,
+        with_end=True,
+        with_info=with_info,
+        reward_system=reward_system,
+    )
     update_reward_system_config(env, reward_system)
 
     agent = create_usual_agent(env, trajectory_max_len, episode_n)
@@ -62,8 +66,7 @@ def make_credit_study(trajectory_max_len,
     return study
 
 
-if __name__ == "__main__":
-    guidance = True
+def main(guidance):
     study = make_credit_study(200, 1000, guidance)
     now = datetime.datetime.now().strftime("%Y-%m-%d-T-%H-%M-%S")
     current_dir = os.getcwd()
@@ -81,3 +84,7 @@ if __name__ == "__main__":
     filename = os.path.join(current_dir, f"guidance_{guidance}_evals_{now}.txt")
     with open(filename, "w") as file:
         print(evaluations, file=file)
+
+if __name__ == "__main__":
+    for i in range(5):
+        main(True)
