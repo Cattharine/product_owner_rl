@@ -1,5 +1,6 @@
 import os
 import matplotlib.pyplot as plt
+import numpy as np
 from typing import List
 
 
@@ -12,14 +13,29 @@ def get_experiment_files(filenames: List[str], guidance: bool):
     return experiment_files
 
 
-def main():
-    current_dir = os.getcwd()
-    content = os.listdir(current_dir)
+def get_all_data_files(directory_path: str):
+    content = os.listdir(directory_path)
 
     data_files = []
     for filename in content:
         if filename.startswith("guidance"):
             data_files.append(filename)
+    return data_files
+
+
+def read_files_data(filenames: List[str]):
+    result = []
+    for filename in filenames:
+        with open(filename, "r") as file:
+            data = eval(file.read())
+            result.append(data)
+    return result
+
+
+def main():
+    current_dir = os.getcwd()
+
+    data_files = get_all_data_files(current_dir)
 
     reward_files = []
     evaluation_files = []
@@ -29,19 +45,24 @@ def main():
         if "evals" in data_file:
             evaluation_files.append(data_file)
 
-    with open(reward_files[0], "r") as file:
-        data = file.read()
-
-    guidance_rewards = []
     guidance_rewards_files = get_experiment_files(reward_files, True)
-    for filename in guidance_rewards_files:
-        with open(filename, 'r') as file:
-            data = eval(file.read())
-            guidance_rewards.append(data)
+    guidance_rewards = read_files_data(guidance_rewards_files)
+    rewards = np.array(guidance_rewards)
 
-    for rewards in guidance_rewards:
-        plt.plot(rewards)
-    plt.show()
+    default_rewards_files = get_experiment_files(reward_files, False)
+    default_rewards = read_files_data(default_rewards_files)
+
+    # plt.plot(rewards.mean(axis=0), ".", label="Guidance mean result")
+    # plt.plot(np.mean(default_rewards, axis=0), ".", label="Deafault mean rewards")
+    # plt.plot(np.median(rewards, axis=0), ".")
+    # plt.show()
+
+    guidance_evaluation_files = get_experiment_files(evaluation_files, True)
+    guidance_evaluation = read_files_data(guidance_evaluation_files)
+    guidance_evaluation = np.array(guidance_evaluation)
+    wins = guidance_evaluation[:, :, 1]
+    print(wins)
+    print(wins.sum(axis=1))
 
 
 if __name__ == "__main__":
