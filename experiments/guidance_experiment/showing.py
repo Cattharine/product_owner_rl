@@ -1,5 +1,15 @@
 import os
 import matplotlib.pyplot as plt
+from typing import List
+
+
+def get_experiment_files(filenames: List[str], guidance: bool):
+    experiment_files = []
+    prefix = f"guidance_{guidance}"
+    for filename in filenames:
+        if filename.startswith(prefix):
+            experiment_files.append(filename)
+    return experiment_files
 
 
 def main():
@@ -22,7 +32,15 @@ def main():
     with open(reward_files[0], "r") as file:
         data = file.read()
 
-    plt.plot(eval(data))
+    guidance_rewards = []
+    guidance_rewards_files = get_experiment_files(reward_files, True)
+    for filename in guidance_rewards_files:
+        with open(filename, 'r') as file:
+            data = eval(file.read())
+            guidance_rewards.append(data)
+
+    for rewards in guidance_rewards:
+        plt.plot(rewards)
     plt.show()
 
 
