@@ -67,12 +67,15 @@ def make_credit_study(trajectory_max_len, episode_n, with_info):
 
 
 def main(guidance):
-    study = make_credit_study(200, 1000, guidance)
+    episode_n = 1000
+    study = make_credit_study(200, episode_n, guidance)
     now = datetime.datetime.now().strftime("%Y-%m-%d-T-%H-%M-%S")
     current_dir = os.getcwd()
     if "experiments" not in current_dir:
         current_dir = os.path.join(current_dir, "experiments", "guidance_experiment")
-    filename = os.path.join(current_dir, f"guidance_{guidance}_rewards_{now}.txt")
+    filename = os.path.join(
+        current_dir, f"episodes_{episode_n}", f"guidance_{guidance}_rewards_{now}.txt"
+    )
     with open(filename, "w") as file:
         print(study.rewards_log, file=file)
 
@@ -81,10 +84,16 @@ def main(guidance):
         evaluation = eval_agent(study)
         evaluations.append(evaluation)
 
-    filename = os.path.join(current_dir, f"guidance_{guidance}_evals_{now}.txt")
+    filename = os.path.join(
+        current_dir, f"episodes_{episode_n}", f"guidance_{guidance}_evals_{now}.txt"
+    )
     with open(filename, "w") as file:
         print(evaluations, file=file)
 
+
 if __name__ == "__main__":
-    for i in range(5):
+    n = 1
+    for i in range(n):
         main(False)
+    for i in range(n):
+        main(True)

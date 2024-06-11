@@ -42,7 +42,7 @@ def get_experements_wins(evaluation_filenames: List[str], guidance: bool):
 
 def main():
     current_dir = os.getcwd()
-    files_dir = os.path.join(current_dir, 'traj_len_1000')
+    files_dir = os.path.join(current_dir, 'episodes_1000')
 
     data_files = get_all_data_files(files_dir)
 
