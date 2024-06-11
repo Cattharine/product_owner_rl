@@ -67,6 +67,7 @@ def main():
     plt.title('Rewards')
     plt.xlabel('trajectory')
     plt.ylabel('rewards')
+    plt.savefig('guidance_rewards.png')
     plt.show()
 
     default_wins = get_experements_wins(evaluation_files, False)
