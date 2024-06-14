@@ -62,7 +62,7 @@ def main():
     default_rewards = read_files_data(default_rewards_files)
 
     plt.plot(np.mean(guidance_rewards, axis=0), ".", label="guidance")
-    plt.plot(np.mean(default_rewards, axis=0), ".", label="fefault")
+    plt.plot(np.mean(default_rewards, axis=0), ".", label="default")
     plt.legend()
     plt.title('Rewards')
     plt.xlabel('trajectory')
@@ -73,8 +73,8 @@ def main():
     default_wins = get_experements_wins(evaluation_files, False)
     print(default_wins)
 
-    gidance_wins = get_experements_wins(evaluation_files, True)
-    print(gidance_wins)
+    guidance_wins = get_experements_wins(evaluation_files, True)
+    print(guidance_wins)
 
 
 if __name__ == "__main__":
