@@ -60,7 +60,7 @@ def main():
     default_rewards = read_files_data(default_rewards_files)
 
     plt.plot(np.mean(modified_rewards, axis=0), ".", label="bounding")
-    plt.plot(np.mean(default_rewards, axis=0) / 100, ".", label="fefault")
+    plt.plot(np.mean(default_rewards, axis=0) / 100, ".", label="default")
     plt.legend()
     plt.title('Rewards')
     plt.xlabel('trajectory')
