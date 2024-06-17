@@ -2,10 +2,15 @@ import datetime
 import os
 import sys
 
+import pandas as pd
+
+from typing import List
+
 sys.path.append("..")
 
 from environment import CreditPayerEnv
 from pipeline import LoggingStudy
+
 
 def play_forward_with_empty_sprints(env: CreditPayerEnv):
     info = env.get_info()
@@ -30,3 +35,34 @@ def eval_agent(study: LoggingStudy):
     is_win = game_context.is_victory
     sprint = game_context.current_sprint
     return reward, is_win, sprint
+
+
+def update_data_frame(path: str, df: pd.DataFrame):
+    if os.path.exists(path):
+        data = pd.read_csv(path)
+    else:
+        data = pd.DataFrame()
+
+    data: pd.DataFrame = pd.concat([data, df])
+    data.to_csv(path, index=False, float_format='%.5f')
+
+
+def save_rewards(episode_n: int, rewards_log: List[float], now: str, flag: bool):
+    df = pd.DataFrame(
+        {
+            "Trajectory": list(range(episode_n)),
+            "Reward": rewards_log,
+        }
+    )
+    df["DateTime"] = now
+    df["Flag"] = flag
+    rewards_path = "train_rewards.csv"
+    update_data_frame(rewards_path, df)
+
+
+def save_evaluation(evaluations: List, now: str, flag: bool):
+    df = pd.DataFrame(evaluations, columns=["Reward", "Win", "Sprint"])
+    df["DateTime"] = now
+    df["Flag"] = flag
+    evaluations_path = "evaluations.csv"
+    update_data_frame(evaluations_path, df)
