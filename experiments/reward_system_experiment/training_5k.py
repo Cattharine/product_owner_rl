@@ -20,7 +20,6 @@ from environment.reward_sytem import (
 from pipeline.aggregator_study import update_reward_system_config
 from pipeline import LoggingStudy
 from training_utils import eval_agent, save_rewards, save_evaluation
-from main import create_usual_agent
 
 
 def make_credit_study(trajectory_max_len, episode_n, potential):
@@ -42,7 +41,7 @@ def make_credit_study(trajectory_max_len, episode_n, potential):
     state_dim = env.state_dim
     action_n = env.action_n
 
-    agent = DoubleDQN(state_dim, action_n, gamma=0.9, tau=0.001, epsilon_decrease=1e-4)
+    agent = DoubleDQN(state_dim, action_n, gamma=0.9, tau=0.001, epsilon_decrease=1e-5)
 
     study = LoggingStudy(env, agent, trajectory_max_len)
     study.study_agent(episode_n)
@@ -51,7 +50,7 @@ def make_credit_study(trajectory_max_len, episode_n, potential):
 
 
 def main(potential):
-    episode_n = 1501
+    episode_n = 5000
     study = make_credit_study(200, episode_n, potential)
     now = datetime.datetime.now()
     save_rewards(episode_n, study.rewards_log, now, potential)
@@ -65,6 +64,7 @@ def main(potential):
 
 
 if __name__ == "__main__":
-    n = 3
+    n = 1
     for i in range(n):
         main(True)
+        main(False)

@@ -2,8 +2,10 @@ import datetime
 import os
 import sys
 
+import numpy as np
 import pandas as pd
 
+from scipy.stats import chi2_contingency
 from typing import List
 
 sys.path.append("..")
@@ -44,7 +46,7 @@ def update_data_frame(path: str, df: pd.DataFrame):
         data = pd.DataFrame()
 
     data: pd.DataFrame = pd.concat([data, df])
-    data.to_csv(path, index=False, float_format='%.5f')
+    data.to_csv(path, index=False, float_format="%.5f")
 
 
 def save_rewards(episode_n: int, rewards_log: List[float], now: str, flag: bool):
@@ -56,13 +58,23 @@ def save_rewards(episode_n: int, rewards_log: List[float], now: str, flag: bool)
     )
     df["DateTime"] = now
     df["Flag"] = flag
-    rewards_path = "train_rewards.csv"
+    rewards_path = f"train_rewards_{episode_n}.csv"
     update_data_frame(rewards_path, df)
 
 
-def save_evaluation(evaluations: List, now: str, flag: bool):
+def save_evaluation(episode_n: int, evaluations: List, now: str, flag: bool):
     df = pd.DataFrame(evaluations, columns=["Reward", "Win", "Sprint"])
     df["DateTime"] = now
     df["Flag"] = flag
-    evaluations_path = "evaluations.csv"
+    evaluations_path = f"evaluations_{episode_n}.csv"
     update_data_frame(evaluations_path, df)
+
+
+def get_wins_stat(a_wins: np.ndarray, b_wins: np.ndarray):
+    wins = np.array([a_wins.sum(), b_wins.sum()])
+    sizes = np.array([a_wins.size, b_wins.size])
+    loses = sizes - wins
+
+    print(wins, loses)
+    res = chi2_contingency([wins, loses])
+    return res
