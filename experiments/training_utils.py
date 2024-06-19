@@ -49,24 +49,24 @@ def update_data_frame(path: str, df: pd.DataFrame):
     data.to_csv(path, index=False, float_format="%.5f")
 
 
-def save_rewards(episode_n: int, rewards_log: List[float], now: str, flag: bool):
+def save_rewards(sub_name: str, rewards_log: List[float], now: str, flag: bool):
     df = pd.DataFrame(
         {
-            "Trajectory": list(range(episode_n)),
+            "Trajectory": list(range(len(rewards_log))),
             "Reward": rewards_log,
         }
     )
     df["DateTime"] = now
     df["Flag"] = flag
-    rewards_path = f"train_rewards_{episode_n}.csv"
+    rewards_path = f"train_rewards_{sub_name}.csv"
     update_data_frame(rewards_path, df)
 
 
-def save_evaluation(episode_n: int, evaluations: List, now: str, flag: bool):
+def save_evaluation(sub_name: str, evaluations: List, now: str, flag: bool):
     df = pd.DataFrame(evaluations, columns=["Reward", "Win", "Sprint"])
     df["DateTime"] = now
     df["Flag"] = flag
-    evaluations_path = f"evaluations_{episode_n}.csv"
+    evaluations_path = f"evaluations_{sub_name}.csv"
     update_data_frame(evaluations_path, df)
 
 

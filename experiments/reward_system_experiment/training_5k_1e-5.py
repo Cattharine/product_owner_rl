@@ -46,7 +46,7 @@ def make_credit_study(trajectory_max_len, episode_n, potential):
         action_n,
         gamma=0.9,
         tau=0.001,
-        epsilon_decrease=1e-4,
+        epsilon_decrease=1e-5,
         batch_size=64,
         lr=1e-3,
         epsilon_min=0.01,
@@ -62,14 +62,14 @@ def main(potential):
     episode_n = 5000
     study = make_credit_study(200, episode_n, potential)
     now = datetime.datetime.now()
-    save_rewards(str(episode_n), study.rewards_log, now, potential)
+    save_rewards('5000_1e-5', study.rewards_log, now, potential)
 
     evaluations = []
     for i in range(1000):
         evaluation = eval_agent(study)
         evaluations.append(evaluation)
 
-    save_evaluation(str(episode_n), evaluations, now, potential)
+    save_evaluation('5000_1e-5', evaluations, now, potential)
 
 
 if __name__ == "__main__":
