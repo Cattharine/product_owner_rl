@@ -77,3 +77,4 @@ if __name__ == "__main__":
     n = 1
     for i in range(n):
         main(True)
+        main(False)
