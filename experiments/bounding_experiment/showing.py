@@ -31,11 +31,11 @@ def read_files_data(filenames: List[str]):
     return result
 
 
-def get_experements_wins(evaluation_filenames: List[str], guidance: bool):
-    exp_evaluation_files = get_experiment_files(evaluation_filenames, guidance)
-    guidance_evaluation = read_files_data(exp_evaluation_files)
-    guidance_evaluation = np.array(guidance_evaluation)
-    wins = guidance_evaluation[:, :, 1].sum(axis=1)
+def get_experements_wins(evaluation_filenames: List[str], modified: bool):
+    exp_evaluation_files = get_experiment_files(evaluation_filenames, modified)
+    evaluation = read_files_data(exp_evaluation_files)
+    evaluation = np.array(evaluation)
+    wins = evaluation[:, :, 1].sum(axis=1)
     return wins
 
 
