@@ -41,7 +41,16 @@ def make_credit_study(trajectory_max_len, episode_n, potential):
     state_dim = env.state_dim
     action_n = env.action_n
 
-    agent = DoubleDQN(state_dim, action_n, gamma=0.9, tau=0.001, epsilon_decrease=1e-5)
+    agent = DoubleDQN(
+        state_dim,
+        action_n,
+        gamma=0.9,
+        tau=0.001,
+        epsilon_decrease=1e-4,
+        batch_size=64,
+        lr=1e-3,
+        epsilon_min=0.01,
+    )
 
     study = LoggingStudy(env, agent, trajectory_max_len)
     study.study_agent(episode_n)
@@ -66,5 +75,5 @@ def main(potential):
 if __name__ == "__main__":
     n = 1
     for i in range(n):
-        main(True)
+        # main(True)
         main(False)

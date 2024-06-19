@@ -6,7 +6,7 @@ from typing import List
 
 
 def main():
-    episodes_n = 1501
+    episodes_n = '5000_1e-5'
     evals_df = pd.read_csv(f"evaluations_{episodes_n}.csv")
     print(evals_df.head())
 
