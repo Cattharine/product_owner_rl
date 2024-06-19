@@ -65,7 +65,7 @@ def main(potential):
     save_rewards(episode_n, study.rewards_log, now, potential)
 
     evaluations = []
-    for i in range(100):
+    for i in range(1000):
         evaluation = eval_agent(study)
         evaluations.append(evaluation)
 
@@ -75,5 +75,5 @@ def main(potential):
 if __name__ == "__main__":
     n = 1
     for i in range(n):
-        # main(True)
+        main(True)
         main(False)
