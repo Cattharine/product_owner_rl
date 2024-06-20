@@ -7,6 +7,7 @@ sys.path.append("..")
 from environment import CreditPayerEnv
 from pipeline import LoggingStudy
 
+
 def play_forward_with_empty_sprints(env: CreditPayerEnv):
     info = env.get_info()
     done = env.get_done(info)
