@@ -1,9 +1,14 @@
 import os
+import sys
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from typing import List
 
+sys.path.append("..")
+sys.path.append("../..")
+
+from training_utils import get_wins_stat
 
 def main():
     episodes_n = '1501'
@@ -14,6 +19,12 @@ def main():
 
     grouped_wins = evals_grups["Win"].sum()
     print(grouped_wins)
+
+    exp_enabled = evals_df['Flag']
+    experiment_wins = evals_df[exp_enabled]['Win'].to_numpy()
+    default_wins = evals_df[~exp_enabled]['Win'].to_numpy()
+    res = get_wins_stat(default_wins, experiment_wins)
+    print(res)
 
     succes_sprints_df = evals_df[evals_df['Win']]
     grouped_succes_sprints = succes_sprints_df.groupby(['Flag', 'DateTime'])
