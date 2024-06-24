@@ -1,6 +1,7 @@
 import os
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.stats import chi2_contingency
 from typing import List
 
 
@@ -31,17 +32,27 @@ def read_files_data(filenames: List[str]):
     return result
 
 
-def get_experements_wins(evaluation_filenames: List[str], guidance: bool):
-    exp_evaluation_files = get_experiment_files(evaluation_filenames, guidance)
-    guidance_evaluation = read_files_data(exp_evaluation_files)
-    guidance_evaluation = np.array(guidance_evaluation)
-    wins = guidance_evaluation[:, :, 1].sum(axis=1)
+def get_experements_wins(evaluation_filenames: List[str], modified: bool):
+    exp_evaluation_files = get_experiment_files(evaluation_filenames, modified)
+    evaluation = read_files_data(exp_evaluation_files)
+    evaluation = np.array(evaluation)
+    wins = evaluation[:, :, 1]
     return wins
+
+
+def get_wins_stat(a_wins: np.ndarray, b_wins: np.ndarray):
+    wins = np.array([a_wins.sum(), b_wins.sum()])
+    sizes = np.array([a_wins.size, b_wins.size])
+    loses = sizes - wins
+
+    print(wins, loses)
+    res = chi2_contingency([wins, loses])
+    return res
 
 
 def main():
     current_dir = os.getcwd()
-    files_dir = os.path.join(current_dir, 'episodes_1501')
+    files_dir = os.path.join(current_dir, "episodes_1501")
 
     data_files = get_all_data_files(files_dir)
 
@@ -62,17 +73,20 @@ def main():
     plt.plot(np.mean(modified_rewards, axis=0), ".", label="bounding")
     plt.plot(np.mean(default_rewards, axis=0) / 100, ".", label="default")
     plt.legend()
-    plt.title('Rewards')
-    plt.xlabel('trajectory')
-    plt.ylabel('rewards')
-    plt.savefig('bounding_rewards.png')
+    plt.title("Rewards")
+    plt.xlabel("trajectory")
+    plt.ylabel("rewards")
+    plt.savefig("bounding_rewards.png")
     plt.show()
 
     default_wins = get_experements_wins(evaluation_files, False)
-    print(default_wins)
+    print(default_wins.sum(axis=1))
 
-    gidance_wins = get_experements_wins(evaluation_files, True)
-    print(gidance_wins)
+    exp_wins = get_experements_wins(evaluation_files, True)
+    print(exp_wins.sum(axis=1))
+
+    res = get_wins_stat(default_wins, exp_wins)
+    print(res)
 
 
 if __name__ == "__main__":
