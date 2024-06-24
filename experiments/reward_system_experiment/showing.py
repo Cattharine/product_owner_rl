@@ -13,12 +13,13 @@ from training_utils import get_wins_stat
 def main():
     episodes_n = '1501'
     evals_df = pd.read_csv(f"evaluations_{episodes_n}.csv")
-    print(evals_df.head())
+    evals_df['Lose'] = 1 - evals_df['Win']
 
-    evals_grups = evals_df.groupby(["Flag", "DateTime"])
+    evals_grups = evals_df.groupby(["Flag"])
 
-    grouped_wins = evals_grups["Win"].sum()
-    print(grouped_wins)
+    grouped_wins = evals_grups[["Win", 'Lose']].sum()
+    grouped_wins['%'] = grouped_wins['Win'] / (grouped_wins['Win'] + grouped_wins['Lose'])
+    print(grouped_wins.to_markdown())
 
     exp_enabled = evals_df['Flag']
     experiment_wins = evals_df[exp_enabled]['Win'].to_numpy()
