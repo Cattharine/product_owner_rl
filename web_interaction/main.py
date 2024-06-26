@@ -9,6 +9,7 @@ from operator import itemgetter
 from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from single_color_storage import SingleColorStorage
 from typing import List, Sequence, Tuple, FrozenSet
@@ -18,7 +19,7 @@ import time
 import image_parser
 
 
-def open_game():
+def open_game() -> WebDriver:
     driver = webdriver.Chrome()
 
     driver.get("https://npg-team.itch.io/product-owner-simulator")
@@ -75,22 +76,31 @@ def start_game(driver, iframe: WebElement):
 
 
 def select_user_story_board(driver, iframe: WebElement, width: int, height: int):
-    ActionChains(driver).move_to_element_with_offset(
-        iframe, 950 - width // 2, 396 - height // 2  # click to user story segment
-    ).click().perform()
+    position = board_icons_positions[(height, width)]
+    x = position["x_off"]
+    y = position["user_stories_y"]
+    click_on_element(driver, iframe, x, y)
+    time.sleep(2)
 
 
 def select_backlog_board(driver, iframe: WebElement, width: int, height: int):
-    ActionChains(driver).move_to_element_with_offset(
-        iframe, 950 - width // 2, 250 - height // 2  # click to user story segment
-    ).click().perform()
+    position = board_icons_positions[(height, width)]
+    x = position["x_off"]
+    y = position["backlog_y"]
+    click_on_element(driver, iframe, x, y)
+
+
+board_action_positions = {
+    (540, 960): {"x": 817, "y": 480},
+    (1028, 1920): {"x": 1654, "y": 911},
+}
 
 
 def click_board_button(driver, iframe: WebElement, width: int, height: int):
-    select_user_story_board(driver, iframe, width, height)
-    ActionChains(driver).move_to_element_with_offset(
-        iframe, 817 - width // 2, 480 - height // 2  # click to decompose button
-    ).click().perform()
+    position = board_action_positions[(height, width)]
+    x = position["x"]
+    y = position["y"]
+    click_on_element(driver, iframe, x, y)
 
 
 def click_on_element(driver, iframe: WebElement, x: int, y: int):
@@ -110,9 +120,7 @@ def click_user_story(driver, iframe: WebElement, x: int, y: int):
     width = iframe.rect["width"]  # 960
 
     select_user_story_board(driver, iframe, width, height)
-    time.sleep(2)
     click_on_element(driver, iframe, x, y)
-    time.sleep(2)
 
 
 def buy_research(driver, iframe: WebElement, width: int, height: int):
@@ -181,19 +189,30 @@ def fill_game_main_info_from_image(game: ProductOwnerGame, image: cv2.typing.Mat
     # current_sprint_hours = image_parser.get_current_sprint_hours(image)
     # context.current_sprint_hours = current_sprint_hours
 
-    current_sprint = image_parser.get_sprint_number(meta_info)
+    current_sprint = image_parser.get_sprint_number(meta_info, image.shape)
     context.current_sprint = current_sprint
 
-    money = image_parser.get_game_money(meta_info)
+    money = image_parser.get_game_money(meta_info, image.shape)
     context.set_money(money)
 
-    loyalty = image_parser.get_loyalty(meta_info)
+    loyalty = image_parser.get_loyalty(meta_info, image.shape)
     context.set_loyalty(loyalty)
 
-    context.customers = image_parser.get_customers(meta_info)
+    context.customers = image_parser.get_customers(meta_info, image.shape)
 
     credit = max(300_000 - (current_sprint - 1) * 9_000, 0)
     context.credit = credit
+
+
+board_icons_positions = {
+    (540, 960): {"x_on": 700, "x_off": 950, "backlog_y": 245, "user_stories_y": 396},
+    (1028, 1920): {
+        "x_on": 1434,
+        "x_off": 1892,
+        "backlog_y": 466,
+        "user_stories_y": 754,
+    },
+}
 
 
 def apply_start_sprint_action(
@@ -220,8 +239,12 @@ def apply_start_sprint_action(
 
     fill_game_main_info_from_image(env.game, game_image)
 
-    click_on_element(driver, iframe, 700, 245)
-    click_on_element(driver, iframe, 700, 396)
+    # position = board_icons_positions[(height, width)]
+    # x = position["x_on"]
+    # backlog_y = position["backlog_y"]
+    # user_stories_y = position["user_stories_y"]
+    # click_on_element(driver, iframe, x, backlog_y)
+    # click_on_element(driver, iframe, x, user_stories_y)
 
 
 def apply_decompose_action(
@@ -229,10 +252,8 @@ def apply_decompose_action(
 ):
     print("Start decomposition")
     select_user_story_board(driver, iframe, width, height)
-    time.sleep(5)
-
     click_board_button(driver, iframe, width, height)
-    time.sleep(5)
+    time.sleep(1)
 
     filename = "game_state.png"
     iframe.screenshot(filename)
@@ -263,6 +284,7 @@ def apply_user_story_action(
     insert_user_stories_from_image(env.game, image)
 
     print(reward)
+
 
 def find_backlog_card_position(card: Card, image: cv2.typing.MatLike):
     card: CardInfo = card.info
@@ -302,10 +324,19 @@ def apply_backlog_card_action(
     env._perform_action_backlog_card(action)
 
 
+release_button_positions = {
+    (540, 960): {"x": 115, "y": 455},
+    (1028, 1920): {"x": 211, "y": 865},
+}
+
+
 def apply_release_action(
     driver, iframe: WebElement, width: int, height: int, env: ProductOwnerEnv
 ):
-    click_on_element(driver, iframe, 115, 455)
+    position = release_button_positions[(height, width)]
+    x = position["x"]
+    y = position["y"]
+    click_on_element(driver, iframe, x, y)
 
     time.sleep(1)
 
@@ -314,9 +345,8 @@ def apply_release_action(
     game_image = cv2.imread(filename)
     # os.remove(filename)
 
-    fill_game_main_info_from_image(env.game, game_image)
-
     env._perform_release()
+    fill_game_main_info_from_image(env.game, game_image)
 
 
 def apply_buy_statistical_research_action(
@@ -324,11 +354,7 @@ def apply_buy_statistical_research_action(
 ):
     height = iframe.rect["height"]  # 540
     width = iframe.rect["width"]  # 960
-    select_user_story_board(driver, iframe, width, height)
-    time.sleep(2)
-
-    click_on_element(driver, iframe, 765, 115)
-    time.sleep(2)
+    buy_research(driver, iframe, width, height)
 
     env._perform_statistical_research()
 
