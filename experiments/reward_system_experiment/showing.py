@@ -15,9 +15,9 @@ def main():
     evals_df = pd.read_csv(f"evaluations_{episodes_n}.csv")
     evals_df['Lose'] = 1 - evals_df['Win']
 
-    evals_grups = evals_df.groupby(["Flag"])
+    evals_groups = evals_df.groupby(["Flag"])
 
-    grouped_wins = evals_grups[["Win", 'Lose']].sum()
+    grouped_wins = evals_groups[["Win", 'Lose']].sum()
     grouped_wins['%'] = grouped_wins['Win'] / (grouped_wins['Win'] + grouped_wins['Lose'])
     print(grouped_wins.to_markdown())
 
@@ -44,6 +44,7 @@ def main():
     plt.title("Rewards")
     plt.xlabel("trajectory")
     plt.ylabel("rewards")
+    plt.xticks(np.arange(0, 1501, 500))
     plt.savefig(f"potential_rewards_{episodes_n}.png")
     plt.show()
 
