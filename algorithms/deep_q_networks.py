@@ -223,6 +223,7 @@ class SoftTargetDQN(TargetDQN):
 
 
 class DoubleDQN(SoftTargetDQN):
+    @torch.no_grad()
     def get_max_q_values(self, next_states, next_guides):
         next_states_q = self.q_function(next_states).take_along_dim(next_guides, dim=1)
         best_actions = torch.argmax(next_states_q, axis=1)
