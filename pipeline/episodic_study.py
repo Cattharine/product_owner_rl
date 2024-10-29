@@ -1,14 +1,14 @@
 import torch
 from environment import ProductOwnerEnv
-from algorithms.proximal_policy_optimization import PPO_Discrete
+from algorithms.proximal_policy_optimization import PPO_Discrete_Logits_Guided
 
 
 class EpisodicPpoStudy:
     def __init__(
-        self, env: ProductOwnerEnv, agent: PPO_Discrete, trajectory_max_len: int
+        self, env: ProductOwnerEnv, agent: PPO_Discrete_Logits_Guided, trajectory_max_len: int
     ) -> None:
         self.env: ProductOwnerEnv = env
-        self.agent: PPO_Discrete = agent
+        self.agent: PPO_Discrete_Logits_Guided = agent
         self.trajectory_max_len = trajectory_max_len
         self.rewards_log = []
 

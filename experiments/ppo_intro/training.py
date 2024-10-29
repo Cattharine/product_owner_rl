@@ -59,7 +59,7 @@ def main(agent_class):
     study = make_credit_study(200, episode_n, trajectory_n, agent_class)
     env_name = study.env.__class__.__name__
     experiment_name = study.agent.__class__.__name__
-    data_sub_name = f"{env_name}_{episode_n}_episodes_{trajectory_n}_trajectory_nn_2x256_inner_layer_gamma_0.9"
+    data_sub_name = f"{env_name}_{episode_n}_episodes_{trajectory_n}_trajectory_n"
     now = datetime.datetime.now()
     save_rewards(data_sub_name, study.rewards_log, now, experiment_name)
 

@@ -4,26 +4,6 @@ import torch.nn as nn
 from torch.distributions import Categorical
 
 
-def get_v_model(state_dim: int, inner_layer_size: int = 256):
-    return nn.Sequential(
-        nn.Linear(state_dim, inner_layer_size),
-        nn.ReLU(),
-        nn.Linear(inner_layer_size, inner_layer_size),
-        nn.ReLU(),
-        nn.Linear(inner_layer_size, 1),
-    )
-
-
-def get_pi_model(state_dim: int, action_dim: int, inner_layer_size: int = 256):
-    return nn.Sequential(
-        nn.Linear(state_dim, inner_layer_size),
-        nn.ReLU(),
-        nn.Linear(inner_layer_size, inner_layer_size),
-        nn.ReLU(),
-        nn.Linear(inner_layer_size, action_dim),
-    )
-
-
 class PPO_Base(nn.Module):
     def __init__(
         self,
@@ -72,26 +52,6 @@ class PPO_Base(nn.Module):
             returns[t] = rewards[t] + (1 - dones[t]) * self.gamma * returns[t + 1]
 
         return returns
-
-
-class PPO_Discrete(PPO_Base):
-    def get_dist(self, pi_values):
-        dist = Categorical(logits=pi_values)
-        return dist
-
-    def _get_log_probs(self, states, actions):
-        pi_values = self.pi_model(states)
-        dist = self.get_dist(pi_values)
-        log_probs = dist.log_prob(actions)
-        return log_probs
-
-    def get_action(self, state):
-        state = torch.FloatTensor(state)
-        pi_values = self.pi_model(state)
-        dist = self.get_dist(pi_values)
-        action = dist.sample()
-        action = action.numpy()
-        return action
 
 
 class PPO_Discrete_Logits_Guided(PPO_Base):

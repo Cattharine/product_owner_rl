@@ -23,11 +23,11 @@ def show_rewards_fitting(sub_name):
 def show_win_rate(sub_name):
     evals_df = pd.read_csv(f"evaluations_{sub_name}.csv")
     wins = evals_df.groupby(["DateTime", "ExperimentName"])["Win"]
-    groups_wins = wins.sum()
+    win_groups = wins.sum()
 
-    print(groups_wins)
+    print(win_groups)
 
-    total_wins = groups_wins.reset_index()
+    total_wins = win_groups.reset_index()
     total_wins = total_wins.groupby(["ExperimentName"])["Win"].sum()
     print(total_wins)
 
@@ -42,7 +42,7 @@ def show_win_sprints(evals_df: pd.DataFrame):
 def main():
     episode_n = 250
     trajectory_n = 20
-    sub_name = f"CreditPayerEnv_{episode_n}_episodes_{trajectory_n}_trajectory_nn_2x256_inner_layer_gamma_0.9"
+    sub_name = f"CreditPayerEnv_{episode_n}_episodes_{trajectory_n}_trajectory_n"
     show_rewards_fitting(sub_name)
     show_win_rate(sub_name)
 
