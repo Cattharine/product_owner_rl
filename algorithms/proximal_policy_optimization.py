@@ -126,6 +126,24 @@ class PPO_Discrete_Logits_Guided(PPO_Base):
     def _get_advantage(self, returns: torch.Tensor, states):
         advantage = returns.detach() - self.v_model(states)
         return advantage
+    
+    def _prepare_data(self, states, actions, rewards, dones, infos):
+        states, actions, rewards, dones = map(
+            np.array, [states, actions, rewards, dones]
+        )
+        rewards, dones = rewards.reshape(-1, 1), dones.reshape(-1, 1)
+
+        returns = self._get_returns(rewards, dones)
+
+        states, actions, returns = map(torch.FloatTensor, [states, actions, returns])
+
+        available_actions_mask = self._convert_infos(infos)
+
+        old_log_probs = self._get_log_probs(
+            states, actions, available_actions_mask
+        ).detach()
+
+        return states, actions, returns, old_log_probs, available_actions_mask
 
     def fit(self, states, actions, rewards, dones, infos):
         states, actions, rewards, dones = map(
