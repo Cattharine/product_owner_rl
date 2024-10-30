@@ -5,7 +5,7 @@ from environment.reward_sytem import EmpiricalCreditStageRewardSystem
 from pipeline import AggregatorStudy, STUDY, CREDIT_END, CREDIT_FULL, CREDIT_START, TUTORIAL
 from environment.userstory_env import UserstoryEnv
 from pipeline.study_agent import load_dqn_agent, save_dqn_agent
-from pipeline.aggregator_study import update_reward_system_config
+from pipeline.aggregator_study import update_reward_system_config, KeyLogState
 from main import create_usual_agent
 
 import visualizer
@@ -35,14 +35,18 @@ def make_credit_study(agents,
     reward_system = get_reward_system(stage, with_late_purchases_penalty)
     userstory_env = UserstoryEnv(2, 0, 0)
     backlog_env = BacklogEnv(6, 0, 0, 0, 0, 0)
-    env = CreditPayerEnv(userstory_env, backlog_env, with_end=with_end, with_info=with_info, reward_system=reward_system)
+    env = CreditPayerEnv(userstory_env, backlog_env, with_end=with_end, with_info=with_info,
+                         reward_system=reward_system,
+                         seed=None, card_picker_seed=None)
     update_reward_system_config(env, reward_system)
 
     agent = create_usual_agent(env, trajectory_max_len, episode_n)
     agents[STUDY] = agent
     environments = {STUDY: env}
 
-    study = AggregatorStudy(environments, agents, order, trajectory_max_len, save_rate=save_rate)
+    study = AggregatorStudy(environments, agents, order, trajectory_max_len, save_rate=save_rate,
+                            base_epoch_log_state=KeyLogState.DO_NOT_LOG)
+    study.set_log_state(study.LOSS_LOG_KEY, KeyLogState.ONLY_LEN_LOG, is_after_study=False)
     study.study_agent(episode_n)
 
     order.append(stage)
