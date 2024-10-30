@@ -22,7 +22,7 @@ class BaseStudy:
         info = init_info
         t = 0
         inner_sprint_action_count = 0
-        done = False
+        done = self.env.get_done(info)
 
         while not done:
             action = self.agent.get_action(state, info)
@@ -52,9 +52,9 @@ class BaseStudy:
             inner_sprint_action_count = 0
         return action, inner_sprint_action_count
 
-    def study_agent(self, episode_n: int):
+    def study_agent(self, episode_n: int, seed=None, card_picker_seed=None):
         for episode in range(episode_n):
-            state = self.env.reset()
+            state = self.env.reset(seed=seed, card_picker_seed=card_picker_seed)
             info = self.env.get_info()
             self.play_trajectory(state, info)
 
