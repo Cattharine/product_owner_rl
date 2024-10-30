@@ -1,14 +1,17 @@
 import torch
 from environment import ProductOwnerEnv
-from algorithms.proximal_policy_optimization import PPO_Discrete
+from algorithms.proximal_policy_optimization import PPO_Discrete_Logits_Guided
 
 
 class EpisodicPpoStudy:
     def __init__(
-        self, env: ProductOwnerEnv, agent: PPO_Discrete, trajectory_max_len: int
+        self,
+        env: ProductOwnerEnv,
+        agent: PPO_Discrete_Logits_Guided,
+        trajectory_max_len: int,
     ) -> None:
         self.env: ProductOwnerEnv = env
-        self.agent: PPO_Discrete = agent
+        self.agent: PPO_Discrete_Logits_Guided = agent
         self.trajectory_max_len = trajectory_max_len
         self.rewards_log = []
 
@@ -34,21 +37,16 @@ class EpisodicPpoStudy:
                 break
         return total_reward, states, actions, rewards, dones, infos
 
-    def play_batch_trajectories(self, trajectory_n):
+    def play_batch_trajectories(self, trajectory_n: int):
         wins = 0
-        states, actions, rewards, dones, infos = [], [], [], [], []
+        containers = states, actions, rewards, dones, infos = [], [], [], [], []
 
         for _ in range(trajectory_n):
-            tr_total_reward, tr_states, tr_actions, tr_rewards, tr_dones, tr_infos = (
-                self.play_trajectory()
-            )
+            total_reward, *trajectory_data = self.play_trajectory()
             wins += int(self.env.game.context.is_victory)
-            self.rewards_log.append(tr_total_reward)
-            states.extend(tr_states)
-            actions.extend(tr_actions)
-            rewards.extend(tr_rewards)
-            dones.extend(tr_dones)
-            infos.extend(tr_infos)
+            self.rewards_log.append(total_reward)
+            for container, elements in zip(containers, trajectory_data):
+                container.extend(elements)
 
         print(f"Wins count: {wins}")
         return states, actions, rewards, dones, infos
