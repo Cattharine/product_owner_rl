@@ -164,6 +164,7 @@ class PPO_Discrete_Logits_Guided(PPO_Base):
         advantage = self._get_advantage(returns, states)
         self._make_policy_step(states, actions, advantage, old_log_probs, available_actions_mask)
 
+
     def fit(self, states, actions, rewards, dones, infos):
         data = self._prepare_data(states, actions, rewards, dones, infos)
         states, *_ = data
