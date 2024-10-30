@@ -99,7 +99,12 @@ class PPO_Discrete_Logits_Guided(PPO_Base):
         dist = Categorical(logits=pi_values)
         return dist
 
-    def _get_log_probs(self, states, actions, available_actions_mask) -> torch.Tensor:
+    def _get_log_probs(
+        self,
+        states: torch.Tensor,
+        actions: torch.Tensor,
+        available_actions_mask: np.ndarray,
+    ) -> torch.Tensor:
         pi_values = self.pi_model(states)
         dist = self.get_dist(pi_values, available_actions_mask)
         log_probs = dist.log_prob(actions)
@@ -123,10 +128,10 @@ class PPO_Discrete_Logits_Guided(PPO_Base):
 
         return mask
 
-    def _get_advantage(self, returns: torch.Tensor, states):
+    def _get_advantage(self, returns: torch.Tensor, states: torch.Tensor):
         advantage = returns.detach() - self.v_model(states)
         return advantage
-    
+
     def _prepare_data(self, states, actions, rewards, dones, infos):
         states, actions, rewards, dones = map(
             np.array, [states, actions, rewards, dones]
@@ -145,47 +150,33 @@ class PPO_Discrete_Logits_Guided(PPO_Base):
 
         return states, actions, returns, old_log_probs, available_actions_mask
 
+    def _make_policy_step(
+        self, states, actions, returns, old_log_probs, available_actions_mask
+    ):
+        advantage = self._get_advantage(returns, states)
+
+        new_log_probs = self._get_log_probs(states, actions, available_actions_mask)
+
+        ratio = torch.exp(new_log_probs - old_log_probs)
+        self._update_pi_model(advantage, ratio)
+
+        self._update_v_model(advantage)
+
     def fit(self, states, actions, rewards, dones, infos):
-        states, actions, rewards, dones = map(
-            np.array, [states, actions, rewards, dones]
-        )
-        rewards, dones = rewards.reshape(-1, 1), dones.reshape(-1, 1)
-
-        returns = self._get_returns(rewards, dones)
-
-        states, actions, returns = map(torch.FloatTensor, [states, actions, returns])
-
-        available_actions_mask = self._convert_infos(infos)
-
-        old_log_probs = self._get_log_probs(
-            states, actions, available_actions_mask
-        ).detach()
-
+        data = self._prepare_data(states, actions, rewards, dones, infos)
+        states, *_ = data
         for epoch in range(self.epoch_n):
-
-            idxs = np.random.permutation(returns.shape[0])
-            for i in range(0, returns.shape[0] // self.batch_size):
+            idxs = np.random.permutation(states.shape[0])
+            for i in range(0, idxs.shape[0] // self.batch_size):
                 b_idxs = idxs[i * self.batch_size : (i + 1) * self.batch_size]
-                b_states = states[b_idxs]
-                b_actions = actions[b_idxs]
-                b_returns = returns[b_idxs]
-                b_old_log_probs = old_log_probs[b_idxs]
-                b_available_actions_mask = available_actions_mask[b_idxs]
-
-                b_advantage = self._get_advantage(b_returns, b_states)
-
-                b_new_log_probs = self._get_log_probs(
-                    b_states, b_actions, b_available_actions_mask
-                )
-
-                b_ratio = torch.exp(b_new_log_probs - b_old_log_probs)
-                self._update_pi_model(b_advantage, b_ratio)
-
-                self._update_v_model(b_advantage)
+                b_data = tuple(map(lambda array: array[b_idxs], data))
+                self._make_policy_step(*b_data)
 
 
 class PPO_Discrete_Logits_Guided_Advantage(PPO_Discrete_Logits_Guided):
-    def _get_advantage(self, rewards: torch.Tensor, states, next_states):
+    def _get_advantage(
+        self, rewards: torch.Tensor, states: torch.Tensor, next_states: torch.Tensor
+    ):
         advantage = (
             rewards.detach()
             + self.gamma * self.v_model(next_states).detach()
@@ -193,41 +184,62 @@ class PPO_Discrete_Logits_Guided_Advantage(PPO_Discrete_Logits_Guided):
         )
         return advantage
 
-    def fit(self, states, actions, rewards, dones, infos):
+    def _prepare_data(self, states, actions, rewards, dones, infos):
         states, actions, rewards, dones = map(
             np.array, [states, actions, rewards, dones]
         )
         rewards, dones = rewards.reshape(-1, 1), dones.reshape(-1, 1)
+        done_indexes = ~dones.flatten()
+        prev_dones_indexes = done_indexes[:-1]
 
         states, actions, rewards = map(torch.FloatTensor, [states, actions, rewards])
 
         available_actions_mask = self._convert_infos(infos)
 
+        next_states = states[1:]
+        states = states[done_indexes]  # remove terminal states from batch
+        actions = actions[done_indexes]
+        rewards = rewards[done_indexes]
+        next_states = next_states[prev_dones_indexes]
+        available_actions_mask: np.ndarray = available_actions_mask[done_indexes]
+
         old_log_probs = self._get_log_probs(
             states, actions, available_actions_mask
         ).detach()
 
-        for epoch in range(self.epoch_n):
+        return (
+            states,
+            next_states,
+            actions,
+            rewards,
+            old_log_probs,
+            available_actions_mask,
+        )
 
-            idxs = np.random.permutation(states.shape[0] - 1)
+    def _make_policy_step(
+        self,
+        states: torch.Tensor,
+        next_states: torch.Tensor,
+        actions: torch.Tensor,
+        rewards: torch.Tensor,
+        old_log_probs: torch.Tensor,
+        available_actions_mask: np.ndarray,
+    ):
+        advantage = self._get_advantage(rewards, states, next_states)
+
+        new_log_probs = self._get_log_probs(states, actions, available_actions_mask)
+
+        ratio = torch.exp(new_log_probs - old_log_probs)
+        self._update_pi_model(advantage, ratio)
+
+        self._update_v_model(advantage)
+
+    def fit(self, states, actions, rewards, dones, infos):
+        data = self._prepare_data(states, actions, rewards, dones, infos)
+        states, *_ = data
+        for epoch in range(self.epoch_n):
+            idxs = np.random.permutation(states.shape[0])
             for i in range(0, idxs.shape[0] // self.batch_size):
                 b_idxs = idxs[i * self.batch_size : (i + 1) * self.batch_size]
-                b_dones_ = dones[b_idxs].flatten()
-                b_idxs = b_idxs[~b_dones_]  # remove terminal states from batch
-                b_states = states[b_idxs]
-                b_next_states = states[b_idxs + 1]
-                b_actions = actions[b_idxs]
-                b_rewards = rewards[b_idxs]
-                b_old_log_probs = old_log_probs[b_idxs]
-                b_available_actions_mask = available_actions_mask[b_idxs]
-
-                b_advantage = self._get_advantage(b_rewards, b_states, b_next_states)
-
-                b_new_log_probs = self._get_log_probs(
-                    b_states, b_actions, b_available_actions_mask
-                )
-
-                b_ratio = torch.exp(b_new_log_probs - b_old_log_probs)
-                self._update_pi_model(b_advantage, b_ratio)
-
-                self._update_v_model(b_advantage)
+                b_data = tuple(map(lambda array: array[b_idxs], data))
+                self._make_policy_step(*b_data)
