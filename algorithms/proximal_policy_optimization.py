@@ -169,7 +169,7 @@ class PPO_Discrete_Logits_Guided(PPO_Base):
             idxs = np.random.permutation(states.shape[0])
             for i in range(0, idxs.shape[0] // self.batch_size):
                 b_idxs = idxs[i * self.batch_size : (i + 1) * self.batch_size]
-                b_data = tuple(map(lambda array: array[b_idxs], data))
+                b_data = map(lambda array: array[b_idxs], data)
                 self._make_policy_step(*b_data)
 
 
@@ -233,13 +233,3 @@ class PPO_Discrete_Logits_Guided_Advantage(PPO_Discrete_Logits_Guided):
         self._update_pi_model(advantage, ratio)
 
         self._update_v_model(advantage)
-
-    def fit(self, states, actions, rewards, dones, infos):
-        data = self._prepare_data(states, actions, rewards, dones, infos)
-        states, *_ = data
-        for epoch in range(self.epoch_n):
-            idxs = np.random.permutation(states.shape[0])
-            for i in range(0, idxs.shape[0] // self.batch_size):
-                b_idxs = idxs[i * self.batch_size : (i + 1) * self.batch_size]
-                b_data = tuple(map(lambda array: array[b_idxs], data))
-                self._make_policy_step(*b_data)
