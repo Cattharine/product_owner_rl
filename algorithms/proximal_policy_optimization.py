@@ -150,17 +150,20 @@ class PPO_Discrete_Logits_Guided(PPO_Base):
 
         return states, actions, returns, old_log_probs, available_actions_mask
 
-    def _make_policy_step(
-        self, states, actions, returns, old_log_probs, available_actions_mask
-    ):
-        advantage = self._get_advantage(returns, states)
-
+    def _make_policy_step(self, states, actions, advantage, old_log_probs, available_actions_mask):
         new_log_probs = self._get_log_probs(states, actions, available_actions_mask)
 
         ratio = torch.exp(new_log_probs - old_log_probs)
         self._update_pi_model(advantage, ratio)
 
         self._update_v_model(advantage)
+
+    def _step(
+        self, states, actions, returns, old_log_probs, available_actions_mask
+    ):
+        advantage = self._get_advantage(returns, states)
+        self._make_policy_step(states, actions, advantage, old_log_probs, available_actions_mask)
+
 
     def fit(self, states, actions, rewards, dones, infos):
         data = self._prepare_data(states, actions, rewards, dones, infos)
@@ -170,7 +173,7 @@ class PPO_Discrete_Logits_Guided(PPO_Base):
             for i in range(0, idxs.shape[0] // self.batch_size):
                 b_idxs = idxs[i * self.batch_size : (i + 1) * self.batch_size]
                 b_data = map(lambda array: array[b_idxs], data)
-                self._make_policy_step(*b_data)
+                self._step(*b_data)
 
 
 class PPO_Discrete_Logits_Guided_Advantage(PPO_Discrete_Logits_Guided):
@@ -216,7 +219,7 @@ class PPO_Discrete_Logits_Guided_Advantage(PPO_Discrete_Logits_Guided):
             available_actions_mask,
         )
 
-    def _make_policy_step(
+    def _step(
         self,
         states: torch.Tensor,
         next_states: torch.Tensor,
@@ -226,10 +229,4 @@ class PPO_Discrete_Logits_Guided_Advantage(PPO_Discrete_Logits_Guided):
         available_actions_mask: np.ndarray,
     ):
         advantage = self._get_advantage(rewards, states, next_states)
-
-        new_log_probs = self._get_log_probs(states, actions, available_actions_mask)
-
-        ratio = torch.exp(new_log_probs - old_log_probs)
-        self._update_pi_model(advantage, ratio)
-
-        self._update_v_model(advantage)
+        self._make_policy_step(states, actions, advantage, old_log_probs, available_actions_mask)
