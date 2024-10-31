@@ -191,20 +191,19 @@ class PPO_Discrete_Logits_Guided_Advantage(PPO_Discrete_Logits_Guided):
         states, actions, rewards, dones = map(
             np.array, [states, actions, rewards, dones]
         )
-        rewards, dones = rewards.reshape(-1, 1), dones.reshape(-1, 1)
-        done_indexes = ~dones.flatten()
-        prev_dones_indexes = done_indexes[:-1]
+        rewards = rewards.reshape(-1, 1)
+        undones = ~dones.flatten()
 
         states, actions, rewards = map(torch.FloatTensor, [states, actions, rewards])
 
         available_actions_mask = self._convert_infos(infos)
 
         next_states = states[1:]
-        states = states[done_indexes]  # remove terminal states from batch
-        actions = actions[done_indexes]
-        rewards = rewards[done_indexes]
-        next_states = next_states[prev_dones_indexes]
-        available_actions_mask: np.ndarray = available_actions_mask[done_indexes]
+        states = states[undones]  # remove terminal states from batch
+        actions = actions[undones]
+        rewards = rewards[undones]
+        next_states = next_states[undones[:-1]]
+        available_actions_mask: np.ndarray = available_actions_mask[undones]
 
         old_log_probs = self._get_log_probs(
             states, actions, available_actions_mask
