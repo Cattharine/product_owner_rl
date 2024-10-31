@@ -8,9 +8,9 @@ def show_rewards_fitting(sub_name):
     reward_groups = rewards_df.groupby(["Trajectory", "ExperimentName"])["Reward"]
     mean_rewards = reward_groups.mean().reset_index()
 
-    for exp_name in set(rewards_df["ExperimentName"]):
-        rewards = mean_rewards[mean_rewards["ExperimentName"] == exp_name]
-        plt.plot(rewards["Trajectory"], rewards["Reward"], ".", label=exp_name)
+    for experiment_name in set(rewards_df["ExperimentName"]):
+        rewards = mean_rewards[mean_rewards["ExperimentName"] == experiment_name]
+        plt.plot(rewards["Trajectory"], rewards["Reward"], ".", label=experiment_name)
     plt.legend()
     plt.grid()
     plt.title("Rewards")
