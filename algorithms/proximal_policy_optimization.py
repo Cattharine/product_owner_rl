@@ -171,9 +171,9 @@ class PPO_Discrete_Logits_Guided(PPO_Base):
         for epoch in range(self.epoch_n):
             idxs = np.random.permutation(states.shape[0])
             for i in range(0, idxs.shape[0] // self.batch_size):
-                b_idxs = idxs[i * self.batch_size : (i + 1) * self.batch_size]
-                b_data = map(lambda array: array[b_idxs], data)
-                self._step(*b_data)
+                batch_indexes = idxs[i * self.batch_size : (i + 1) * self.batch_size]
+                batch_data = map(lambda array: array[batch_indexes], data)
+                self._step(*batch_data)
 
 
 class PPO_Discrete_Logits_Guided_Advantage(PPO_Discrete_Logits_Guided):
