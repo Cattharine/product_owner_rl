@@ -9,7 +9,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
 from environment.environment import ProductOwnerEnv, ProductOwnerGame
-from web_interaction import GameCoordinator
+from .game_coordinator import GameCoordinator
 
 
 class WebController:
