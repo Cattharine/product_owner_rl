@@ -1,5 +1,6 @@
 import cv2
 import logging
+import os
 import time
 
 from selenium import webdriver
@@ -50,7 +51,8 @@ class WebController:
         self.screenshot_count = 0
 
     def take_screenshot(self, iframe: WebElement):
-        filename = f"game_state_{self.screenshot_count:03d}.png"
+        os.makedirs('game_states', exist_ok=True)
+        filename = f"game_states/{self.screenshot_count:03d}.png"
         iframe.screenshot(filename)
         self.screenshot_count += 1
         image = cv2.imread(filename)
@@ -117,7 +119,7 @@ class WebController:
 
         game_image = self.take_screenshot(iframe)
 
-        self.game_coordinator.insert_user_stories_from_image(env.game, game_image)
+        self.game_coordinator.user_stories = self.game_coordinator.image_parser.read_user_stories(game_image)
 
         self.logger.info(f"Reward: {reward}")
 
@@ -130,6 +132,8 @@ class WebController:
         game_image = self.take_screenshot(iframe)
 
         self.game_coordinator.insert_backlog_cards_from_image(env.game, game_image)
+
+        self.logger.info(f'Backlog cards appered: {self.game_coordinator.backlog_cards}')
 
         env._perform_decomposition()
 
