@@ -51,7 +51,7 @@ class WebController:
         self.screenshot_count = 0
 
     def take_screenshot(self, iframe: WebElement):
-        os.makedirs('game_states', exist_ok=True)
+        os.makedirs("game_states", exist_ok=True)
         filename = f"game_states/{self.screenshot_count:03d}.png"
         iframe.screenshot(filename)
         self.screenshot_count += 1
@@ -119,7 +119,9 @@ class WebController:
 
         game_image = self.take_screenshot(iframe)
 
-        self.game_coordinator.user_stories = self.game_coordinator.image_parser.read_user_stories(game_image)
+        self.game_coordinator.user_stories = (
+            self.game_coordinator.image_parser.read_user_stories(game_image)
+        )
 
         self.logger.info(f"Reward: {reward}")
 
@@ -133,7 +135,9 @@ class WebController:
 
         self.game_coordinator.insert_backlog_cards_from_image(env.game, game_image)
 
-        self.logger.info(f'Backlog cards appered: {self.game_coordinator.backlog_cards}')
+        self.logger.info(
+            f"Backlog cards appered: {self.game_coordinator.backlog_cards}"
+        )
 
         env._perform_decomposition()
 
@@ -175,6 +179,9 @@ class WebController:
             time.sleep(1)
 
         env._perform_start_sprint_action()
+
+        if env.game.context.done:
+            return
 
         game_image = self.take_screenshot(iframe)
 
@@ -315,3 +322,46 @@ class WebController:
             return
 
         raise Exception(f"Unknown action: {action}")
+
+    def play_game(
+        self,
+        env: ProductOwnerEnv,
+        agent,
+        url: str = "https://krutovsky-danya.itch.io/productownersimulator",
+    ) -> WebDriver:
+        driver = self.open_game(url)
+        iframe = self.find_game(driver)
+        self.open_full_sceen(driver)
+        self.wait_loading(iframe)
+        self.start_game(driver, iframe)
+        image = self.take_screenshot(iframe)
+
+        self.game_coordinator.skip_tutorial(env.game)
+        self.game_coordinator.insert_user_stories_from_image(env.game, image)
+        self.game_coordinator.update_header_info(env.game, image)
+        self.game_coordinator.log_game_state(env.game, self.logger)
+
+        self.play_credit_stage(env, agent, driver, iframe)
+        self.play_free_stage(env, driver, iframe)
+
+        return driver
+
+    def play_credit_stage(self, env: ProductOwnerEnv, agent, driver, iframe):
+        while not env.game.context.done:
+            self.game_coordinator.log_game_state(env.game, self.logger)
+            state = env.recalculate_state()
+
+            info = env.get_info()
+
+            action = agent.get_action(state, info)
+            self.logger.info(f"Action id: {action}")
+
+            self.apply_web_action(action, driver, iframe, env)
+
+            if env.game.context.current_sprint >= 35:
+                self.logger.warning("Reached credit end!")
+                break
+
+    def play_free_stage(self, env: ProductOwnerEnv, driver, iframe):
+        while not env.game.context.done:
+            self.apply_web_action(0, driver, iframe, env)
